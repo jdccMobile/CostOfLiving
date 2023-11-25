@@ -8,6 +8,8 @@
         <item name="colorOnSecondary">@color/white</item>
     </style>
 
+    <style name="Theme.CostOfLiving" parent="Base.Theme.CostOfLiving" />
+
     <style name="Widget.AppCompat.TextViewTitle" parent="Widget.AppCompat.TextView">
         <item name="android:textColor"> @color/my_primary</item>
     </style>
