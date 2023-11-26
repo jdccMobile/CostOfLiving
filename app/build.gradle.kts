@@ -61,4 +61,11 @@ dependencies {
     // Location
     implementation("com.google.android.gms:play-services-location:21.0.1")
 
+    // Data store preferences
+    implementation("androidx.datastore:datastore-preferences:1.0.0")
+
+    // Coroutines lifecycle scope
+    implementation("androidx.lifecycle:lifecycle-runtime-ktx:2.6.2")
+    implementation("androidx.lifecycle:lifecycle-viewmodel-ktx:2.6.2")
+
 }

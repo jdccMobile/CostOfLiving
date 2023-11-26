@@ -10,6 +10,8 @@ import android.widget.ImageView
 import android.widget.LinearLayout
 import androidx.core.content.ContextCompat
 import androidx.core.view.get
+import androidx.datastore.preferences.core.edit
+import androidx.datastore.preferences.core.stringPreferencesKey
 import androidx.lifecycle.lifecycleScope
 import androidx.viewpager2.widget.ViewPager2
 import com.jdccmobile.costofliving.R
@@ -17,10 +19,13 @@ import com.jdccmobile.costofliving.data.IntroSlidesProvider
 import com.jdccmobile.costofliving.databinding.ActivityIntroBinding
 import com.jdccmobile.costofliving.domain.RegionRepository
 import com.jdccmobile.costofliving.ui.home.HomeActivity
+import com.jdccmobile.costofliving.ui.main.MainActivity.Companion.COUNTRY_NAME
 import com.jdccmobile.costofliving.ui.main.MainActivity.Companion.HALF_SECOND
+import com.jdccmobile.costofliving.ui.main.dataStore
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
+import java.util.Locale
 
 class IntroActivity : AppCompatActivity() {
 
@@ -105,14 +110,19 @@ class IntroActivity : AppCompatActivity() {
     private fun askForLocation() {
         lifecycleScope.launch {
             val countryCode = regionRepository.findLastRegion()
-            Log.i("JDJD", "countryCode: $countryCode")
-//            savePreferences(true, countryCode)
+            val countryName = Locale("", countryCode).getDisplayCountry(Locale("EN"))
+            savePreferences(countryName)
+            Log.i("JDJD", "countryName: $countryName")
             withContext(Dispatchers.Main) {
                 startActivity(Intent(this@IntroActivity, HomeActivity::class.java))
             }
         }
     }
 
-
+    private suspend fun savePreferences(countryName: String) {
+        dataStore.edit { preferences ->
+            preferences[stringPreferencesKey(COUNTRY_NAME)] = countryName
+        }
+    }
 
 }
