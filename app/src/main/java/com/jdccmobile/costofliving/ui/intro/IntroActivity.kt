@@ -1,5 +1,6 @@
 package com.jdccmobile.costofliving.ui.intro
 
+import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.util.Log
@@ -9,21 +10,30 @@ import android.widget.ImageView
 import android.widget.LinearLayout
 import androidx.core.content.ContextCompat
 import androidx.core.view.get
+import androidx.lifecycle.lifecycleScope
 import androidx.viewpager2.widget.ViewPager2
 import com.jdccmobile.costofliving.R
 import com.jdccmobile.costofliving.data.IntroSlidesProvider
 import com.jdccmobile.costofliving.databinding.ActivityIntroBinding
+import com.jdccmobile.costofliving.domain.RegionRepository
+import com.jdccmobile.costofliving.ui.home.HomeActivity
 import com.jdccmobile.costofliving.ui.main.MainActivity.Companion.HALF_SECOND
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 
 class IntroActivity : AppCompatActivity() {
 
     private lateinit var binding: ActivityIntroBinding
     private lateinit var introSliderAdapter: IntroSliderAdapter
+    private lateinit var regionRepository: RegionRepository
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = ActivityIntroBinding.inflate(layoutInflater)
         setContentView(binding.root)
+
+        regionRepository = RegionRepository(this)
 
         val introSlideInfo = IntroSlidesProvider(this).getIntroSlides()
         val introSlideInfoSize = introSlideInfo.size
@@ -85,12 +95,24 @@ class IntroActivity : AppCompatActivity() {
                 visibility = View.VISIBLE
                 alpha = 0f
                 animate().alpha(1f).duration = HALF_SECOND
-                setOnClickListener { Log.i("JDJD", "Intent") }
+                setOnClickListener { askForLocation() }
             }
         } else {
             binding.btLocationSlide.visibility = View.GONE
         }
     }
+
+    private fun askForLocation() {
+        lifecycleScope.launch {
+            val countryCode = regionRepository.findLastRegion()
+            Log.i("JDJD", "countryCode: $countryCode")
+//            savePreferences(true, countryCode)
+            withContext(Dispatchers.Main) {
+                startActivity(Intent(this@IntroActivity, HomeActivity::class.java))
+            }
+        }
+    }
+
 
 
 }

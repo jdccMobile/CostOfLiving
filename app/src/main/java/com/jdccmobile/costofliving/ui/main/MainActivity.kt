@@ -11,6 +11,7 @@ class MainActivity : AppCompatActivity() {
 
     companion object {
         const val HALF_SECOND = 500L
+        const val DEFAULT_COUNTRY = "ES"
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
