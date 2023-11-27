@@ -24,7 +24,8 @@ class MainActivity : AppCompatActivity() {
     companion object {
         const val HALF_SECOND = 500L
         const val COUNTRY_NAME = "country_name"
-        const val DEFAULT_COUNTRY = "es"
+        const val DEFAULT_COUNTRY_CODE = "es"
+        const val DEFAULT_COUNTRY_NAME = "Spain"
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
