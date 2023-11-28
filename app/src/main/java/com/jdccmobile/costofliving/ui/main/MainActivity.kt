@@ -35,7 +35,7 @@ class MainActivity : AppCompatActivity() {
         splashScreen.setKeepOnScreenCondition { true }
 
         lifecycleScope.launch(Dispatchers.IO) {
-            val countryName = getPreferences()
+            val countryName = getPreferences(COUNTRY_NAME)
             Log.i("JDJD", "countryName: $countryName")
             withContext(Dispatchers.Main) {
                 val intentActivity = if (countryName != "") HomeActivity::class.java else IntroActivity::class.java
@@ -45,8 +45,8 @@ class MainActivity : AppCompatActivity() {
         }
     }
 
-    private suspend fun getPreferences(): String {
+    private suspend fun getPreferences(key: String): String {
         val preferences = dataStore.data.first()
-        return preferences[stringPreferencesKey(COUNTRY_NAME)] ?: ""
+        return preferences[stringPreferencesKey(key)] ?: ""
     }
 }

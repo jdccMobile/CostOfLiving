@@ -1,72 +1,52 @@
 package com.jdccmobile.costofliving.ui.home.search
 
 import android.os.Bundle
-import android.util.Log
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.datastore.preferences.core.stringPreferencesKey
 import androidx.lifecycle.lifecycleScope
 import com.jdccmobile.costofliving.R
 import com.jdccmobile.costofliving.data.remote.CostInfoRepository
+import com.jdccmobile.costofliving.databinding.FragmentSearchBinding
+import com.jdccmobile.costofliving.ui.main.MainActivity
+import com.jdccmobile.costofliving.ui.main.dataStore
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 
-// TODO: Rename parameter arguments, choose names that match
-// the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
-private const val ARG_PARAM1 = "param1"
-private const val ARG_PARAM2 = "param2"
-
-/**
- * A simple [Fragment] subclass.
- * Use the [SearchFragment.newInstance] factory method to
- * create an instance of this fragment.
- */
 class SearchFragment : Fragment() {
-    // TODO: Rename and change types of parameters
-    private var param1: String? = null
-    private var param2: String? = null
 
+    private var _binding: FragmentSearchBinding? = null
+    private val binding get() = _binding!!
     private val costInfoRepository by lazy { CostInfoRepository(requireActivity()) }
-
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-        arguments?.let {
-            param1 = it.getString(ARG_PARAM1)
-            param2 = it.getString(ARG_PARAM2)
-        }
-    }
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
-    ): View? {
-        // Inflate the layout for this fragment
-        Log.d("SEARCHFRAGMENT", " antes hilo")
+    ): View {
+        _binding = FragmentSearchBinding.inflate(inflater, container, false)
+
         lifecycleScope.launch {
-            Log.d("SEARCHFRAGMENT", " antes llamada")
-            val news = costInfoRepository.getCities()
-            Log.d("SEARCHFRAGMENT", news.toString())
+            val countryName = getPreferences(MainActivity.COUNTRY_NAME)
+            val citiesList = costInfoRepository.getCities()
+            val citiesInUserCountry = citiesList.cities.filter{ city -> city.countryName == countryName}
+
+            withContext(Dispatchers.Main) {
+                val searchByCountry = getString(R.string.cities_in) + " " + countryName
+                binding.tvSubtitle.text = searchByCountry
+                binding.rvSearchCities.adapter = CitiesAdapter(citiesInUserCountry)
+            }
+
         }
-        return inflater.inflate(R.layout.fragment_search, container, false)
+        return binding.root
     }
 
-    companion object {
-        /**
-         * Use this factory method to create a new instance of
-         * this fragment using the provided parameters.
-         *
-         * @param param1 Parameter 1.
-         * @param param2 Parameter 2.
-         * @return A new instance of fragment SearchFragment.
-         */
-        // TODO: Rename and change types and number of parameters
-        @JvmStatic
-        fun newInstance(param1: String, param2: String) =
-            SearchFragment().apply {
-                arguments = Bundle().apply {
-                    putString(ARG_PARAM1, param1)
-                    putString(ARG_PARAM2, param2)
-                }
-            }
+    private suspend fun getPreferences(key: String): String {
+        val preferences = requireContext().dataStore.data.first()
+        return preferences[stringPreferencesKey(key)] ?: ""
     }
+
 }

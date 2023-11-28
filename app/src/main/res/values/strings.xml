@@ -10,8 +10,8 @@
     <string name="location_des">We need your current location to be able to show you the cities in your country</string>
     <string name="get_location">Get Location</string>
     <string name="search">Search</string>
-    <!-- TODO: Remove or change this placeholder text -->
-    <string name="hello_blank_fragment">Hello blank fragment</string>
     <string name="search_by">Search by</string>
     <string name="cities_in">Cities in</string>
+    <string name="flag">Flag</string>
+    <string name="navigate">Navigate</string>
 </resources>
