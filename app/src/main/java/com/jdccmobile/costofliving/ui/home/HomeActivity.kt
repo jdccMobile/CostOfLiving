@@ -27,6 +27,8 @@ class HomeActivity : AppCompatActivity() {
 
         replaceFragment(SearchFragment())
 
+
+
         lifecycleScope.launch { countryName = getPreferences(COUNTRY_NAME) }
 
         binding.bottomNavView.setOnItemSelectedListener {

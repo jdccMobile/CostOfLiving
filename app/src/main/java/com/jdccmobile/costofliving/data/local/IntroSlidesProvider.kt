@@ -1,4 +1,4 @@
-package com.jdccmobile.costofliving.data
+package com.jdccmobile.costofliving.data.local
 
 import androidx.appcompat.app.AppCompatActivity
 import com.jdccmobile.costofliving.R

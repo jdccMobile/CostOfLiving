@@ -15,7 +15,7 @@ import androidx.datastore.preferences.core.stringPreferencesKey
 import androidx.lifecycle.lifecycleScope
 import androidx.viewpager2.widget.ViewPager2
 import com.jdccmobile.costofliving.R
-import com.jdccmobile.costofliving.data.IntroSlidesProvider
+import com.jdccmobile.costofliving.data.local.IntroSlidesProvider
 import com.jdccmobile.costofliving.databinding.ActivityIntroBinding
 import com.jdccmobile.costofliving.domain.RegionRepository
 import com.jdccmobile.costofliving.ui.home.HomeActivity
