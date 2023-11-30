@@ -5,10 +5,8 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.ArrayAdapter
-import android.widget.ImageView
-import android.widget.TextView
-import com.jdccmobile.costofliving.R
 import com.jdccmobile.costofliving.data.remote.model.City
+import com.jdccmobile.costofliving.databinding.ViewSearchAutocompleteItemBinding
 import com.jdccmobile.costofliving.model.AutoCompleteSearch
 import com.squareup.picasso.Picasso
 import java.util.Locale
@@ -21,21 +19,26 @@ class AutoCompleteSearchAdapter(
     ArrayAdapter<AutoCompleteSearch>(context, 0, items) {
 
     override fun getView(position: Int, convertView: View?, parent: ViewGroup): View {
-        val view = convertView ?: LayoutInflater.from(context)
-            .inflate(R.layout.view_search_autocomplete_item, parent, false)
 
-        getItem(position)?.let {
-            view.findViewById<TextView>(R.id.tvSearchItemCity).text = it.textSearch
-            Picasso.get()
-                .load("https://flagsapi.com/${getCountryCode(it.country)}/flat/64.png")
-                .into(view.findViewById<ImageView>(R.id.ivSearchItemCountry))
+        val binding = if (convertView == null) {
+            val inflater = LayoutInflater.from(context)
+            ViewSearchAutocompleteItemBinding.inflate(inflater, parent, false)
+        } else {
+            ViewSearchAutocompleteItemBinding.bind(convertView)
         }
 
-        view.setOnClickListener {
+        getItem(position)?.let {
+            binding.tvSearchItemCity.text = it.textSearch
+            Picasso.get()
+                .load("https://flagsapi.com/${getCountryCode(it.country)}/flat/64.png")
+                .into(binding.ivSearchItemCountry)
+        }
+
+        binding.root.setOnClickListener {
             val city = City(getItem(position)!!.textSearch, getItem(position)!!.country)
             onClick(city)
         }
-        return view
+        return binding.root
     }
 
     private fun getCountryCode(countryName: String) =
