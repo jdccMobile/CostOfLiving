@@ -10,7 +10,10 @@ import com.jdccmobile.costofliving.databinding.ViewCityItemBinding
 import com.squareup.picasso.Picasso
 import java.util.Locale
 
-class CitiesUserCountryAdapter(private val cities: List<City>) :
+class CitiesUserCountryAdapter(
+    private val cities: List<City>,
+    private val onItemClick: (City) -> Unit
+    ) :
     RecyclerView.Adapter<CitiesUserCountryAdapter.CitiesViewHolder>() {
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): CitiesViewHolder {
@@ -23,6 +26,10 @@ class CitiesUserCountryAdapter(private val cities: List<City>) :
     override fun onBindViewHolder(holder: CitiesViewHolder, position: Int) {
         val item = cities[position]
         holder.bind(item)
+
+        holder.itemView.setOnClickListener {
+            onItemClick(item)
+        }
     }
 
     inner class CitiesViewHolder(view: View) : RecyclerView.ViewHolder(view) {

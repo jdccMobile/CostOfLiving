@@ -68,13 +68,19 @@ class SearchFragment : Fragment() {
             if (areCitiesLoaded){
                 createLists(citiesList.cities, userCountryName)
                 withContext(Dispatchers.Main) {
-                    binding.rvSearchCities.adapter = CitiesUserCountryAdapter(citiesInUserCountry)
+                    binding.rvSearchCities.adapter = CitiesUserCountryAdapter(citiesInUserCountry ){
+                        navigateToDetails(it)
+                    }
                     binding.atSearch.setAdapter(AutoCompleteSearchAdapter(requireContext(), citiesAutoComplete))
                     binding.rvSearchCities.visibility = View.VISIBLE
                     binding.pbSearchCities.visibility = View.GONE
                 }
             }
         }
+    }
+
+    private fun navigateToDetails(city: City) {
+        Toast.makeText(requireActivity(), "Navigate to DetailFragment with ${city.cityName} and ${city.countryName}", Toast.LENGTH_SHORT).show()
     }
 
     private fun createLists(citiesList: List<City>, userCountryName: String) {
@@ -108,7 +114,7 @@ class SearchFragment : Fragment() {
             countryName = citiesAutoComplete.find { it.textSearch.equals(nameSearch, ignoreCase = true) }?.country ?: ""
             Toast.makeText(requireActivity(), "Navigate to DetailFragment with $nameSearch and $countryName", Toast.LENGTH_SHORT).show()
         } else if (!isSearchByCity && countriesAutoComplete.any { it.textSearch.equals(nameSearch, ignoreCase = true) }) {
-            countryName = countriesAutoComplete.find { it.textSearch.equals(nameSearch, ignoreCase = true) }?.country ?: ""
+            countryName = nameSearch
             Toast.makeText(requireActivity(), "Navigate to DetailFragment with $nameSearch and $countryName", Toast.LENGTH_SHORT).show()
         } else {
             Toast.makeText(requireActivity(), "$nameSearch does not exist", Toast.LENGTH_SHORT).show()
