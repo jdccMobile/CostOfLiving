@@ -8,11 +8,16 @@ import android.widget.ArrayAdapter
 import android.widget.ImageView
 import android.widget.TextView
 import com.jdccmobile.costofliving.R
+import com.jdccmobile.costofliving.data.remote.model.City
 import com.jdccmobile.costofliving.model.AutoCompleteSearch
 import com.squareup.picasso.Picasso
 import java.util.Locale
 
-class AutoCompleteSearchAdapter(context: Context, items: List<AutoCompleteSearch>) :
+class AutoCompleteSearchAdapter(
+    context: Context,
+    items: List<AutoCompleteSearch>,
+    private val onClick: ((City) -> Unit)
+) :
     ArrayAdapter<AutoCompleteSearch>(context, 0, items) {
 
     override fun getView(position: Int, convertView: View?, parent: ViewGroup): View {
@@ -24,6 +29,11 @@ class AutoCompleteSearchAdapter(context: Context, items: List<AutoCompleteSearch
             Picasso.get()
                 .load("https://flagsapi.com/${getCountryCode(it.country)}/flat/64.png")
                 .into(view.findViewById<ImageView>(R.id.ivSearchItemCountry))
+        }
+
+        view.setOnClickListener {
+            val city = City(getItem(position)!!.textSearch, getItem(position)!!.country)
+            onClick(city)
         }
         return view
     }

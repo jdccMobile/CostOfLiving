@@ -1,6 +1,7 @@
 package com.jdccmobile.costofliving.ui.home.search
 
 import android.os.Bundle
+import android.util.Log
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
@@ -27,9 +28,15 @@ class SearchFragment : Fragment() {
     private val costInfoRepository by lazy { CostInfoRepository(requireActivity()) }
 
     private var citiesInUserCountry: List<City> = emptyList()
+    private lateinit var citiesUserCountryAdapter: CitiesUserCountryAdapter
     private var citiesAutoComplete: List<AutoCompleteSearch> = emptyList()
+    private lateinit var citiesAutoCompleteSearchAdapter: AutoCompleteSearchAdapter
     private var countriesAutoComplete: List<AutoCompleteSearch> = emptyList()
+    private lateinit var countriesAutoCompleteSearchAdapter: AutoCompleteSearchAdapter
     private var isSearchByCity = true
+
+
+
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -45,6 +52,7 @@ class SearchFragment : Fragment() {
 
         binding.ivSearchCity.setOnClickListener {
             val nameSearch = binding.atSearch.text.toString()
+            Log.d("SearchFragment", nameSearch)
             validateSearch(nameSearch)
         }
 
@@ -68,19 +76,13 @@ class SearchFragment : Fragment() {
             if (areCitiesLoaded){
                 createLists(citiesList.cities, userCountryName)
                 withContext(Dispatchers.Main) {
-                    binding.rvSearchCities.adapter = CitiesUserCountryAdapter(citiesInUserCountry ){
-                        navigateToDetails(it)
-                    }
-                    binding.atSearch.setAdapter(AutoCompleteSearchAdapter(requireContext(), citiesAutoComplete))
+                    binding.rvSearchCities.adapter = citiesUserCountryAdapter
+                    binding.atSearch.setAdapter(citiesAutoCompleteSearchAdapter)
                     binding.rvSearchCities.visibility = View.VISIBLE
                     binding.pbSearchCities.visibility = View.GONE
                 }
             }
         }
-    }
-
-    private fun navigateToDetails(city: City) {
-        Toast.makeText(requireActivity(), "Navigate to DetailFragment with ${city.cityName} and ${city.countryName}", Toast.LENGTH_SHORT).show()
     }
 
     private fun createLists(citiesList: List<City>, userCountryName: String) {
@@ -92,34 +94,62 @@ class SearchFragment : Fragment() {
             citiesList
                 .distinctBy { it.countryName }
                 .map { AutoCompleteSearch(it.countryName, it.countryName) }
+
+        createAdapters(citiesInUserCountry, citiesAutoComplete,countriesAutoComplete)
+    }
+
+    private fun createAdapters(
+        citiesInUserCountry: List<City>,
+        citiesAutoComplete: List<AutoCompleteSearch>,
+        countriesAutoComplete: List<AutoCompleteSearch>
+    ) {
+        citiesUserCountryAdapter = CitiesUserCountryAdapter(citiesInUserCountry){
+            navigateToDetails(it)
+        }
+        citiesAutoCompleteSearchAdapter = AutoCompleteSearchAdapter(requireContext(), citiesAutoComplete){
+            navigateToDetails(it)
+        }
+        countriesAutoCompleteSearchAdapter = AutoCompleteSearchAdapter(requireContext(), countriesAutoComplete){
+            navigateToDetails(it)
+        }
     }
 
     private fun changeAutoCompleteAdapter(checkedId: Int) {
         when (checkedId) {
             R.id.rbSearchCity -> {
-                binding.atSearch.setAdapter(AutoCompleteSearchAdapter(requireContext(), citiesAutoComplete))
+                binding.atSearch.setAdapter(citiesAutoCompleteSearchAdapter)
                 isSearchByCity = true
             }
 
             R.id.rbSearchCountry -> {
-                binding.atSearch.setAdapter(AutoCompleteSearchAdapter(requireContext(), countriesAutoComplete))
+                binding.atSearch.setAdapter(countriesAutoCompleteSearchAdapter)
                 isSearchByCity = false
             }
         }
     }
 
-    private fun validateSearch(nameSearch: String) {
+    private fun validateSearch(nameSearch: String = "") {
         val countryName: String
-        if (isSearchByCity && citiesAutoComplete.any { it.textSearch.equals(nameSearch, ignoreCase = true) }) {
-            countryName = citiesAutoComplete.find { it.textSearch.equals(nameSearch, ignoreCase = true) }?.country ?: ""
-            Toast.makeText(requireActivity(), "Navigate to DetailFragment with $nameSearch and $countryName", Toast.LENGTH_SHORT).show()
-        } else if (!isSearchByCity && countriesAutoComplete.any { it.textSearch.equals(nameSearch, ignoreCase = true) }) {
-            countryName = nameSearch
-            Toast.makeText(requireActivity(), "Navigate to DetailFragment with $nameSearch and $countryName", Toast.LENGTH_SHORT).show()
+        if(isSearchByCity){
+            if(citiesAutoComplete.any { it.textSearch.equals(nameSearch, ignoreCase = true) }){
+                countryName = citiesAutoComplete.find { it.textSearch.equals(nameSearch, ignoreCase = true) }?.country ?: ""
+                navigateToDetails(City(nameSearch, countryName))
+            } else{
+                Toast.makeText(requireActivity(), "$nameSearch does not exist", Toast.LENGTH_SHORT).show()
+            }
+
         } else {
-            Toast.makeText(requireActivity(), "$nameSearch does not exist", Toast.LENGTH_SHORT).show()
-            binding.atSearch.setText("")
+            if (countriesAutoComplete.any { it.textSearch.equals(nameSearch, ignoreCase = true) }){
+                countryName = nameSearch
+                navigateToDetails(City(countryName, countryName))
+            }else{
+                Toast.makeText(requireActivity(), "$nameSearch does not exist", Toast.LENGTH_SHORT).show()
+            }
         }
+    }
+
+    private fun navigateToDetails(city: City) {
+        Toast.makeText(requireActivity(), "Navigate to DetailFragment with ${city.cityName} and ${city.countryName}", Toast.LENGTH_SHORT).show()
     }
 
     private suspend fun getPreferences(key: String): String {
