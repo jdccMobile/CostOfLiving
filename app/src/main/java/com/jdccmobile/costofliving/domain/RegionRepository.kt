@@ -6,7 +6,7 @@ import android.location.Geocoder
 import android.location.Location
 import androidx.appcompat.app.AppCompatActivity
 import com.google.android.gms.location.LocationServices
-import com.jdccmobile.costofliving.ui.main.MainActivity.Companion.DEFAULT_COUNTRY
+import com.jdccmobile.costofliving.ui.main.MainActivity.Companion.DEFAULT_COUNTRY_CODE
 import kotlinx.coroutines.suspendCancellableCoroutine
 import kotlin.coroutines.resume
 
@@ -36,6 +36,6 @@ class RegionRepository(activity: AppCompatActivity) {
         val addresses = this?.let {
             geocoder.getFromLocation(latitude, longitude, 1)
         }
-        return addresses?.firstOrNull()?.countryCode?.lowercase() ?: DEFAULT_COUNTRY
+        return addresses?.firstOrNull()?.countryCode?.lowercase() ?: DEFAULT_COUNTRY_CODE
     }
 }
