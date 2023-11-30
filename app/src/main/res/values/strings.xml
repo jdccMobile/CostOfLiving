@@ -14,4 +14,6 @@
     <string name="cities_in">Cities in</string>
     <string name="flag">Flag</string>
     <string name="navigate">Navigate</string>
+    <string name="city">City</string>
+    <string name="country">Country</string>
 </resources>

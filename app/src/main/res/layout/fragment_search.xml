@@ -23,56 +23,96 @@
         android:id="@+id/llSearch"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:layout_marginHorizontal="32dp"
+        android:layout_marginTop="24dp"
+        android:orientation="horizontal"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        android:orientation="horizontal"
-        android:layout_marginTop="24dp"
-        android:layout_marginHorizontal="32dp"
         app:layout_constraintTop_toBottomOf="@+id/tvSearchTitle">
 
         <AutoCompleteTextView
             android:id="@+id/atSearch"
-            android:paddingHorizontal="24dp"
             android:layout_width="0dp"
-            android:layout_weight="10"
             android:layout_height="50dp"
+            android:layout_weight="10"
+            android:background="@drawable/bg_search_edit_text"
             android:completionThreshold="1"
             android:hint="@string/search"
             android:imeOptions="actionDone"
             android:inputType="text"
-            android:singleLine="true"
-
-            android:background="@drawable/bg_search_edit_text" />
+            android:paddingHorizontal="24dp"
+            android:singleLine="true" />
 
         <ImageView
             android:id="@+id/ivSearchCity"
             android:layout_width="wrap_content"
             android:layout_height="match_parent"
-            android:paddingVertical="8dp"
-            android:layout_weight="1"
             android:layout_gravity="center_vertical"
+            android:layout_weight="1"
             android:background="@drawable/bg_search_icon"
-            android:src="@drawable/ic_search"
-            android:contentDescription="@string/search" />
+            android:contentDescription="@string/search"
+            android:paddingVertical="8dp"
+            android:src="@drawable/ic_search" />
 
     </LinearLayout>
 
-    <TextView
-        android:id="@+id/tvSearchBy"
-        android:layout_width="wrap_content"
+    <LinearLayout
+        android:id="@+id/llRadioGroup"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginStart="60dp"
-        android:layout_marginTop="8dp"
-        android:text="@string/search_by"
-        android:textSize="16sp"
+        android:layout_marginTop="16dp"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/llSearch" />
+        app:layout_constraintTop_toBottomOf="@id/llSearch">
 
-    <com.google.android.material.switchmaterial.SwitchMaterial
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        app:layout_constraintStart_toEndOf="@id/tvSearchBy"
-        app:layout_constraintTop_toBottomOf="@id/llSearch" />
+        <TextView
+            android:id="@+id/tvSearchBy"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_vertical"
+            android:layout_marginStart="60dp"
+            android:text="@string/search_by"
+            android:textSize="16sp" />
+
+        <RadioGroup
+            android:id="@+id/rgChooseCityCountry"
+            android:layout_width="150dp"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_vertical"
+            android:layout_marginStart="16dp"
+            android:background="@drawable/bg_radio_button_group"
+            android:checkedButton="@+id/rbSearchCity"
+            android:orientation="horizontal"
+            app:layout_constraintStart_toEndOf="@+id/tvSearchBy"
+            app:layout_constraintTop_toBottomOf="@+id/llSearch">
+
+            <RadioButton
+                android:id="@+id/rbSearchCity"
+                android:layout_width="match_parent"
+                android:layout_height="35dp"
+                android:layout_weight="1"
+                android:background="@drawable/bg_radio_buton_item"
+                android:button="@null"
+                android:gravity="center"
+                android:text="@string/city"
+                android:textColor="@color/color_radio_button"
+                android:textStyle="bold"
+                tools:ignore="TouchTargetSizeCheck" />
+
+            <RadioButton
+                android:id="@+id/rbSearchCountry"
+                android:layout_width="match_parent"
+                android:layout_height="35dp"
+                android:layout_weight="1"
+                android:background="@drawable/bg_radio_buton_item"
+                android:button="@null"
+                android:gravity="center"
+                android:text="@string/country"
+                android:textColor="@color/color_radio_button"
+                android:textStyle="bold"
+                tools:ignore="TouchTargetSizeCheck" />
+        </RadioGroup>
+
+    </LinearLayout>
 
     <TextView
         android:id="@+id/tvSubtitle"
@@ -84,7 +124,7 @@
         android:textSize="20sp"
         android:textStyle="bold"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/tvSearchBy" />
+        app:layout_constraintTop_toBottomOf="@+id/llRadioGroup" />
 
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/rvSearchCities"

@@ -31,35 +31,61 @@ class SearchFragment : Fragment() {
         savedInstanceState: Bundle?
     ): View {
         _binding = FragmentSearchBinding.inflate(inflater, container, false)
-        var countryName = ""
-        var cityName: String
-        var itemsAutoComplete: List<SearchAutoComplete> = emptyList()
+        var userCountryName: String
+        var countryName: String
+        var searchName: String
+        var citiesAutoComplete: List<SearchAutoComplete> = emptyList()
+        var countriesAutoComplete: List<SearchAutoComplete> = emptyList()
+        var isSearchByCity = true
+
         lifecycleScope.launch {
-            countryName = getPreferences(MainActivity.COUNTRY_NAME)
+            userCountryName = getPreferences(MainActivity.COUNTRY_NAME)
             val citiesList = costInfoRepository.getCities()
 
 
-            val citiesInUserCountry = citiesList.cities.filter { city -> city.countryName == countryName }
+            val citiesInUserCountry = citiesList.cities.filter { city -> city.countryName == userCountryName }
             Log.i("JDJD", "citiesInUserCountry: $citiesInUserCountry")
 
-            itemsAutoComplete = citiesList.cities.map { SearchAutoComplete(it.cityName, it.countryName) }
-            Log.i("JDJD", "itemsAutoComplete: $itemsAutoComplete")
+            citiesAutoComplete = citiesList.cities.map { SearchAutoComplete(it.cityName, it.countryName) }
+            Log.i("JDJD", "citiesAutoComplete: $citiesAutoComplete")
+
+            countriesAutoComplete = citiesList.cities.distinctBy { it.countryName }.map { SearchAutoComplete(it.countryName, it.countryName) }
+            Log.i("JDJD", "countriesAutoComplete: $countriesAutoComplete")
 
             withContext(Dispatchers.Main) {
-                val searchByCountry = getString(R.string.cities_in) + " " + countryName
+                val searchByCountry = getString(R.string.cities_in) + " " + userCountryName
                 binding.tvSubtitle.text = searchByCountry
                 binding.rvSearchCities.adapter = CitiesAdapter(citiesInUserCountry)
-                binding.atSearch.setAdapter(SearchItemAdapter(requireContext(), itemsAutoComplete))
+                binding.atSearch.setAdapter(SearchItemAdapter(requireContext(), citiesAutoComplete))
             }
-
         }
 
+        binding.rgChooseCityCountry.setOnCheckedChangeListener { _, checkedId ->
+            when (checkedId) {
+                R.id.rbSearchCity -> {
+                    binding.atSearch.setAdapter(SearchItemAdapter(requireContext(), citiesAutoComplete))
+                    isSearchByCity = true
+                }
+                R.id.rbSearchCountry -> {
+                    binding.atSearch.setAdapter(SearchItemAdapter(requireContext(), countriesAutoComplete))
+                    isSearchByCity = false
+                }
+            }
+        }
+
+
         binding.ivSearchCity.setOnClickListener {
-            cityName = binding.atSearch.text.toString()
-            if (itemsAutoComplete.any { it.cityName.equals(cityName, ignoreCase = true) }) {
-                Toast.makeText(requireActivity(), "Navigate to DetailFragment with $cityName and $countryName", Toast.LENGTH_SHORT).show()
-            } else {
-                Toast.makeText(requireActivity(), "The city $cityName does not exist", Toast.LENGTH_SHORT).show()
+            searchName = binding.atSearch.text.toString()
+            if (isSearchByCity && citiesAutoComplete.any { it.cityName.equals(searchName, ignoreCase = true) }) {
+                countryName = citiesAutoComplete.find { it.cityName.equals(searchName, ignoreCase = true) }?.countryName ?: ""
+                Toast.makeText(requireActivity(), "Navigate to DetailFragment with $searchName and $countryName", Toast.LENGTH_SHORT).show( )
+            }
+            else if (!isSearchByCity && countriesAutoComplete.any { it.cityName.equals(searchName, ignoreCase = true) }) {
+                countryName = countriesAutoComplete.find { it.cityName.equals(searchName, ignoreCase = true) }?.countryName ?: ""
+                Toast.makeText(requireActivity(), "Navigate to DetailFragment with $searchName and $countryName", Toast.LENGTH_SHORT).show()
+            }
+            else {
+                Toast.makeText(requireActivity(), "$searchName does not exist", Toast.LENGTH_SHORT).show()
                 binding.atSearch.setText("")
             }
 
