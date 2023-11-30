@@ -10,8 +10,8 @@ import com.jdccmobile.costofliving.databinding.ViewCityItemBinding
 import com.squareup.picasso.Picasso
 import java.util.Locale
 
-class CitiesAdapter(private val cities: List<City>) :
-    RecyclerView.Adapter<CitiesAdapter.CitiesViewHolder>() {
+class CitiesUserCountryAdapter(private val cities: List<City>) :
+    RecyclerView.Adapter<CitiesUserCountryAdapter.CitiesViewHolder>() {
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): CitiesViewHolder {
         val view = LayoutInflater.from(parent.context).inflate(R.layout.view_city_item, parent, false)

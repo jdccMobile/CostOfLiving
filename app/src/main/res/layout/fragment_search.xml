@@ -90,11 +90,11 @@
                 android:layout_width="match_parent"
                 android:layout_height="35dp"
                 android:layout_weight="1"
-                android:background="@drawable/bg_radio_buton_item"
+                android:background="@drawable/bg_radio_button_item"
                 android:button="@null"
                 android:gravity="center"
                 android:text="@string/city"
-                android:textColor="@color/color_radio_button"
+                android:textColor="@color/text_color_radio_button"
                 android:textStyle="bold"
                 tools:ignore="TouchTargetSizeCheck" />
 
@@ -103,11 +103,11 @@
                 android:layout_width="match_parent"
                 android:layout_height="35dp"
                 android:layout_weight="1"
-                android:background="@drawable/bg_radio_buton_item"
+                android:background="@drawable/bg_radio_button_item"
                 android:button="@null"
                 android:gravity="center"
                 android:text="@string/country"
-                android:textColor="@color/color_radio_button"
+                android:textColor="@color/text_color_radio_button"
                 android:textStyle="bold"
                 tools:ignore="TouchTargetSizeCheck" />
         </RadioGroup>
@@ -133,9 +133,21 @@
         android:layout_marginHorizontal="20dp"
         android:layout_marginTop="8dp"
         android:clipToPadding="false"
+        android:visibility="gone"
         app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
         app:layout_constraintTop_toBottomOf="@+id/tvSubtitle"
         tools:listitem="@layout/view_city_item" />
+
+    <ProgressBar
+        android:id="@+id/pbSearchCities"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/tvSubtitle"
+        app:layout_constraintBottom_toBottomOf="parent"
+        style="@style/CustomProgressBar"
+        />
 
 
 </androidx.constraintlayout.widget.ConstraintLayout>
