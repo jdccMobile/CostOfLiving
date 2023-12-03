@@ -1,6 +1,5 @@
 package com.jdccmobile.costofliving.data.remote
 
-import android.util.Log
 import com.jdccmobile.costofliving.data.remote.model.CitiesResult
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
@@ -17,7 +16,6 @@ interface RetrofitService {
 
 object RetrofitServiceFactory{
     fun makeRetrofitService(): RetrofitService {
-        Log.i("RetrofitServiceFactory", "makeRetrofitService")
         return Retrofit.Builder()
             .baseUrl("https://cost-of-living-and-prices.p.rapidapi.com/")
             .addConverterFactory(GsonConverterFactory.create())

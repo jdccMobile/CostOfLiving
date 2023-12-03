@@ -25,7 +25,7 @@ class IntroSliderAdapter(private val introSlide: List<IntroSlide>) :
     }
 
     inner class IntroSliderViewHolder(view: View) : RecyclerView.ViewHolder(view) {
-        val binding = ViewIntroSlideBinding.bind(view)
+        private val binding = ViewIntroSlideBinding.bind(view)
 
         fun bind(introSlide: IntroSlide) {
             binding.tvTitle.text = introSlide.title
