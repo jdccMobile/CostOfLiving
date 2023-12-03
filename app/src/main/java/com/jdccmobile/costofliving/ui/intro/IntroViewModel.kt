@@ -64,7 +64,7 @@ class IntroViewModel(
 class IntroViewModelFactory(
     private val activity: AppCompatActivity,
     private val regionRepository: RegionRepository,
-    val dataStore: DataStore<Preferences>
+    private val dataStore: DataStore<Preferences>
 ) : ViewModelProvider.Factory {
     override fun <T : ViewModel> create(modelClass: Class<T>): T {
         return IntroViewModel(activity, regionRepository, dataStore) as T
