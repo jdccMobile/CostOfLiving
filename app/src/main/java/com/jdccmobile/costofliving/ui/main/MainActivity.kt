@@ -7,9 +7,13 @@ import android.os.Bundle
 import androidx.activity.viewModels
 import androidx.core.splashscreen.SplashScreen.Companion.installSplashScreen
 import androidx.datastore.preferences.preferencesDataStore
+import androidx.lifecycle.Lifecycle
+import androidx.lifecycle.lifecycleScope
+import androidx.lifecycle.repeatOnLifecycle
 import com.jdccmobile.costofliving.R
 import com.jdccmobile.costofliving.ui.home.HomeActivity
 import com.jdccmobile.costofliving.ui.intro.IntroActivity
+import kotlinx.coroutines.launch
 
 const val PREFERENCES = "preferences"
 val Context.dataStore by preferencesDataStore(name = PREFERENCES)
@@ -20,7 +24,6 @@ class MainActivity : AppCompatActivity() {
         const val HALF_SECOND = 500L
         const val COUNTRY_NAME = "country_name"
         const val DEFAULT_COUNTRY_CODE = "es"
-        const val DEFAULT_COUNTRY_NAME = "Spain"
     }
 
     private val viewModel: MainViewModel by viewModels { MainViewModelFactory(dataStore) }
@@ -31,8 +34,10 @@ class MainActivity : AppCompatActivity() {
         setContentView(R.layout.activity_main)
         splashScreen.setKeepOnScreenCondition { true }
 
-        viewModel.state.observe(this){
-            if(it.countryName != null) navigateTo(it.countryName)
+        lifecycleScope.launch {
+            repeatOnLifecycle(Lifecycle.State.STARTED){
+                viewModel.state.collect{ navigateTo(it.countryName)}
+            }
         }
     }
 
