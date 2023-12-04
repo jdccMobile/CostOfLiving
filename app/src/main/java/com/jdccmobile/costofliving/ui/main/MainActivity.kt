@@ -4,20 +4,15 @@ import android.content.Context
 import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
-import android.util.Log
+import androidx.activity.viewModels
 import androidx.core.splashscreen.SplashScreen.Companion.installSplashScreen
-import androidx.datastore.preferences.core.stringPreferencesKey
 import androidx.datastore.preferences.preferencesDataStore
-import androidx.lifecycle.lifecycleScope
 import com.jdccmobile.costofliving.R
 import com.jdccmobile.costofliving.ui.home.HomeActivity
 import com.jdccmobile.costofliving.ui.intro.IntroActivity
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.flow.first
-import kotlinx.coroutines.launch
-import kotlinx.coroutines.withContext
 
-val Context.dataStore by preferencesDataStore(name = "preferences")
+const val PREFERENCES = "preferences"
+val Context.dataStore by preferencesDataStore(name = PREFERENCES)
 
 class MainActivity : AppCompatActivity() {
 
@@ -28,25 +23,23 @@ class MainActivity : AppCompatActivity() {
         const val DEFAULT_COUNTRY_NAME = "Spain"
     }
 
+    private val viewModel: MainViewModel by viewModels { MainViewModelFactory(dataStore) }
+
     override fun onCreate(savedInstanceState: Bundle?) {
         val splashScreen = installSplashScreen()
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
         splashScreen.setKeepOnScreenCondition { true }
 
-        lifecycleScope.launch(Dispatchers.IO) {
-            val countryName = getPreferences(COUNTRY_NAME)
-            Log.i("JDJD", "countryName: $countryName")
-            withContext(Dispatchers.Main) {
-                val intentActivity = if (countryName != "") HomeActivity::class.java else IntroActivity::class.java
-                startActivity(Intent(this@MainActivity, intentActivity))
-                finish()
-            }
+        viewModel.state.observe(this){
+            if(it.countryName != null) navigateTo(it.countryName)
         }
     }
 
-    private suspend fun getPreferences(key: String): String {
-        val preferences = dataStore.data.first()
-        return preferences[stringPreferencesKey(key)] ?: ""
+    private fun navigateTo(countryName: String){
+        val intentActivity = if (countryName != "") HomeActivity::class.java else IntroActivity::class.java
+        startActivity(Intent(this@MainActivity, intentActivity))
+        finish()
     }
+
 }
