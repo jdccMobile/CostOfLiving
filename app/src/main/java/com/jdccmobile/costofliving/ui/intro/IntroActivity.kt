@@ -9,8 +9,10 @@ import android.widget.ImageView
 import android.widget.LinearLayout
 import androidx.core.content.ContextCompat
 import androidx.core.view.get
+import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.lifecycleScope
+import androidx.lifecycle.repeatOnLifecycle
 import androidx.viewpager2.widget.ViewPager2
 import com.jdccmobile.costofliving.R
 import com.jdccmobile.costofliving.databinding.ActivityIntroBinding
@@ -40,13 +42,14 @@ class IntroActivity : AppCompatActivity() {
                 IntroViewModelFactory(this, regionRepository, dataStore)
             ).get(IntroViewModel::class.java)
 
-        viewModel.state.observe(this) {
-            if (it.introSlidesInfo.isNotEmpty()) updateUi(it.introSlidesInfo)
+        lifecycleScope.launch {
+            repeatOnLifecycle(Lifecycle.State.STARTED){
+                viewModel.state.collect{updateUI(it.introSlidesInfo)}
+            }
         }
-
     }
 
-    private fun updateUi(introSlidesInfo: List<IntroSlide>) {
+    private fun updateUI(introSlidesInfo: List<IntroSlide>) {
         introSliderAdapter = IntroSliderAdapter(introSlidesInfo)
         binding.vpIntroSlider.adapter = introSliderAdapter
 
