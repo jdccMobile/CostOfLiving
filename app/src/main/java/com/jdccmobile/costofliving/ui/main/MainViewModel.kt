@@ -3,12 +3,13 @@ package com.jdccmobile.costofliving.ui.main
 import androidx.datastore.core.DataStore
 import androidx.datastore.preferences.core.Preferences
 import androidx.datastore.preferences.core.stringPreferencesKey
-import androidx.lifecycle.LiveData
-import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.viewModelScope
 import com.jdccmobile.costofliving.ui.main.MainActivity.Companion.COUNTRY_NAME
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.launch
 
@@ -17,15 +18,13 @@ class MainViewModel(
 ): ViewModel() {
 
     data class UiState(
-        val countryName: String? = null,
+        val countryName: String = "",
     )
+    private val _state = MutableStateFlow(UiState())
+    val state: StateFlow<UiState> = _state.asStateFlow()
 
-    private val _state = MutableLiveData(UiState())
-    val state: LiveData<UiState> get() {
-        if (_state.value?.countryName == null){
-            refresh()
-        }
-        return _state
+    init {
+        refresh()
     }
 
     private fun refresh() {

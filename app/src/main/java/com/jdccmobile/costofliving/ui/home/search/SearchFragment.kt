@@ -6,13 +6,17 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
+import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.ViewModelProvider
+import androidx.lifecycle.lifecycleScope
+import androidx.lifecycle.repeatOnLifecycle
 import com.jdccmobile.costofliving.R
 import com.jdccmobile.costofliving.data.remote.CostInfoRepository
 import com.jdccmobile.costofliving.data.remote.model.City
 import com.jdccmobile.costofliving.databinding.FragmentSearchBinding
 import com.jdccmobile.costofliving.model.AutoCompleteSearch
 import com.jdccmobile.costofliving.ui.main.dataStore
+import kotlinx.coroutines.launch
 
 class SearchFragment : Fragment() {
 
@@ -39,16 +43,16 @@ class SearchFragment : Fragment() {
             SearchViewModelFactory(requireActivity().dataStore, costInfoRepository)
         ).get(SearchViewModel::class.java)
 
-        viewModel.state.observe(requireActivity()) {
-            if (it.countryName != null) {
-                initUi(it)
+        viewLifecycleOwner.lifecycleScope.launch{
+            repeatOnLifecycle(Lifecycle.State.STARTED){
+                viewModel.state.collect{ initUI(it) }
             }
         }
 
         return binding.root
     }
 
-    private fun initUi(state: SearchViewModel.UiState) {
+    private fun initUI(state: SearchViewModel.UiState) {
         val searchByCountry = getString(R.string.cities_in) + " " + state.countryName
         binding.tvSubtitle.text = searchByCountry
 
