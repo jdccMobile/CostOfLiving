@@ -44,6 +44,6 @@ class CitiesUserCountryAdapter(
         }
 
         private fun getCountryCode(countryName: String) =
-            Locale.getISOCountries().find { Locale("EN", it).displayCountry == countryName }
+            Locale.getISOCountries().find { Locale("", it).getDisplayCountry(Locale.ENGLISH) == countryName }
     }
 }
