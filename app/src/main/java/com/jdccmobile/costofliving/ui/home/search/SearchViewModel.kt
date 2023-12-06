@@ -31,7 +31,7 @@ class SearchViewModel(
     private val _state = MutableStateFlow(UiState())
     val state: StateFlow<UiState> = _state.asStateFlow()
     init {
-            refresh()
+        refresh()
     }
 
     private fun refresh() {

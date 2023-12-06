@@ -25,7 +25,9 @@ class SearchFragment : Fragment() {
 
     private lateinit var citiesUserCountryAdapter: CitiesUserCountryAdapter
     private lateinit var citiesAutoCompleteSearchAdapter: AutoCompleteSearchAdapter
+    private lateinit var citiesAutoComplete: List<AutoCompleteSearch>
     private lateinit var countriesAutoCompleteSearchAdapter: AutoCompleteSearchAdapter
+    private lateinit var countriesAutoComplete: List<AutoCompleteSearch>
     private var isSearchByCity = true
 
     private lateinit var viewModel: SearchViewModel
@@ -56,11 +58,10 @@ class SearchFragment : Fragment() {
         val searchByCountry = getString(R.string.cities_in) + " " + state.countryName
         binding.tvSubtitle.text = searchByCountry
 
-        createAdapters(
-            state.citiesInUserCountry,
-            state.citiesAutoComplete,
-            state.countriesAutoComplete
-        )
+        citiesAutoComplete = state.citiesAutoComplete
+        countriesAutoComplete = state.countriesAutoComplete
+
+        createAdapters(state.citiesInUserCountry,)
 
         if (state.citiesLoaded) {
             binding.atSearch.setAdapter(citiesAutoCompleteSearchAdapter)
@@ -70,10 +71,7 @@ class SearchFragment : Fragment() {
         }
 
         initChooseCityCountry()
-        initOnClickSearch(
-            state.citiesAutoComplete,
-            state.countriesAutoComplete
-        )
+        initOnClickSearch()
 
     }
 
@@ -83,22 +81,15 @@ class SearchFragment : Fragment() {
         }
     }
 
-    private fun initOnClickSearch(
-        citiesAutoComplete: List<AutoCompleteSearch>,
-        countriesAutoComplete: List<AutoCompleteSearch>
-    ) {
+    private fun initOnClickSearch() {
         binding.ivSearchCity.setOnClickListener {
             val nameSearch = binding.atSearch.text.toString()
-            validateSearch(nameSearch, citiesAutoComplete, countriesAutoComplete)
+            validateSearch(nameSearch)
         }
     }
 
 
-    private fun createAdapters(
-        citiesInUserCountry: List<City>,
-        citiesAutoComplete: List<AutoCompleteSearch>,
-        countriesAutoComplete: List<AutoCompleteSearch>
-    ) {
+    private fun createAdapters(citiesInUserCountry: List<City>) {
         citiesUserCountryAdapter = CitiesUserCountryAdapter(citiesInUserCountry) {
             navigateToDetails(it)
         }
@@ -126,11 +117,7 @@ class SearchFragment : Fragment() {
         }
     }
 
-    private fun validateSearch(
-        nameSearch: String,
-        citiesAutoComplete: List<AutoCompleteSearch>,
-        countriesAutoComplete: List<AutoCompleteSearch>
-    ) {
+    private fun validateSearch(nameSearch: String) {
         val countryName: String
         if (isSearchByCity) {
             if (citiesAutoComplete.any {
