@@ -44,7 +44,7 @@ class IntroActivity : AppCompatActivity() {
 
         lifecycleScope.launch {
             repeatOnLifecycle(Lifecycle.State.STARTED){
-                viewModel.state.collect{updateUI(it.introSlidesInfo)}
+                viewModel.state.collect{ updateUI(it.introSlidesInfo) }
             }
         }
     }
