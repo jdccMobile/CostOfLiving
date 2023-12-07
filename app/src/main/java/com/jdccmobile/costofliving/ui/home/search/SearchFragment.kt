@@ -1,20 +1,26 @@
 package com.jdccmobile.costofliving.ui.home.search
 
+import android.content.Context
 import android.os.Bundle
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.view.inputmethod.InputMethodManager
 import android.widget.Toast
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
+import androidx.navigation.fragment.findNavController
 import com.jdccmobile.costofliving.R
 import com.jdccmobile.costofliving.data.remote.CostInfoRepository
-import com.jdccmobile.costofliving.data.remote.model.City
+import com.jdccmobile.costofliving.data.remote.model.CityApi
 import com.jdccmobile.costofliving.databinding.FragmentSearchBinding
 import com.jdccmobile.costofliving.model.AutoCompleteSearch
+import com.jdccmobile.costofliving.model.City
+import com.jdccmobile.costofliving.model.Country
+import com.jdccmobile.costofliving.model.Location
 import com.jdccmobile.costofliving.ui.main.dataStore
 import kotlinx.coroutines.launch
 
@@ -23,12 +29,13 @@ class SearchFragment : Fragment() {
     private var _binding: FragmentSearchBinding? = null
     private val binding get() = _binding!!
 
-    private lateinit var citiesUserCountryAdapter: CitiesUserCountryAdapter
-    private lateinit var citiesAutoCompleteSearchAdapter: AutoCompleteSearchAdapter
-    private lateinit var countriesAutoCompleteSearchAdapter: AutoCompleteSearchAdapter
-    private var isSearchByCity = true
-
     private lateinit var viewModel: SearchViewModel
+    private var isSearchByCity: Boolean = true
+    private lateinit var citiesUserCountryAdapter: CitiesUserCountryAdapter
+    private lateinit var citiesAutoComplete: List<AutoCompleteSearch>
+    private lateinit var citiesAutoCompleteSearchAdapter: AutoCompleteSearchAdapter
+    private lateinit var countriesAutoComplete: List<AutoCompleteSearch>
+    private lateinit var countriesAutoCompleteSearchAdapter: AutoCompleteSearchAdapter
 
 
     override fun onCreateView(
@@ -45,126 +52,87 @@ class SearchFragment : Fragment() {
 
         viewLifecycleOwner.lifecycleScope.launch{
             repeatOnLifecycle(Lifecycle.State.STARTED){
-                viewModel.state.collect{ initUI(it) }
+                viewModel.state.collect{ updateUI(it) }
             }
         }
 
         return binding.root
     }
 
-    private fun initUI(state: SearchViewModel.UiState) {
+    private fun updateUI(state: SearchViewModel.UiState) {
         val searchByCountry = getString(R.string.cities_in) + " " + state.countryName
         binding.tvSubtitle.text = searchByCountry
+        isSearchByCity = state.isSearchByCity
 
-        createAdapters(
-            state.citiesInUserCountry,
-            state.citiesAutoComplete,
-            state.countriesAutoComplete
-        )
+        state.navigateTo?.let { navigateToDetails(it) }
+        state.errorMsg?.let { showErrorMsg(it) }
 
         if (state.citiesLoaded) {
-            binding.atSearch.setAdapter(citiesAutoCompleteSearchAdapter)
+            citiesAutoComplete = state.citiesAutoComplete
+            countriesAutoComplete = state.countriesAutoComplete
+            createAdapters(state.citiesInUserCountry)
+            selectAutoCompleteAdapter()
             binding.rvSearchCities.adapter = citiesUserCountryAdapter
             binding.rvSearchCities.visibility = View.VISIBLE
             binding.pbSearchCities.visibility = View.GONE
         }
 
-        initChooseCityCountry()
-        initOnClickSearch(
-            state.citiesAutoComplete,
-            state.countriesAutoComplete
-        )
-
+        chooseCityCountry()
+        onClickSearch()
     }
 
-    private fun initChooseCityCountry() {
-        binding.rgChooseCityCountry.setOnCheckedChangeListener { _, checkedId ->
-            changeAutoCompleteAdapter(checkedId)
-        }
-    }
-
-    private fun initOnClickSearch(
-        citiesAutoComplete: List<AutoCompleteSearch>,
-        countriesAutoComplete: List<AutoCompleteSearch>
-    ) {
-        binding.ivSearchCity.setOnClickListener {
-            val nameSearch = binding.atSearch.text.toString()
-            validateSearch(nameSearch, citiesAutoComplete, countriesAutoComplete)
-        }
-    }
-
-
-    private fun createAdapters(
-        citiesInUserCountry: List<City>,
-        citiesAutoComplete: List<AutoCompleteSearch>,
-        countriesAutoComplete: List<AutoCompleteSearch>
-    ) {
+    private fun createAdapters(citiesInUserCountry: List<CityApi>) {
         citiesUserCountryAdapter = CitiesUserCountryAdapter(citiesInUserCountry) {
-            navigateToDetails(it)
+            viewModel.onCityClicked(it)
         }
         citiesAutoCompleteSearchAdapter =
             AutoCompleteSearchAdapter(requireContext(), citiesAutoComplete) {
-                navigateToDetails(it)
+                viewModel.onCityClicked(City(it.textSearch, it.country))
             }
         countriesAutoCompleteSearchAdapter =
             AutoCompleteSearchAdapter(requireContext(), countriesAutoComplete) {
-                navigateToDetails(it)
+                viewModel.onCountryClicked(Country(it.textSearch))
             }
     }
 
-    private fun changeAutoCompleteAdapter(checkedId: Int) {
-        when (checkedId) {
-            R.id.rbSearchCity -> {
-                binding.atSearch.setAdapter(citiesAutoCompleteSearchAdapter)
-                isSearchByCity = true
-            }
-
-            R.id.rbSearchCountry -> {
-                binding.atSearch.setAdapter(countriesAutoCompleteSearchAdapter)
-                isSearchByCity = false
+    private fun chooseCityCountry() {
+        binding.rgChooseCityCountry.setOnCheckedChangeListener { _, checkedId ->
+            when (checkedId) {
+                R.id.rbSearchCity -> viewModel.changeSearchByCity(true)
+                R.id.rbSearchCountry -> viewModel.changeSearchByCity(false)
             }
         }
     }
 
-    private fun validateSearch(
-        nameSearch: String,
-        citiesAutoComplete: List<AutoCompleteSearch>,
-        countriesAutoComplete: List<AutoCompleteSearch>
-    ) {
-        val countryName: String
-        if (isSearchByCity) {
-            if (citiesAutoComplete.any {
-                    it.textSearch.equals(nameSearch, ignoreCase = true)
-                }) {
-                countryName = citiesAutoComplete.find {
-                    it.textSearch.equals(
-                        nameSearch,
-                        ignoreCase = true
-                    )
-                }?.country ?: ""
-                navigateToDetails(City(nameSearch, countryName))
-            } else {
-                Toast.makeText(requireActivity(), "$nameSearch does not exist", Toast.LENGTH_SHORT).show()
-            }
+    private fun selectAutoCompleteAdapter(){
+        if(isSearchByCity) binding.atSearch.setAdapter(citiesAutoCompleteSearchAdapter)
+        else binding.atSearch.setAdapter(countriesAutoCompleteSearchAdapter)
+    }
 
-        } else {
-            if (countriesAutoComplete.any {
-                    it.textSearch.equals(nameSearch, ignoreCase = true)
-                }) {
-                countryName = nameSearch
-                navigateToDetails(City(countryName, countryName))
-            } else {
-                Toast.makeText(requireActivity(), "$nameSearch does not exist", Toast.LENGTH_SHORT).show()
-            }
+    private fun onClickSearch() {
+        binding.ivSearchCity.setOnClickListener {
+            val nameSearch = binding.atSearch.text.toString()
+            if(nameSearch != "") viewModel.validateSearch(nameSearch)
         }
     }
 
-    private fun navigateToDetails(city: City) {
-        Toast.makeText(
-            requireActivity(),
-            "Navigate to DetailFragment with ${city.cityName} and ${city.countryName}",
-            Toast.LENGTH_SHORT
-        ).show()
+    private fun navigateToDetails(location: Location) {
+        binding.atSearch.setText("")
+        hideKeyboard()
+        findNavController().navigate(R.id.action_search_to_details)
+        viewModel.onNavigationDone()
+    }
+
+    private fun showErrorMsg(msg: String) {
+        binding.atSearch.setText("")
+        Toast.makeText(requireContext(), msg, Toast.LENGTH_SHORT).show()
+        viewModel.onErrorMsgShown()
+    }
+
+    private fun hideKeyboard() {
+        val imm = requireActivity().getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
+        val view = requireView()
+        imm.hideSoftInputFromWindow(view.windowToken, 0)
     }
 
 

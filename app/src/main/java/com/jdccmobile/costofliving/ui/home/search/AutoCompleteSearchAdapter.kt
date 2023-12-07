@@ -5,7 +5,6 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.ArrayAdapter
-import com.jdccmobile.costofliving.data.remote.model.City
 import com.jdccmobile.costofliving.databinding.ViewSearchAutocompleteItemBinding
 import com.jdccmobile.costofliving.model.AutoCompleteSearch
 import com.squareup.picasso.Picasso
@@ -14,7 +13,7 @@ import java.util.Locale
 class AutoCompleteSearchAdapter(
     context: Context,
     items: List<AutoCompleteSearch>,
-    private val onClick: ((City) -> Unit)
+    private val onClick: ((AutoCompleteSearch) -> Unit)
 ) :
     ArrayAdapter<AutoCompleteSearch>(context, 0, items) {
 
@@ -35,13 +34,13 @@ class AutoCompleteSearchAdapter(
         }
 
         binding.root.setOnClickListener {
-            val city = City(getItem(position)!!.textSearch, getItem(position)!!.country)
-            onClick(city)
+            val item = AutoCompleteSearch(getItem(position)!!.textSearch, getItem(position)!!.country)
+            onClick(item)
         }
         return binding.root
     }
 
     private fun getCountryCode(countryName: String) =
-        Locale.getISOCountries().find { Locale("EN", it).displayCountry == countryName }
+        Locale.getISOCountries().find { Locale("", it).getDisplayCountry(Locale.ENGLISH) == countryName }
 
 }

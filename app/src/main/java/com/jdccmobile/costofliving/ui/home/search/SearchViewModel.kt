@@ -7,8 +7,11 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.viewModelScope
 import com.jdccmobile.costofliving.data.remote.CostInfoRepository
-import com.jdccmobile.costofliving.data.remote.model.City
+import com.jdccmobile.costofliving.data.remote.model.CityApi
 import com.jdccmobile.costofliving.model.AutoCompleteSearch
+import com.jdccmobile.costofliving.model.City
+import com.jdccmobile.costofliving.model.Country
+import com.jdccmobile.costofliving.model.Location
 import com.jdccmobile.costofliving.ui.main.MainActivity.Companion.COUNTRY_NAME
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
@@ -22,22 +25,23 @@ class SearchViewModel(
 ) : ViewModel() {
     data class UiState(
         val citiesLoaded: Boolean = false,
-        val countryName: String = "",
-        val citiesInUserCountry: List<City> = emptyList(),
+        val countryName: String? = null,
+        val isSearchByCity: Boolean = true,
+        val citiesInUserCountry: List<CityApi> = emptyList(),
         val citiesAutoComplete: List<AutoCompleteSearch> = emptyList(),
         val countriesAutoComplete: List<AutoCompleteSearch> = emptyList(),
+        val navigateTo: Location? = null,
+        val errorMsg: String? = null
     )
 
     private val _state = MutableStateFlow(UiState())
     val state: StateFlow<UiState> = _state.asStateFlow()
-    init {
-            refresh()
-    }
+    init { refresh() }
 
     private fun refresh() {
         viewModelScope.launch{
             val countryName = getPreferences(COUNTRY_NAME)
-            _state.value = UiState(citiesLoaded = true, countryName = countryName)
+            _state.value = UiState(countryName = countryName)
             createLists(countryName)
         }
     }
@@ -59,7 +63,52 @@ class SearchViewModel(
         val countriesAutoComplete =
             citiesList.distinctBy { it.countryName }
                 .map { AutoCompleteSearch(it.countryName, it.countryName) }
-        _state.value = _state.value.copy(countriesAutoComplete = countriesAutoComplete)
+        _state.value = _state.value.copy(citiesLoaded = true, countriesAutoComplete = countriesAutoComplete)
+    }
+
+    fun changeSearchByCity(isSearchByCity: Boolean){
+        _state.value = _state.value.copy(isSearchByCity = isSearchByCity)
+    }
+
+    fun onCityClicked(city: City){
+        _state.value = _state.value.copy(navigateTo = city)
+    }
+
+    fun onCountryClicked(country: Country){
+        _state.value = _state.value.copy(navigateTo = country)
+    }
+
+    fun validateSearch(nameSearch: String) {
+        if (_state.value.isSearchByCity) {
+            if (_state.value.citiesAutoComplete.any {
+                    it.textSearch.equals(nameSearch, ignoreCase = true)
+                }) {
+                val countryName = _state.value.citiesAutoComplete.find {
+                        it.textSearch.equals(nameSearch, ignoreCase = true)
+                    }?.country ?: ""
+                _state.value = _state.value.copy(navigateTo = City(nameSearch, countryName))
+            } else {
+                _state.value = _state.value.copy(errorMsg = "$nameSearch does not exist")
+            }
+
+        } else {
+            if (_state.value.countriesAutoComplete.any {
+                    it.textSearch.equals(nameSearch, ignoreCase = true)
+                }) {
+                _state.value = _state.value.copy(navigateTo = Country(nameSearch))
+            } else {
+                _state.value = _state.value.copy(errorMsg = "$nameSearch does not exist")
+            }
+        }
+    }
+
+
+    fun onNavigationDone() {
+        _state.value = _state.value.copy(navigateTo = null)
+    }
+
+    fun onErrorMsgShown(){
+        _state.value = _state.value.copy(errorMsg = null)
     }
 }
 
