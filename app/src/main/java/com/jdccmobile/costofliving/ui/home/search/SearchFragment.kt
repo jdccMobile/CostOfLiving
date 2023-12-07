@@ -1,16 +1,18 @@
 package com.jdccmobile.costofliving.ui.home.search
 
+import android.content.Context
 import android.os.Bundle
-import android.util.Log
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.view.inputmethod.InputMethodManager
 import android.widget.Toast
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
+import androidx.navigation.fragment.findNavController
 import com.jdccmobile.costofliving.R
 import com.jdccmobile.costofliving.data.remote.CostInfoRepository
 import com.jdccmobile.costofliving.data.remote.model.CityApi
@@ -110,12 +112,14 @@ class SearchFragment : Fragment() {
     private fun onClickSearch() {
         binding.ivSearchCity.setOnClickListener {
             val nameSearch = binding.atSearch.text.toString()
-            viewModel.validateSearch(nameSearch)
+            if(nameSearch != "") viewModel.validateSearch(nameSearch)
         }
     }
 
     private fun navigateToDetails(location: Location) {
-        Log.i("SEARCHFRAGMENT", "navigateToDetails: $location")
+        binding.atSearch.setText("")
+        hideKeyboard()
+        findNavController().navigate(R.id.action_search_to_details)
         viewModel.onNavigationDone()
     }
 
@@ -123,6 +127,12 @@ class SearchFragment : Fragment() {
         binding.atSearch.setText("")
         Toast.makeText(requireContext(), msg, Toast.LENGTH_SHORT).show()
         viewModel.onErrorMsgShown()
+    }
+
+    private fun hideKeyboard() {
+        val imm = requireActivity().getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
+        val view = requireView()
+        imm.hideSoftInputFromWindow(view.windowToken, 0)
     }
 
 
