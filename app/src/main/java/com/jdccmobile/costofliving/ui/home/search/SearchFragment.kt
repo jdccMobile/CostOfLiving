@@ -18,9 +18,7 @@ import com.jdccmobile.costofliving.data.remote.CostInfoRepository
 import com.jdccmobile.costofliving.data.remote.model.CityApi
 import com.jdccmobile.costofliving.databinding.FragmentSearchBinding
 import com.jdccmobile.costofliving.model.AutoCompleteSearch
-import com.jdccmobile.costofliving.model.City
-import com.jdccmobile.costofliving.model.Country
-import com.jdccmobile.costofliving.model.Location
+import com.jdccmobile.costofliving.model.Place
 import com.jdccmobile.costofliving.ui.main.dataStore
 import kotlinx.coroutines.launch
 
@@ -83,15 +81,15 @@ class SearchFragment : Fragment() {
 
     private fun createAdapters(citiesInUserCountry: List<CityApi>) {
         citiesUserCountryAdapter = CitiesUserCountryAdapter(citiesInUserCountry) {
-            viewModel.onCityClicked(it)
+            viewModel.onPlaceClicked(it)
         }
         citiesAutoCompleteSearchAdapter =
             AutoCompleteSearchAdapter(requireContext(), citiesAutoComplete) {
-                viewModel.onCityClicked(City(it.textSearch, it.country))
+                viewModel.onPlaceClicked(Place(it.textSearch, it.country))
             }
         countriesAutoCompleteSearchAdapter =
             AutoCompleteSearchAdapter(requireContext(), countriesAutoComplete) {
-                viewModel.onCountryClicked(Country(it.textSearch))
+                viewModel.onPlaceClicked(Place(countryName = it.textSearch))
             }
     }
 
@@ -116,10 +114,11 @@ class SearchFragment : Fragment() {
         }
     }
 
-    private fun navigateToDetails(location: Location) {
+    private fun navigateToDetails(place: Place) {
         binding.atSearch.setText("")
         hideKeyboard()
-        findNavController().navigate(R.id.action_search_to_details)
+        val navAction = SearchFragmentDirections.actionSearchToDetails(place)
+        findNavController().navigate(navAction)
         viewModel.onNavigationDone()
     }
 

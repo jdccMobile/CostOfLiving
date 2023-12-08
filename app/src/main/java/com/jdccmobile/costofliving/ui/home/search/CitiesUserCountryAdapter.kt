@@ -7,13 +7,13 @@ import androidx.recyclerview.widget.RecyclerView
 import com.jdccmobile.costofliving.R
 import com.jdccmobile.costofliving.data.remote.model.CityApi
 import com.jdccmobile.costofliving.databinding.ViewCityItemBinding
-import com.jdccmobile.costofliving.model.City
+import com.jdccmobile.costofliving.model.Place
 import com.squareup.picasso.Picasso
 import java.util.Locale
 
 class CitiesUserCountryAdapter(
     private val cities: List<CityApi>,
-    private val onItemClick: (City) -> Unit
+    private val onItemClick: (Place) -> Unit
     ) :
     RecyclerView.Adapter<CitiesUserCountryAdapter.CitiesViewHolder>() {
 
@@ -29,7 +29,7 @@ class CitiesUserCountryAdapter(
         holder.bind(item)
 
         holder.itemView.setOnClickListener {
-            onItemClick(City(item.cityName, item.countryName))
+            onItemClick(Place(item.cityName, item.countryName))
         }
     }
 

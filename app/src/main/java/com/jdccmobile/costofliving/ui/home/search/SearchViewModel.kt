@@ -9,9 +9,7 @@ import androidx.lifecycle.viewModelScope
 import com.jdccmobile.costofliving.data.remote.CostInfoRepository
 import com.jdccmobile.costofliving.data.remote.model.CityApi
 import com.jdccmobile.costofliving.model.AutoCompleteSearch
-import com.jdccmobile.costofliving.model.City
-import com.jdccmobile.costofliving.model.Country
-import com.jdccmobile.costofliving.model.Location
+import com.jdccmobile.costofliving.model.Place
 import com.jdccmobile.costofliving.ui.main.MainActivity.Companion.COUNTRY_NAME
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
@@ -30,7 +28,7 @@ class SearchViewModel(
         val citiesInUserCountry: List<CityApi> = emptyList(),
         val citiesAutoComplete: List<AutoCompleteSearch> = emptyList(),
         val countriesAutoComplete: List<AutoCompleteSearch> = emptyList(),
-        val navigateTo: Location? = null,
+        val navigateTo: Place? = null,
         val errorMsg: String? = null
     )
 
@@ -70,12 +68,8 @@ class SearchViewModel(
         _state.value = _state.value.copy(isSearchByCity = isSearchByCity)
     }
 
-    fun onCityClicked(city: City){
-        _state.value = _state.value.copy(navigateTo = city)
-    }
-
-    fun onCountryClicked(country: Country){
-        _state.value = _state.value.copy(navigateTo = country)
+    fun onPlaceClicked(place: Place){
+        _state.value = _state.value.copy(navigateTo = place)
     }
 
     fun validateSearch(nameSearch: String) {
@@ -86,7 +80,7 @@ class SearchViewModel(
                 val countryName = _state.value.citiesAutoComplete.find {
                         it.textSearch.equals(nameSearch, ignoreCase = true)
                     }?.country ?: ""
-                _state.value = _state.value.copy(navigateTo = City(nameSearch, countryName))
+                _state.value = _state.value.copy(navigateTo = Place(nameSearch, countryName))
             } else {
                 _state.value = _state.value.copy(errorMsg = "$nameSearch does not exist")
             }
@@ -95,7 +89,7 @@ class SearchViewModel(
             if (_state.value.countriesAutoComplete.any {
                     it.textSearch.equals(nameSearch, ignoreCase = true)
                 }) {
-                _state.value = _state.value.copy(navigateTo = Country(nameSearch))
+                _state.value = _state.value.copy(navigateTo = Place(countryName = nameSearch))
             } else {
                 _state.value = _state.value.copy(errorMsg = "$nameSearch does not exist")
             }

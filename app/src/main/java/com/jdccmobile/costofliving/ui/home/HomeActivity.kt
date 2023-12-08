@@ -23,25 +23,4 @@ class HomeActivity : AppCompatActivity() {
         bottomNavView.setupWithNavController(navController)
 
     }
-
-//        replaceFragment(SearchFragment())
-//        initBottomNav()
-//    private fun initBottomNav() {
-//        binding.bottomNavView.setOnItemSelectedListener {
-//            when(it.itemId){
-//                R.id.search -> replaceFragment(SearchFragment())
-//                R.id.favorites -> replaceFragment(FavoritesFragment())
-//                else -> {}
-//            }
-//            true
-//        }
-//    }
-//
-//    private fun replaceFragment(fragment: Fragment) {
-//        val fragmentManager = supportFragmentManager
-//        val fragmentTransaction = fragmentManager.beginTransaction()
-//        fragmentTransaction.replace(R.id.fragmentContainer, fragment)
-//        fragmentTransaction.commit()
-//    }
-
 }
