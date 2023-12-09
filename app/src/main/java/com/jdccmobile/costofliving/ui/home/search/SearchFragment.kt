@@ -54,6 +54,9 @@ class SearchFragment : Fragment() {
             }
         }
 
+        chooseCityCountry()
+        onSearchClick()
+
         return binding.root
     }
 
@@ -75,8 +78,6 @@ class SearchFragment : Fragment() {
             binding.pbSearchCities.visibility = View.GONE
         }
 
-        chooseCityCountry()
-        onClickSearch()
     }
 
     private fun createAdapters(citiesInUserCountry: List<CityApi>) {
@@ -107,7 +108,7 @@ class SearchFragment : Fragment() {
         else binding.atSearch.setAdapter(countriesAutoCompleteSearchAdapter)
     }
 
-    private fun onClickSearch() {
+    private fun onSearchClick() {
         binding.ivSearchCity.setOnClickListener {
             val nameSearch = binding.atSearch.text.toString()
             if(nameSearch != "") viewModel.validateSearch(nameSearch)
