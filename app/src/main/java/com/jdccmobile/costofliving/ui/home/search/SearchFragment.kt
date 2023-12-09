@@ -14,11 +14,12 @@ import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
 import androidx.navigation.fragment.findNavController
 import com.jdccmobile.costofliving.R
-import com.jdccmobile.costofliving.data.remote.CostInfoRepository
-import com.jdccmobile.costofliving.data.remote.model.CityApi
+import com.jdccmobile.costofliving.data.CostInfoRepository
+import com.jdccmobile.costofliving.data.remote.model.citieslist.City
 import com.jdccmobile.costofliving.databinding.FragmentSearchBinding
 import com.jdccmobile.costofliving.model.AutoCompleteSearch
 import com.jdccmobile.costofliving.model.Place
+import com.jdccmobile.costofliving.ui.common.app
 import com.jdccmobile.costofliving.ui.main.dataStore
 import kotlinx.coroutines.launch
 
@@ -42,7 +43,7 @@ class SearchFragment : Fragment() {
     ): View {
         _binding = FragmentSearchBinding.inflate(inflater, container, false)
 
-        val costInfoRepository = CostInfoRepository(requireActivity())
+        val costInfoRepository = CostInfoRepository(requireActivity().app)
         viewModel = ViewModelProvider(
             this,
             SearchViewModelFactory(requireActivity().dataStore, costInfoRepository)
@@ -80,7 +81,7 @@ class SearchFragment : Fragment() {
 
     }
 
-    private fun createAdapters(citiesInUserCountry: List<CityApi>) {
+    private fun createAdapters(citiesInUserCountry: List<City>) {
         citiesUserCountryAdapter = CitiesUserCountryAdapter(citiesInUserCountry) {
             viewModel.onPlaceClicked(it)
         }

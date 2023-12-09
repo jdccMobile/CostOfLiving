@@ -9,7 +9,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.viewModelScope
 import com.jdccmobile.costofliving.data.local.IntroSlidesProvider
-import com.jdccmobile.costofliving.domain.RegionRepository
+import com.jdccmobile.costofliving.data.RegionRepository
 import com.jdccmobile.costofliving.model.IntroSlide
 import com.jdccmobile.costofliving.ui.main.MainActivity
 import kotlinx.coroutines.flow.MutableStateFlow

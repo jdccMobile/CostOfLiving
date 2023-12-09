@@ -16,7 +16,7 @@ import androidx.lifecycle.repeatOnLifecycle
 import androidx.viewpager2.widget.ViewPager2
 import com.jdccmobile.costofliving.R
 import com.jdccmobile.costofliving.databinding.ActivityIntroBinding
-import com.jdccmobile.costofliving.domain.RegionRepository
+import com.jdccmobile.costofliving.data.RegionRepository
 import com.jdccmobile.costofliving.model.IntroSlide
 import com.jdccmobile.costofliving.ui.home.HomeActivity
 import com.jdccmobile.costofliving.ui.main.MainActivity.Companion.HALF_SECOND

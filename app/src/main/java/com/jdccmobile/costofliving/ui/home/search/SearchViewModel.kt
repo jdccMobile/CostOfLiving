@@ -6,8 +6,8 @@ import androidx.datastore.preferences.core.stringPreferencesKey
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.viewModelScope
-import com.jdccmobile.costofliving.data.remote.CostInfoRepository
-import com.jdccmobile.costofliving.data.remote.model.CityApi
+import com.jdccmobile.costofliving.data.CostInfoRepository
+import com.jdccmobile.costofliving.data.remote.model.citieslist.City
 import com.jdccmobile.costofliving.model.AutoCompleteSearch
 import com.jdccmobile.costofliving.model.Place
 import com.jdccmobile.costofliving.ui.main.MainActivity.Companion.COUNTRY_NAME
@@ -25,7 +25,7 @@ class SearchViewModel(
         val citiesLoaded: Boolean = false,
         val countryName: String? = null,
         val isSearchByCity: Boolean = true,
-        val citiesInUserCountry: List<CityApi> = emptyList(),
+        val citiesInUserCountry: List<City> = emptyList(),
         val citiesAutoComplete: List<AutoCompleteSearch> = emptyList(),
         val countriesAutoComplete: List<AutoCompleteSearch> = emptyList(),
         val navigateTo: Place? = null,
@@ -50,7 +50,7 @@ class SearchViewModel(
     }
 
     private suspend fun createLists(userCountryName: String) {
-        val citiesList = costInfoRepository.getCities().cities
+        val citiesList = costInfoRepository.requestCitiesList().cities
         val citiesInUserCountry = citiesList.filter { it.countryName == userCountryName }
         _state.value = _state.value.copy(citiesInUserCountry = citiesInUserCountry)
 

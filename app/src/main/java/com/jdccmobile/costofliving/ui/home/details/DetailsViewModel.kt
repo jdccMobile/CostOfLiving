@@ -16,9 +16,7 @@ class DetailsViewModel(place: Place) : ViewModel() {
     private val _state = MutableStateFlow(UiState(place))
     val state: StateFlow<UiState> = _state.asStateFlow()
 
-    fun changeFavStatus() {
-
-    }
+    fun changeFavStatus() {}
 }
 
 @Suppress("UNCHECKED_CAST")
