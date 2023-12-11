@@ -12,4 +12,6 @@ class CostInfoRepository(application: App) {
     suspend fun requestCitiesList() = remoteDataSource.getCitiesList()
 
     suspend fun requestCityCost(cityName: String, countryName: String) = remoteDataSource.getCityCost(cityName, countryName)
+
+    suspend fun requestCountryCost(countryName: String) = remoteDataSource.getCountryCost(countryName)
 }

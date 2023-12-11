@@ -1,5 +1,6 @@
 package com.jdccmobile.costofliving.ui.home.search
 
+import android.util.Log
 import androidx.datastore.core.DataStore
 import androidx.datastore.preferences.core.Preferences
 import androidx.datastore.preferences.core.stringPreferencesKey
@@ -50,18 +51,21 @@ class SearchViewModel(
     }
 
     private suspend fun createLists(userCountryName: String) {
-        val citiesList = costInfoRepository.requestCitiesList().cities
-        val citiesInUserCountry = citiesList.filter { it.countryName == userCountryName }
-        _state.value = _state.value.copy(citiesInUserCountry = citiesInUserCountry)
+        if(!_state.value.citiesLoaded){
+            Log.i("JD Search VM", "API call")
+            val citiesList = costInfoRepository.requestCitiesList().cities
+            val citiesInUserCountry = citiesList.filter { it.countryName == userCountryName }
+            _state.value = _state.value.copy(citiesInUserCountry = citiesInUserCountry)
 
-        val citiesAutoComplete =
-            citiesList.map { AutoCompleteSearch(it.cityName, it.countryName) }
-        _state.value = _state.value.copy(citiesAutoComplete = citiesAutoComplete)
+            val citiesAutoComplete =
+                citiesList.map { AutoCompleteSearch(it.cityName, it.countryName) }
+            _state.value = _state.value.copy(citiesAutoComplete = citiesAutoComplete)
 
-        val countriesAutoComplete =
-            citiesList.distinctBy { it.countryName }
-                .map { AutoCompleteSearch(it.countryName, it.countryName) }
-        _state.value = _state.value.copy(citiesLoaded = true, countriesAutoComplete = countriesAutoComplete)
+            val countriesAutoComplete =
+                citiesList.distinctBy { it.countryName }
+                    .map { AutoCompleteSearch(it.countryName, it.countryName) }
+            _state.value = _state.value.copy(citiesLoaded = true, countriesAutoComplete = countriesAutoComplete)
+        }
     }
 
     fun changeSearchByCity(isSearchByCity: Boolean){
