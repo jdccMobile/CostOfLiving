@@ -19,7 +19,7 @@ class DetailsViewModel(
 ) : ViewModel() {
 
     data class UiState(
-        val cityName: String,
+        val cityName: String? = null,
         val countryName: String,
         val costInfoLoaded: Boolean = false,
         val itemCostInfoList: List<ItemCostInfo> = emptyList(),
@@ -28,8 +28,8 @@ class DetailsViewModel(
 
     private val _state = MutableStateFlow(
         UiState(
-            cityName = place.cityName ?: "",
-            countryName = place.countryName,
+            cityName = place.cityName?.replaceFirstChar { it.uppercase() },
+            countryName = place.countryName.replaceFirstChar { it.uppercase() }
         )
     )
     val state: StateFlow<UiState> = _state.asStateFlow()
@@ -87,6 +87,7 @@ class DetailsViewModel(
     fun changeFavStatus() {}
 
 }
+
 
 @Suppress("UNCHECKED_CAST")
 class DetailsViewModelFactory(

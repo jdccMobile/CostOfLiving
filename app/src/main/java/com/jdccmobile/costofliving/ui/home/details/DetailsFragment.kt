@@ -54,13 +54,13 @@ class DetailsFragment : Fragment() {
 
 
     private fun updateUI(state: DetailsViewModel.UiState) {
-        binding.tvCityName.text = if(state.cityName != "") state.cityName else state.countryName
+        binding.tvCityName.text = state.cityName ?: state.countryName
         binding.tvCountryName.text = state.countryName
         if (state.costInfoLoaded){
             binding.pbCostInfo.visibility = View.GONE
             binding.rvCostItems.visibility = View.VISIBLE
             costInfoAdapter = CostInfoAdapter(
-                if(state.cityName != "") state.cityName else state.countryName,
+                state.cityName ?: state.countryName,
                 state.itemCostInfoList
             )
             binding.rvCostItems.adapter = costInfoAdapter

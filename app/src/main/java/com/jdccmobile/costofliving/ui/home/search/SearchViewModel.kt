@@ -54,7 +54,7 @@ class SearchViewModel(
         if(!_state.value.citiesLoaded){
             Log.i("JD Search VM", "API call")
             val citiesList = costInfoRepository.requestCitiesList().cities
-            val citiesInUserCountry = citiesList.filter { it.countryName == userCountryName }
+            val citiesInUserCountry = citiesList.filter { it.countryName == userCountryName }.sortedBy { it.cityName }
             _state.value = _state.value.copy(citiesInUserCountry = citiesInUserCountry)
 
             val citiesAutoComplete =
