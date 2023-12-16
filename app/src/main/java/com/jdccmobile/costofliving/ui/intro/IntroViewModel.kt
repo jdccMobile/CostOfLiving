@@ -1,17 +1,13 @@
 package com.jdccmobile.costofliving.ui.intro
 
 import androidx.appcompat.app.AppCompatActivity
-import androidx.datastore.core.DataStore
-import androidx.datastore.preferences.core.Preferences
-import androidx.datastore.preferences.core.edit
-import androidx.datastore.preferences.core.stringPreferencesKey
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.viewModelScope
+import com.jdccmobile.costofliving.data.CostInfoRepository
 import com.jdccmobile.costofliving.data.local.IntroSlidesProvider
 import com.jdccmobile.costofliving.data.RegionRepository
 import com.jdccmobile.costofliving.model.IntroSlide
-import com.jdccmobile.costofliving.ui.main.MainActivity
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
@@ -21,7 +17,7 @@ import java.util.Locale
 class IntroViewModel(
     private val activity: AppCompatActivity,
     private val regionRepository: RegionRepository,
-    private val dataStore: DataStore<Preferences>
+    private val costInfoRepository: CostInfoRepository
 ) : ViewModel(
 
 ) {
@@ -46,13 +42,7 @@ class IntroViewModel(
     suspend fun getCountryName() {
         val countryCode = regionRepository.findLastRegion()
         val countryName = Locale("", countryCode).getDisplayCountry(Locale("EN"))
-        savePreferences(countryName)
-    }
-
-    private suspend fun savePreferences(countryName: String) {
-        dataStore.edit { preferences ->
-            preferences[stringPreferencesKey(MainActivity.COUNTRY_NAME)] = countryName
-        }
+        costInfoRepository.saveUserCountryPrefs(countryName)
     }
 }
 
@@ -61,9 +51,9 @@ class IntroViewModel(
 class IntroViewModelFactory(
     private val activity: AppCompatActivity,
     private val regionRepository: RegionRepository,
-    private val dataStore: DataStore<Preferences>
+    private val costInfoRepository: CostInfoRepository
 ) : ViewModelProvider.Factory {
     override fun <T : ViewModel> create(modelClass: Class<T>): T {
-        return IntroViewModel(activity, regionRepository, dataStore) as T
+        return IntroViewModel(activity, regionRepository, costInfoRepository) as T
     }
 }

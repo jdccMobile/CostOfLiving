@@ -1,6 +1,5 @@
 package com.jdccmobile.costofliving.ui.home.details
 
-import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.viewModelScope
@@ -52,23 +51,17 @@ class DetailsViewModel(
             val pricesList: List<Price>
             if (place.cityName != null) {
                 pricesList = try {
-                    Log.i("JD Details VM", "API call")
                     costInfoRepository.requestCityCost(place.cityName, place.countryName).prices
                 } catch (e: Exception) {
                     _state.value = _state.value.copy(errorApi = "Connection Error")
-                    Log.i("JD Details vm", _state.value.errorApi.toString())
-                    Log.e("JD details VM", "API call $e")
                     emptyList()
                 }
             } else {
                 pricesList = try {
-                    Log.i("JD Details VM", "API call")
                     costInfoRepository.requestCountryCost(place.countryName).prices
 
                 } catch (e: Exception) {
                     _state.value = _state.value.copy(errorApi = "Connection Error")
-                    Log.i("JD Details vm", _state.value.errorApi.toString())
-                    Log.e("JD details VM", "API call $e")
                     emptyList()
                 }
             }

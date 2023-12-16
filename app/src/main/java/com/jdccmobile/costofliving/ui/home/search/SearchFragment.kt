@@ -43,10 +43,10 @@ class SearchFragment : Fragment() {
     ): View {
         _binding = FragmentSearchBinding.inflate(inflater, container, false)
 
-        val costInfoRepository = CostInfoRepository(requireActivity().app)
+        val costInfoRepository = CostInfoRepository(requireActivity().app, requireActivity().dataStore)
         viewModel = ViewModelProvider(
             this,
-            SearchViewModelFactory(requireActivity(), requireActivity().dataStore, costInfoRepository)
+            SearchViewModelFactory(requireActivity(), costInfoRepository)
         ).get(SearchViewModel::class.java)
 
         viewLifecycleOwner.lifecycleScope.launch {

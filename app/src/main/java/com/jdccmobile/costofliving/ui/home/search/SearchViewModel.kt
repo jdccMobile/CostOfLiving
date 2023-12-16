@@ -1,9 +1,6 @@
 package com.jdccmobile.costofliving.ui.home.search
 
 import android.util.Log
-import androidx.datastore.core.DataStore
-import androidx.datastore.preferences.core.Preferences
-import androidx.datastore.preferences.core.stringPreferencesKey
 import androidx.fragment.app.FragmentActivity
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
@@ -13,16 +10,13 @@ import com.jdccmobile.costofliving.data.CostInfoRepository
 import com.jdccmobile.costofliving.data.remote.model.citieslist.City
 import com.jdccmobile.costofliving.model.AutoCompleteSearch
 import com.jdccmobile.costofliving.model.Place
-import com.jdccmobile.costofliving.ui.main.MainActivity.Companion.COUNTRY_NAME
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
-import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.launch
 
 class SearchViewModel(
     private val fragment: FragmentActivity,
-    private val dataStore: DataStore<Preferences>,
     private val costInfoRepository: CostInfoRepository
 ) : ViewModel() {
     data class UiState(
@@ -44,15 +38,10 @@ class SearchViewModel(
 
     private fun refresh() {
         viewModelScope.launch{
-            val countryName = getPreferences(COUNTRY_NAME)
+            val countryName = costInfoRepository.requestUserCountryPrefs()
             _state.value = UiState(countryName = countryName)
             createLists(countryName)
         }
-    }
-
-    private suspend fun getPreferences(key: String): String {
-        val preferences = dataStore.data.first()
-        return preferences[stringPreferencesKey(key)] ?: ""
     }
 
     private suspend fun createLists(userCountryName: String) {
@@ -125,11 +114,10 @@ class SearchViewModel(
 @Suppress("UNCHECKED_CAST")
 class SearchViewModelFactory(
     private val fragment: FragmentActivity,
-    private val dataStore: DataStore<Preferences>
-    , private val costInfoRepository: CostInfoRepository
+    private val costInfoRepository: CostInfoRepository
 ) :
     ViewModelProvider.Factory {
     override fun <T : ViewModel> create(modelClass: Class<T>): T {
-        return SearchViewModel(fragment, dataStore, costInfoRepository) as T
+        return SearchViewModel(fragment, costInfoRepository) as T
     }
 }

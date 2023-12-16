@@ -15,9 +15,11 @@ import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
 import androidx.viewpager2.widget.ViewPager2
 import com.jdccmobile.costofliving.R
+import com.jdccmobile.costofliving.data.CostInfoRepository
 import com.jdccmobile.costofliving.databinding.ActivityIntroBinding
 import com.jdccmobile.costofliving.data.RegionRepository
 import com.jdccmobile.costofliving.model.IntroSlide
+import com.jdccmobile.costofliving.ui.common.app
 import com.jdccmobile.costofliving.ui.home.HomeActivity
 import com.jdccmobile.costofliving.ui.main.MainActivity.Companion.HALF_SECOND
 import com.jdccmobile.costofliving.ui.main.dataStore
@@ -36,10 +38,11 @@ class IntroActivity : AppCompatActivity() {
         setContentView(binding.root)
 
         val regionRepository = RegionRepository(this)
+        val costInfoRepository = CostInfoRepository(app, this.dataStore)
         viewModel =
             ViewModelProvider(
                 this,
-                IntroViewModelFactory(this, regionRepository, dataStore)
+                IntroViewModelFactory(this, regionRepository, costInfoRepository)
             ).get(IntroViewModel::class.java)
 
         lifecycleScope.launch {

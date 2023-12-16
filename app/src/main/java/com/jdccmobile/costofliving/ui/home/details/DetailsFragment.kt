@@ -16,6 +16,7 @@ import com.jdccmobile.costofliving.R
 import com.jdccmobile.costofliving.data.CostInfoRepository
 import com.jdccmobile.costofliving.databinding.FragmentDetailsBinding
 import com.jdccmobile.costofliving.ui.common.app
+import com.jdccmobile.costofliving.ui.main.dataStore
 import kotlinx.coroutines.launch
 
 
@@ -35,7 +36,7 @@ class DetailsFragment : Fragment() {
     ): View {
         _binding = FragmentDetailsBinding.inflate(inflater, container, false)
 
-        val costInfoRepository = CostInfoRepository(requireActivity().app)
+        val costInfoRepository = CostInfoRepository(requireActivity().app, requireActivity().dataStore)
         viewModel = ViewModelProvider(
             this,
             DetailsViewModelFactory(
