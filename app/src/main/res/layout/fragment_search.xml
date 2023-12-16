@@ -130,9 +130,10 @@
         android:id="@+id/rvSearchCities"
         android:layout_width="match_parent"
         android:layout_height="0dp"
-        android:layout_marginHorizontal="20dp"
-        android:layout_marginVertical="8dp"
+        android:layout_marginTop="8dp"
         android:clipToPadding="false"
+        android:padding="8dp"
+        android:paddingHorizontal="20dp"
         android:visibility="gone"
         app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
         app:layout_constraintBottom_toBottomOf="parent"
@@ -153,13 +154,13 @@
         android:id="@+id/ivErrorImage"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:contentDescription="@string/connection_error"
         android:paddingHorizontal="24dp"
         android:visibility="gone"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/tvSubtitle"
-        android:contentDescription="@string/connection_error" />
+        app:layout_constraintTop_toBottomOf="@+id/tvSubtitle" />
 
 
 </androidx.constraintlayout.widget.ConstraintLayout>
