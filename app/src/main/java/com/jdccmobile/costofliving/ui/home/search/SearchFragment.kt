@@ -70,7 +70,7 @@ class SearchFragment : Fragment() {
         state.errorMsg?.let { showErrorMsg(it) }
 
         if (state.apiCallCompleted) {
-            if (state.errorApi == null) {
+            if (state.apiErrorMsg == null) {
                 citiesAutoComplete = state.citiesAutoComplete
                 countriesAutoComplete = state.countriesAutoComplete
                 createAdapters(state.citiesInUserCountry)
@@ -79,7 +79,7 @@ class SearchFragment : Fragment() {
                 binding.rvSearchCities.visibility = View.VISIBLE
                 binding.pbSearchCities.visibility = View.GONE
             } else {
-                handleErrorConnection(state.errorApi)
+                handleErrorConnection(state.apiErrorMsg)
             }
         }
     }
@@ -144,6 +144,7 @@ class SearchFragment : Fragment() {
         binding.pbSearchCities.visibility = View.GONE
         binding.ivErrorImage.setImageResource(R.drawable.im_error_connection)
         Toast.makeText(requireActivity(), msg, Toast.LENGTH_SHORT).show()
+        viewModel.onApiErrorMsgShown()
     }
 
 

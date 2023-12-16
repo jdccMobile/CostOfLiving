@@ -1,5 +1,7 @@
 package com.jdccmobile.costofliving.ui.home.details
 
+import android.util.Log
+import androidx.fragment.app.FragmentActivity
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.viewModelScope
@@ -14,6 +16,7 @@ import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
 
 class DetailsViewModel(
+    private val fragment: FragmentActivity,
     private val place: Place,
     private val costInfoRepository: CostInfoRepository
 ) : ViewModel() {
@@ -24,7 +27,7 @@ class DetailsViewModel(
         val apiCallCompleted: Boolean = false,
         val itemCostInfoList: List<ItemCostInfo> = emptyList(),
         val isFavorite: Boolean? = null,
-        val errorApi: String? = null
+        val apiErrorMsg: String? = null
     )
 
     private val _state = MutableStateFlow(
@@ -53,7 +56,7 @@ class DetailsViewModel(
                 pricesList = try {
                     costInfoRepository.requestCityCost(place.cityName, place.countryName).prices
                 } catch (e: Exception) {
-                    _state.value = _state.value.copy(errorApi = "Connection Error")
+                    handleApiErrorMsg(e)
                     emptyList()
                 }
             } else {
@@ -61,7 +64,7 @@ class DetailsViewModel(
                     costInfoRepository.requestCountryCost(place.countryName).prices
 
                 } catch (e: Exception) {
-                    _state.value = _state.value.copy(errorApi = "Connection Error")
+                    handleApiErrorMsg(e)
                     emptyList()
                 }
             }
@@ -95,6 +98,15 @@ class DetailsViewModel(
         }
     }
 
+    private fun handleApiErrorMsg(e: Exception) {
+        Log.e("JD Search VM", "API call requestCitiesList error: $e")
+        if(e.message?.contains("429") == true){
+            _state.value = _state.value.copy(apiErrorMsg = fragment.getString(R.string.http_429))
+        } else {
+            _state.value = _state.value.copy(apiErrorMsg = fragment.getString(R.string.connection_error))
+        }
+    }
+
 
     fun changeFavStatus() {}
 
@@ -105,11 +117,12 @@ class DetailsViewModel(
 
 @Suppress("UNCHECKED_CAST")
 class DetailsViewModelFactory(
+    private val fragment: FragmentActivity,
     private val place: Place,
     private val costInfoRepository: CostInfoRepository
 ) :
     ViewModelProvider.Factory {
     override fun <T : ViewModel> create(modelClass: Class<T>): T {
-        return DetailsViewModel(place, costInfoRepository) as T
+        return DetailsViewModel(fragment, place, costInfoRepository) as T
     }
 }

@@ -40,6 +40,7 @@ class DetailsFragment : Fragment() {
         viewModel = ViewModelProvider(
             this,
             DetailsViewModelFactory(
+                requireActivity(),
                 requireNotNull(safeArgs.place),
                 costInfoRepository
             )
@@ -60,16 +61,16 @@ class DetailsFragment : Fragment() {
     private fun updateUI(state: DetailsViewModel.UiState) {
         binding.tvCityName.text = state.cityName ?: state.countryName
         binding.tvCountryName.text = state.countryName
-        Log.i("JD Details Fragment error", state.errorApi.toString())
+        Log.i("JD Details Fragment error", state.apiErrorMsg.toString())
         if(state.apiCallCompleted){
-            if (state.errorApi == null) {
+            if (state.apiErrorMsg == null) {
                 binding.pbCostInfo.visibility = View.GONE
                 binding.rvCostItems.visibility = View.VISIBLE
                 costInfoAdapter = CostInfoAdapter(state.cityName ?: state.countryName, state.itemCostInfoList)
                 binding.rvCostItems.adapter = costInfoAdapter
             }
             else {
-                handleErrorConnection(state.errorApi)
+                handleErrorConnection(state.apiErrorMsg)
             }
         }
     }
@@ -84,8 +85,7 @@ class DetailsFragment : Fragment() {
         binding.ivErrorImage.visibility = View.VISIBLE
         binding.pbCostInfo.visibility = View.GONE
         binding.ivErrorImage.setImageResource(R.drawable.im_error_connection)
-        Toast.makeText(requireActivity(), msg, Toast.LENGTH_SHORT)
-            .show()
+        Toast.makeText(requireActivity(), msg, Toast.LENGTH_SHORT).show()
     }
 
 }

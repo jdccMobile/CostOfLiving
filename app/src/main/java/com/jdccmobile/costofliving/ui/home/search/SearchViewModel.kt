@@ -28,7 +28,7 @@ class SearchViewModel(
         val countriesAutoComplete: List<AutoCompleteSearch> = emptyList(),
         val navigateTo: Place? = null,
         val errorMsg: String? = null,
-        val errorApi: String? = null,
+        val apiErrorMsg: String? = null,
 
     )
 
@@ -61,7 +61,11 @@ class SearchViewModel(
                         .map { AutoCompleteSearch(it.countryName, it.countryName) }
                 _state.value = _state.value.copy(countriesAutoComplete = countriesAutoComplete)
             } catch (e: Exception){
-                _state.value = _state.value.copy(errorApi = fragment.getString(R.string.connection_error))
+                if(e.message?.contains("429") == true){
+                    _state.value = _state.value.copy(apiErrorMsg = fragment.getString(R.string.http_429))
+                } else {
+                    _state.value = _state.value.copy(apiErrorMsg = fragment.getString(R.string.connection_error))
+                }
                 Log.e("JD Search VM", "API call requestCitiesList error: $e")
             }
             _state.value = _state.value.copy(apiCallCompleted = true)
@@ -108,6 +112,10 @@ class SearchViewModel(
 
     fun onErrorMsgShown(){
         _state.value = _state.value.copy(errorMsg = null)
+    }
+
+    fun onApiErrorMsgShown(){
+        _state.value = _state.value.copy(apiErrorMsg = null)
     }
 }
 
