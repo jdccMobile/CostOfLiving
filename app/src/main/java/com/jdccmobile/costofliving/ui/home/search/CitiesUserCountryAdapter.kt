@@ -8,8 +8,8 @@ import com.jdccmobile.costofliving.R
 import com.jdccmobile.costofliving.data.remote.model.citieslist.City
 import com.jdccmobile.costofliving.databinding.ViewCityItemBinding
 import com.jdccmobile.costofliving.model.Place
+import com.jdccmobile.costofliving.ui.common.getCountryCode
 import com.squareup.picasso.Picasso
-import java.util.Locale
 
 class CitiesUserCountryAdapter(
     private val cities: List<City>,
@@ -18,7 +18,8 @@ class CitiesUserCountryAdapter(
     RecyclerView.Adapter<CitiesUserCountryAdapter.CitiesViewHolder>() {
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): CitiesViewHolder {
-        val view = LayoutInflater.from(parent.context).inflate(R.layout.view_city_item, parent, false)
+        val view =
+            LayoutInflater.from(parent.context).inflate(R.layout.view_city_item, parent, false)
         return CitiesViewHolder(view)
     }
 
@@ -43,8 +44,5 @@ class CitiesUserCountryAdapter(
                 .load("https://flagsapi.com/$countryCode/flat/64.png")
                 .into(binding.ivCountryFlagItem)
         }
-
-        private fun getCountryCode(countryName: String) =
-            Locale.getISOCountries().find { Locale("", it).getDisplayCountry(Locale.ENGLISH) == countryName }
     }
 }
