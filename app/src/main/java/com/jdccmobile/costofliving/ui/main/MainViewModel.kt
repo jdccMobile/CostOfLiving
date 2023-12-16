@@ -18,7 +18,7 @@ class MainViewModel(
 ): ViewModel() {
 
     data class UiState(
-        val countryName: String = "",
+        val countryName: String? = null,
     )
     private val _state = MutableStateFlow(UiState())
     val state: StateFlow<UiState> = _state.asStateFlow()

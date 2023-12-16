@@ -36,7 +36,9 @@ class MainActivity : AppCompatActivity() {
 
         lifecycleScope.launch {
             repeatOnLifecycle(Lifecycle.State.STARTED){
-                viewModel.state.collect{ navigateTo(it.countryName)}
+                viewModel.state.collect{ state ->
+                    state.countryName?.let { navigateTo(it) }
+                }
             }
         }
     }
