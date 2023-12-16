@@ -6,6 +6,6 @@
         android:title="@string/search" />
     <item
         android:id="@+id/favorites_dest"
-        android:icon="@drawable/ic_favorites"
+        android:icon="@drawable/ic_favorite"
         android:title="@string/favorites" />
 </menu>

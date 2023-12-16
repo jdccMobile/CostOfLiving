@@ -7,8 +7,8 @@ import android.view.ViewGroup
 import android.widget.ArrayAdapter
 import com.jdccmobile.costofliving.databinding.ViewSearchAutocompleteItemBinding
 import com.jdccmobile.costofliving.model.AutoCompleteSearch
+import com.jdccmobile.costofliving.ui.common.getCountryCode
 import com.squareup.picasso.Picasso
-import java.util.Locale
 
 class AutoCompleteSearchAdapter(
     context: Context,
@@ -40,7 +40,5 @@ class AutoCompleteSearchAdapter(
         return binding.root
     }
 
-    private fun getCountryCode(countryName: String) =
-        Locale.getISOCountries().find { Locale("", it).getDisplayCountry(Locale.ENGLISH) == countryName }
 
 }

@@ -1,4 +1,4 @@
-package com.jdccmobile.costofliving.domain
+package com.jdccmobile.costofliving.data
 
 import android.Manifest
 import android.annotation.SuppressLint
@@ -6,6 +6,7 @@ import android.location.Geocoder
 import android.location.Location
 import androidx.appcompat.app.AppCompatActivity
 import com.google.android.gms.location.LocationServices
+import com.jdccmobile.costofliving.ui.common.PermissionChecker
 import com.jdccmobile.costofliving.ui.main.MainActivity.Companion.DEFAULT_COUNTRY_CODE
 import kotlinx.coroutines.suspendCancellableCoroutine
 import kotlin.coroutines.resume
