@@ -6,6 +6,7 @@ import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.viewModelScope
 import com.jdccmobile.costofliving.R
 import com.jdccmobile.costofliving.data.CostInfoRepository
+import com.jdccmobile.costofliving.data.remote.model.cost.Price
 import com.jdccmobile.costofliving.model.ItemCostInfo
 import com.jdccmobile.costofliving.model.Place
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -21,9 +22,10 @@ class DetailsViewModel(
     data class UiState(
         val cityName: String? = null,
         val countryName: String,
-        val costInfoLoaded: Boolean = false,
+        val apiCallCompleted: Boolean = false,
         val itemCostInfoList: List<ItemCostInfo> = emptyList(),
-        val isFavorite: Boolean? = null
+        val isFavorite: Boolean? = null,
+        val errorApi: String? = null
     )
 
     private val _state = MutableStateFlow(
@@ -46,13 +48,32 @@ class DetailsViewModel(
     }
 
     private suspend fun createCostInfoList() {
-        if (!_state.value.costInfoLoaded) {
-            Log.i("JD Details VM", "API call")
-            val pricesList = if (place.cityName != null) {
-                costInfoRepository.requestCityCost(place.cityName, place.countryName).prices
+        if (!_state.value.apiCallCompleted) {
+            val pricesList: List<Price>
+            if (place.cityName != null) {
+                pricesList = try {
+                    Log.i("JD Details VM", "API call")
+                    costInfoRepository.requestCityCost(place.cityName, place.countryName).prices
+                } catch (e: Exception) {
+                    _state.value = _state.value.copy(errorApi = "Connection Error")
+                    Log.i("JD Details vm", _state.value.errorApi.toString())
+                    Log.e("JD details VM", "API call $e")
+                    emptyList()
+                }
             } else {
-                costInfoRepository.requestCountryCost(place.countryName).prices
+                pricesList = try {
+                    Log.i("JD Details VM", "API call")
+                    costInfoRepository.requestCountryCost(place.countryName).prices
+
+                } catch (e: Exception) {
+                    _state.value = _state.value.copy(errorApi = "Connection Error")
+                    Log.i("JD Details vm", _state.value.errorApi.toString())
+                    Log.e("JD details VM", "API call $e")
+                    emptyList()
+                }
             }
+            _state.value = _state.value.copy(apiCallCompleted = true)
+
             val itemsToSearch = arrayOf(
                 "in City Center",
                 "Gasoline",
@@ -77,14 +98,14 @@ class DetailsViewModel(
                     }
                 }
             }
-            _state.value = _state.value.copy(costInfoLoaded = true, itemCostInfoList = itemsCostInfo)
-            Log.i("JD deatils vm", itemsCostInfo.toString())
-            Log.i("JD deatils vm", pricesList.toString())
+            _state.value = _state.value.copy(itemCostInfoList = itemsCostInfo)
         }
     }
 
 
     fun changeFavStatus() {}
+
+
 
 }
 

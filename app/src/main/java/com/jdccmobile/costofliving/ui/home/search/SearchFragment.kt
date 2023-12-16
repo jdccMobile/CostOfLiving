@@ -46,12 +46,12 @@ class SearchFragment : Fragment() {
         val costInfoRepository = CostInfoRepository(requireActivity().app)
         viewModel = ViewModelProvider(
             this,
-            SearchViewModelFactory(requireActivity().dataStore, costInfoRepository)
+            SearchViewModelFactory(requireActivity(), requireActivity().dataStore, costInfoRepository)
         ).get(SearchViewModel::class.java)
 
-        viewLifecycleOwner.lifecycleScope.launch{
-            repeatOnLifecycle(Lifecycle.State.STARTED){
-                viewModel.state.collect{ updateUI(it) }
+        viewLifecycleOwner.lifecycleScope.launch {
+            repeatOnLifecycle(Lifecycle.State.STARTED) {
+                viewModel.state.collect { updateUI(it) }
             }
         }
 
@@ -69,16 +69,19 @@ class SearchFragment : Fragment() {
         state.navigateTo?.let { navigateToDetails(it) }
         state.errorMsg?.let { showErrorMsg(it) }
 
-        if (state.citiesLoaded) {
-            citiesAutoComplete = state.citiesAutoComplete
-            countriesAutoComplete = state.countriesAutoComplete
-            createAdapters(state.citiesInUserCountry)
-            selectAutoCompleteAdapter()
-            binding.rvSearchCities.adapter = citiesUserCountryAdapter
-            binding.rvSearchCities.visibility = View.VISIBLE
-            binding.pbSearchCities.visibility = View.GONE
+        if (state.apiCallCompleted) {
+            if (state.errorApi == null) {
+                citiesAutoComplete = state.citiesAutoComplete
+                countriesAutoComplete = state.countriesAutoComplete
+                createAdapters(state.citiesInUserCountry)
+                selectAutoCompleteAdapter()
+                binding.rvSearchCities.adapter = citiesUserCountryAdapter
+                binding.rvSearchCities.visibility = View.VISIBLE
+                binding.pbSearchCities.visibility = View.GONE
+            } else {
+                handleErrorConnection(state.errorApi)
+            }
         }
-
     }
 
     private fun createAdapters(citiesInUserCountry: List<City>) {
@@ -104,15 +107,15 @@ class SearchFragment : Fragment() {
         }
     }
 
-    private fun selectAutoCompleteAdapter(){
-        if(isSearchByCity) binding.atSearch.setAdapter(citiesAutoCompleteSearchAdapter)
+    private fun selectAutoCompleteAdapter() {
+        if (isSearchByCity) binding.atSearch.setAdapter(citiesAutoCompleteSearchAdapter)
         else binding.atSearch.setAdapter(countriesAutoCompleteSearchAdapter)
     }
 
     private fun onSearchClick() {
         binding.ivSearchCity.setOnClickListener {
             val nameSearch = binding.atSearch.text.toString()
-            if(nameSearch != "") viewModel.validateSearch(nameSearch)
+            if (nameSearch != "") viewModel.validateSearch(nameSearch)
         }
     }
 
@@ -131,9 +134,17 @@ class SearchFragment : Fragment() {
     }
 
     private fun hideKeyboard() {
-        val imm = requireActivity().getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
+        val imm =
+            requireActivity().getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
         val view = requireView()
         imm.hideSoftInputFromWindow(view.windowToken, 0)
+    }
+
+    private fun handleErrorConnection(msg: String) {
+        binding.ivErrorImage.visibility = View.VISIBLE
+        binding.pbSearchCities.visibility = View.GONE
+        binding.ivErrorImage.setImageResource(R.drawable.im_error_connection)
+        Toast.makeText(requireActivity(), msg, Toast.LENGTH_SHORT).show()
     }
 
 

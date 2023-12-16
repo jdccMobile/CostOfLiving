@@ -1,15 +1,18 @@
 package com.jdccmobile.costofliving.ui.home.details
 
 import android.os.Bundle
+import android.util.Log
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Toast
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
 import androidx.navigation.fragment.navArgs
+import com.jdccmobile.costofliving.R
 import com.jdccmobile.costofliving.data.CostInfoRepository
 import com.jdccmobile.costofliving.databinding.FragmentDetailsBinding
 import com.jdccmobile.costofliving.ui.common.app
@@ -56,14 +59,17 @@ class DetailsFragment : Fragment() {
     private fun updateUI(state: DetailsViewModel.UiState) {
         binding.tvCityName.text = state.cityName ?: state.countryName
         binding.tvCountryName.text = state.countryName
-        if (state.costInfoLoaded){
-            binding.pbCostInfo.visibility = View.GONE
-            binding.rvCostItems.visibility = View.VISIBLE
-            costInfoAdapter = CostInfoAdapter(
-                state.cityName ?: state.countryName,
-                state.itemCostInfoList
-            )
-            binding.rvCostItems.adapter = costInfoAdapter
+        Log.i("JD Details Fragment error", state.errorApi.toString())
+        if(state.apiCallCompleted){
+            if (state.errorApi == null) {
+                binding.pbCostInfo.visibility = View.GONE
+                binding.rvCostItems.visibility = View.VISIBLE
+                costInfoAdapter = CostInfoAdapter(state.cityName ?: state.countryName, state.itemCostInfoList)
+                binding.rvCostItems.adapter = costInfoAdapter
+            }
+            else {
+                handleErrorConnection(state.errorApi)
+            }
         }
     }
 
@@ -71,6 +77,14 @@ class DetailsFragment : Fragment() {
         binding.ivFavorite.setOnClickListener {
             viewModel.changeFavStatus()
         }
+    }
+
+    private fun handleErrorConnection(msg: String) {
+        binding.ivErrorImage.visibility = View.VISIBLE
+        binding.pbCostInfo.visibility = View.GONE
+        binding.ivErrorImage.setImageResource(R.drawable.im_error_connection)
+        Toast.makeText(requireActivity(), msg, Toast.LENGTH_SHORT)
+            .show()
     }
 
 }
