@@ -6,7 +6,6 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.viewModelScope
 import com.jdccmobile.costofliving.R
-import com.jdccmobile.costofliving.data.CostInfoRepository
 import com.jdccmobile.costofliving.data.remote.model.citieslist.City
 import com.jdccmobile.costofliving.domain.RequestCitiesListUC
 import com.jdccmobile.costofliving.domain.RequestUserCountryPrefsUC
