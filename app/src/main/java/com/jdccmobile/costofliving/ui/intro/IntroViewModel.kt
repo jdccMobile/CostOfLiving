@@ -7,6 +7,8 @@ import androidx.lifecycle.viewModelScope
 import com.jdccmobile.costofliving.data.CostInfoRepository
 import com.jdccmobile.costofliving.data.local.IntroSlidesProvider
 import com.jdccmobile.costofliving.data.RegionRepository
+import com.jdccmobile.costofliving.domain.FindLastRegionUC
+import com.jdccmobile.costofliving.domain.SaveUserCountryPrefsUC
 import com.jdccmobile.costofliving.model.IntroSlide
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
@@ -16,8 +18,8 @@ import java.util.Locale
 
 class IntroViewModel(
     private val activity: AppCompatActivity,
-    private val regionRepository: RegionRepository,
-    private val costInfoRepository: CostInfoRepository
+    private val saveUserCountryPrefsUC: SaveUserCountryPrefsUC,
+    private val findLastRegionUC: FindLastRegionUC
 ) : ViewModel(
 
 ) {
@@ -40,9 +42,9 @@ class IntroViewModel(
     }
 
     suspend fun getCountryName() {
-        val countryCode = regionRepository.findLastRegion()
+        val countryCode = findLastRegionUC()
         val countryName = Locale("", countryCode).getDisplayCountry(Locale("EN"))
-        costInfoRepository.saveUserCountryPrefs(countryName)
+        saveUserCountryPrefsUC(countryName)
     }
 }
 
@@ -50,10 +52,10 @@ class IntroViewModel(
 @Suppress("UNCHECKED_CAST")
 class IntroViewModelFactory(
     private val activity: AppCompatActivity,
-    private val regionRepository: RegionRepository,
-    private val costInfoRepository: CostInfoRepository
+    private val saveUserCountryPrefsUC: SaveUserCountryPrefsUC,
+    private val findLastRegionUC: FindLastRegionUC
 ) : ViewModelProvider.Factory {
     override fun <T : ViewModel> create(modelClass: Class<T>): T {
-        return IntroViewModel(activity, regionRepository, costInfoRepository) as T
+        return IntroViewModel(activity, saveUserCountryPrefsUC, findLastRegionUC) as T
     }
 }

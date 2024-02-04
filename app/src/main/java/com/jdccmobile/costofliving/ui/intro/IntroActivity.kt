@@ -18,6 +18,8 @@ import com.jdccmobile.costofliving.R
 import com.jdccmobile.costofliving.data.CostInfoRepository
 import com.jdccmobile.costofliving.databinding.ActivityIntroBinding
 import com.jdccmobile.costofliving.data.RegionRepository
+import com.jdccmobile.costofliving.domain.FindLastRegionUC
+import com.jdccmobile.costofliving.domain.SaveUserCountryPrefsUC
 import com.jdccmobile.costofliving.model.IntroSlide
 import com.jdccmobile.costofliving.ui.common.app
 import com.jdccmobile.costofliving.ui.home.HomeActivity
@@ -37,12 +39,16 @@ class IntroActivity : AppCompatActivity() {
         binding = ActivityIntroBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
-        val regionRepository = RegionRepository(this)
         val costInfoRepository = CostInfoRepository(app, this.dataStore)
+        val regionRepository = RegionRepository(this)
+
         viewModel =
             ViewModelProvider(
                 this,
-                IntroViewModelFactory(this, regionRepository, costInfoRepository)
+                IntroViewModelFactory(
+                    this,
+                    SaveUserCountryPrefsUC(costInfoRepository),
+                    FindLastRegionUC(regionRepository))
             ).get(IntroViewModel::class.java)
 
         lifecycleScope.launch {

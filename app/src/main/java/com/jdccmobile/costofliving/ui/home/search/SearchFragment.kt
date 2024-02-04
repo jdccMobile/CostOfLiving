@@ -17,6 +17,8 @@ import com.jdccmobile.costofliving.R
 import com.jdccmobile.costofliving.data.CostInfoRepository
 import com.jdccmobile.costofliving.data.remote.model.citieslist.City
 import com.jdccmobile.costofliving.databinding.FragmentSearchBinding
+import com.jdccmobile.costofliving.domain.RequestCitiesListUC
+import com.jdccmobile.costofliving.domain.RequestUserCountryPrefsUC
 import com.jdccmobile.costofliving.model.AutoCompleteSearch
 import com.jdccmobile.costofliving.model.Place
 import com.jdccmobile.costofliving.ui.common.app
@@ -46,7 +48,11 @@ class SearchFragment : Fragment() {
         val costInfoRepository = CostInfoRepository(requireActivity().app, requireActivity().dataStore)
         viewModel = ViewModelProvider(
             this,
-            SearchViewModelFactory(requireActivity(), costInfoRepository)
+            SearchViewModelFactory(
+                requireActivity(),
+                RequestUserCountryPrefsUC(costInfoRepository),
+                RequestCitiesListUC(costInfoRepository)
+            )
         ).get(SearchViewModel::class.java)
 
         viewLifecycleOwner.lifecycleScope.launch {
