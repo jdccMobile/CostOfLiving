@@ -12,6 +12,7 @@ import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
 import com.jdccmobile.costofliving.R
 import com.jdccmobile.costofliving.data.CostInfoRepository
+import com.jdccmobile.costofliving.domain.RequestUserCountryPrefsUC
 import com.jdccmobile.costofliving.ui.common.app
 import com.jdccmobile.costofliving.ui.home.HomeActivity
 import com.jdccmobile.costofliving.ui.intro.IntroActivity
@@ -39,7 +40,7 @@ class MainActivity : AppCompatActivity() {
         val costInfoRepository = CostInfoRepository(app, this.dataStore)
         viewModel = ViewModelProvider(
             this,
-            MainViewModelFactory(costInfoRepository)
+            MainViewModelFactory(RequestUserCountryPrefsUC(costInfoRepository))
         ).get(MainViewModel::class.java)
 
         lifecycleScope.launch {
