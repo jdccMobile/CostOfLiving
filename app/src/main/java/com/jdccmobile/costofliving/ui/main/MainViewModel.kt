@@ -3,7 +3,6 @@ package com.jdccmobile.costofliving.ui.main
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.viewModelScope
-import com.jdccmobile.costofliving.data.CostInfoRepository
 import com.jdccmobile.costofliving.domain.RequestUserCountryPrefsUC
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
