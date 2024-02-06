@@ -6,7 +6,7 @@ import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import com.jdccmobile.costofliving.R
 import com.jdccmobile.costofliving.databinding.ViewIntroSlideBinding
-import com.jdccmobile.costofliving.model.IntroSlide
+import com.jdccmobile.costofliving.domain.model.IntroSlide
 
 
 class IntroSliderAdapter(private val introSlide: List<IntroSlide>) :

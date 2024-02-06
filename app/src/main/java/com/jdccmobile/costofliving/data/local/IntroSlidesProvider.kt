@@ -2,7 +2,7 @@ package com.jdccmobile.costofliving.data.local
 
 import androidx.appcompat.app.AppCompatActivity
 import com.jdccmobile.costofliving.R
-import com.jdccmobile.costofliving.model.IntroSlide
+import com.jdccmobile.costofliving.domain.model.IntroSlide
 
 class IntroSlidesProvider(activity: AppCompatActivity) {
 

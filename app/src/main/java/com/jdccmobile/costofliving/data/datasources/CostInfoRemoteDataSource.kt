@@ -10,7 +10,8 @@ class CostInfoRemoteDataSource(application: App){
 
     suspend fun getCitiesList() = service.getCities(apiKey)
 
-    suspend fun getCityCost(cityName: String, countryName : String) = service.getCityCost(apiKey, cityName, countryName)
+    suspend fun getCityCost(cityName: String, countryName : String) =
+        service.getCityCost(apiKey, cityName, countryName)
 
     suspend fun getCountryCost(countryName: String) = service.getCountryCost(apiKey, countryName)
 }

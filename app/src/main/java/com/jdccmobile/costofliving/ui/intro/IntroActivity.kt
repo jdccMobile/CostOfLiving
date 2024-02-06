@@ -18,9 +18,9 @@ import com.jdccmobile.costofliving.R
 import com.jdccmobile.costofliving.data.CostInfoRepository
 import com.jdccmobile.costofliving.databinding.ActivityIntroBinding
 import com.jdccmobile.costofliving.data.RegionRepository
-import com.jdccmobile.costofliving.domain.FindLastRegionUC
-import com.jdccmobile.costofliving.domain.SaveUserCountryPrefsUC
-import com.jdccmobile.costofliving.model.IntroSlide
+import com.jdccmobile.costofliving.domain.usecases.FindLastRegionUC
+import com.jdccmobile.costofliving.domain.usecases.SaveUserCountryPrefsUC
+import com.jdccmobile.costofliving.domain.model.IntroSlide
 import com.jdccmobile.costofliving.ui.common.app
 import com.jdccmobile.costofliving.ui.home.HomeActivity
 import com.jdccmobile.costofliving.ui.main.MainActivity.Companion.HALF_SECOND
@@ -48,7 +48,8 @@ class IntroActivity : AppCompatActivity() {
                 IntroViewModelFactory(
                     this,
                     SaveUserCountryPrefsUC(costInfoRepository),
-                    FindLastRegionUC(regionRepository))
+                    FindLastRegionUC(regionRepository)
+                )
             ).get(IntroViewModel::class.java)
 
         lifecycleScope.launch {

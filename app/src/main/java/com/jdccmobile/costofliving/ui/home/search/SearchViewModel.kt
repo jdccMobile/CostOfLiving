@@ -7,10 +7,10 @@ import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.viewModelScope
 import com.jdccmobile.costofliving.R
 import com.jdccmobile.costofliving.data.remote.model.citieslist.City
-import com.jdccmobile.costofliving.domain.RequestCitiesListUC
-import com.jdccmobile.costofliving.domain.RequestUserCountryPrefsUC
-import com.jdccmobile.costofliving.model.AutoCompleteSearch
-import com.jdccmobile.costofliving.model.Place
+import com.jdccmobile.costofliving.domain.usecases.RequestCitiesListUC
+import com.jdccmobile.costofliving.domain.usecases.RequestUserCountryPrefsUC
+import com.jdccmobile.costofliving.domain.model.AutoCompleteSearch
+import com.jdccmobile.costofliving.domain.model.Place
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
@@ -32,7 +32,7 @@ class SearchViewModel(
         val errorMsg: String? = null,
         val apiErrorMsg: String? = null,
 
-    )
+        )
 
     private val _state = MutableStateFlow(UiState())
     val state: StateFlow<UiState> = _state.asStateFlow()

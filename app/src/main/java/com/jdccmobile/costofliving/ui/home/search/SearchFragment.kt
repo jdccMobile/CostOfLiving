@@ -17,10 +17,10 @@ import com.jdccmobile.costofliving.R
 import com.jdccmobile.costofliving.data.CostInfoRepository
 import com.jdccmobile.costofliving.data.remote.model.citieslist.City
 import com.jdccmobile.costofliving.databinding.FragmentSearchBinding
-import com.jdccmobile.costofliving.domain.RequestCitiesListUC
-import com.jdccmobile.costofliving.domain.RequestUserCountryPrefsUC
-import com.jdccmobile.costofliving.model.AutoCompleteSearch
-import com.jdccmobile.costofliving.model.Place
+import com.jdccmobile.costofliving.domain.usecases.RequestCitiesListUC
+import com.jdccmobile.costofliving.domain.usecases.RequestUserCountryPrefsUC
+import com.jdccmobile.costofliving.domain.model.AutoCompleteSearch
+import com.jdccmobile.costofliving.domain.model.Place
 import com.jdccmobile.costofliving.ui.common.app
 import com.jdccmobile.costofliving.ui.main.dataStore
 import kotlinx.coroutines.launch

@@ -1,4 +1,4 @@
-package com.jdccmobile.costofliving.model
+package com.jdccmobile.costofliving.domain.model
 
 import android.os.Parcelable
 import kotlinx.parcelize.Parcelize

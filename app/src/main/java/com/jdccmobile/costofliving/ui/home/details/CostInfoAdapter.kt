@@ -6,7 +6,7 @@ import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import com.jdccmobile.costofliving.R
 import com.jdccmobile.costofliving.databinding.ViewCostItemBinding
-import com.jdccmobile.costofliving.model.ItemCostInfo
+import com.jdccmobile.costofliving.domain.model.ItemCostInfo
 
 class CostInfoAdapter(
     private val name: String,

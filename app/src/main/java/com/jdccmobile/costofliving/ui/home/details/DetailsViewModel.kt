@@ -7,10 +7,10 @@ import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.viewModelScope
 import com.jdccmobile.costofliving.R
 import com.jdccmobile.costofliving.data.remote.model.cost.Price
-import com.jdccmobile.costofliving.domain.RequestCityCostUC
-import com.jdccmobile.costofliving.domain.RequestCountryCostUC
-import com.jdccmobile.costofliving.model.ItemCostInfo
-import com.jdccmobile.costofliving.model.Place
+import com.jdccmobile.costofliving.domain.usecases.RequestCityCostUC
+import com.jdccmobile.costofliving.domain.usecases.RequestCountryCostUC
+import com.jdccmobile.costofliving.domain.model.ItemCostInfo
+import com.jdccmobile.costofliving.domain.model.Place
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow

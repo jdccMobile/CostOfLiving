@@ -12,7 +12,7 @@ import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
 import com.jdccmobile.costofliving.R
 import com.jdccmobile.costofliving.data.CostInfoRepository
-import com.jdccmobile.costofliving.domain.RequestUserCountryPrefsUC
+import com.jdccmobile.costofliving.domain.usecases.RequestUserCountryPrefsUC
 import com.jdccmobile.costofliving.ui.common.app
 import com.jdccmobile.costofliving.ui.home.HomeActivity
 import com.jdccmobile.costofliving.ui.intro.IntroActivity

@@ -7,7 +7,7 @@ import androidx.recyclerview.widget.RecyclerView
 import com.jdccmobile.costofliving.R
 import com.jdccmobile.costofliving.data.remote.model.citieslist.City
 import com.jdccmobile.costofliving.databinding.ViewCityItemBinding
-import com.jdccmobile.costofliving.model.Place
+import com.jdccmobile.costofliving.domain.model.Place
 import com.jdccmobile.costofliving.ui.common.getCountryCode
 import com.squareup.picasso.Picasso
 

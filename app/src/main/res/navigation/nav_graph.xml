@@ -38,6 +38,6 @@
         tools:layout="@layout/fragment_details" >
         <argument
             android:name="place"
-            app:argType="com.jdccmobile.costofliving.model.Place" />
+            app:argType="com.jdccmobile.costofliving.domain.model.Place" />
     </fragment>
 </navigation>

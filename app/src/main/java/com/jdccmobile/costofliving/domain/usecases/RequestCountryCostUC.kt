@@ -1,4 +1,4 @@
-package com.jdccmobile.costofliving.domain
+package com.jdccmobile.costofliving.domain.usecases
 
 import com.jdccmobile.costofliving.data.CostInfoRepository
 import com.jdccmobile.costofliving.data.remote.model.cost.Price
