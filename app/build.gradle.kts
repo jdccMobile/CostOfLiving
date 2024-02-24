@@ -95,4 +95,7 @@ dependencies {
     implementation("androidx.room:room-ktx:2.6.1")
     //noinspection KaptUsageInsteadOfKsp
     kapt("androidx.room:room-compiler:2.6.1")
+
+    // Koin
+    implementation("io.insert-koin:koin-android:3.1.5")
 }

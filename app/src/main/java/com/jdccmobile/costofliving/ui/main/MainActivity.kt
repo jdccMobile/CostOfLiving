@@ -17,9 +17,10 @@ import com.jdccmobile.costofliving.ui.common.app
 import com.jdccmobile.costofliving.ui.home.HomeActivity
 import com.jdccmobile.costofliving.ui.intro.IntroActivity
 import kotlinx.coroutines.launch
+import org.koin.androidx.viewmodel.ext.android.viewModel
 
 const val PREFERENCES = "preferences"
-val Context.dataStore by preferencesDataStore(name = PREFERENCES)
+//val Context.dataStore by preferencesDataStore(name = PREFERENCES)
 
 class MainActivity : AppCompatActivity() {
 
@@ -28,8 +29,7 @@ class MainActivity : AppCompatActivity() {
         const val DEFAULT_COUNTRY_CODE = "es"
     }
 
-//    private val viewModel: MainViewModel by viewModels { MainViewModelFactory(dataStore) }
-    private lateinit var viewModel: MainViewModel
+    private val viewModel: MainViewModel by viewModel()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         val splashScreen = installSplashScreen()
@@ -37,11 +37,6 @@ class MainActivity : AppCompatActivity() {
         setContentView(R.layout.activity_main)
         splashScreen.setKeepOnScreenCondition { true }
 
-        val costInfoRepository = CostInfoRepository(app, this.dataStore)
-        viewModel = ViewModelProvider(
-            this,
-            MainViewModelFactory(RequestUserCountryPrefsUC(costInfoRepository))
-        ).get(MainViewModel::class.java)
 
         lifecycleScope.launch {
             repeatOnLifecycle(Lifecycle.State.STARTED){

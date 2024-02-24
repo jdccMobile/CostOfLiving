@@ -31,10 +31,3 @@ class MainViewModel(
         }
     }
 }
-
-@Suppress("UNCHECKED_CAST")
-class MainViewModelFactory(private val requestUserCountryPrefsUC: RequestUserCountryPrefsUC) : ViewModelProvider.Factory{
-    override fun <T : ViewModel> create(modelClass: Class<T>): T {
-        return MainViewModel(requestUserCountryPrefsUC) as T
-    }
-}

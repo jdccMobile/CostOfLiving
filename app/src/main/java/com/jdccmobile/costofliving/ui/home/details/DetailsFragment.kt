@@ -18,8 +18,10 @@ import com.jdccmobile.costofliving.databinding.FragmentDetailsBinding
 import com.jdccmobile.costofliving.domain.usecases.RequestCityCostUC
 import com.jdccmobile.costofliving.domain.usecases.RequestCountryCostUC
 import com.jdccmobile.costofliving.ui.common.app
-import com.jdccmobile.costofliving.ui.main.dataStore
+
 import kotlinx.coroutines.launch
+import org.koin.androidx.viewmodel.ext.android.viewModel
+import org.koin.core.parameter.parametersOf
 
 
 class DetailsFragment : Fragment() {
@@ -28,7 +30,9 @@ class DetailsFragment : Fragment() {
     private val binding get() = _binding!!
 
     private val safeArgs: DetailsFragmentArgs by navArgs()
-    private lateinit var viewModel: DetailsViewModel
+    private val viewModel: DetailsViewModel by viewModel {
+        parametersOf(safeArgs.place)
+    }
 
     private lateinit var costInfoAdapter: CostInfoAdapter
 
@@ -37,17 +41,6 @@ class DetailsFragment : Fragment() {
         savedInstanceState: Bundle?
     ): View {
         _binding = FragmentDetailsBinding.inflate(inflater, container, false)
-
-        val costInfoRepository = CostInfoRepository(requireActivity().app, requireActivity().dataStore)
-        viewModel = ViewModelProvider(
-            this,
-            DetailsViewModelFactory(
-                requireActivity(),
-                requireNotNull(safeArgs.place),
-                RequestCityCostUC(costInfoRepository),
-                RequestCountryCostUC(costInfoRepository)
-            )
-        ).get(DetailsViewModel::class.java)
 
         viewLifecycleOwner.lifecycleScope.launch {
             repeatOnLifecycle(Lifecycle.State.STARTED) {

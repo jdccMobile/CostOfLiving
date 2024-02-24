@@ -24,33 +24,20 @@ import com.jdccmobile.costofliving.domain.model.IntroSlide
 import com.jdccmobile.costofliving.ui.common.app
 import com.jdccmobile.costofliving.ui.home.HomeActivity
 import com.jdccmobile.costofliving.ui.main.MainActivity.Companion.HALF_SECOND
-import com.jdccmobile.costofliving.ui.main.dataStore
 import kotlinx.coroutines.launch
+import org.koin.androidx.viewmodel.ext.android.viewModel
 
 class IntroActivity : AppCompatActivity() {
 
     private lateinit var binding: ActivityIntroBinding
     private lateinit var introSliderAdapter: IntroSliderAdapter
-    private lateinit var viewModel: IntroViewModel
+    private val viewModel: IntroViewModel by viewModel()
 
     override fun onCreate(savedInstanceState: Bundle?) {
 
         super.onCreate(savedInstanceState)
         binding = ActivityIntroBinding.inflate(layoutInflater)
         setContentView(binding.root)
-
-        val costInfoRepository = CostInfoRepository(app, this.dataStore)
-        val regionRepository = RegionRepository(this)
-
-        viewModel =
-            ViewModelProvider(
-                this,
-                IntroViewModelFactory(
-                    this,
-                    SaveUserCountryPrefsUC(costInfoRepository),
-                    FindLastRegionUC(regionRepository)
-                )
-            ).get(IntroViewModel::class.java)
 
         lifecycleScope.launch {
             repeatOnLifecycle(Lifecycle.State.STARTED){

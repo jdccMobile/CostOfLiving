@@ -22,15 +22,16 @@ import com.jdccmobile.costofliving.domain.usecases.RequestUserCountryPrefsUC
 import com.jdccmobile.costofliving.domain.model.AutoCompleteSearch
 import com.jdccmobile.costofliving.domain.model.Place
 import com.jdccmobile.costofliving.ui.common.app
-import com.jdccmobile.costofliving.ui.main.dataStore
+
 import kotlinx.coroutines.launch
+import org.koin.androidx.viewmodel.ext.android.viewModel
 
 class SearchFragment : Fragment() {
 
     private var _binding: FragmentSearchBinding? = null
     private val binding get() = _binding!!
 
-    private lateinit var viewModel: SearchViewModel
+    private val viewModel: SearchViewModel by viewModel()
     private var isSearchByCity: Boolean = true
     private lateinit var citiesUserCountryAdapter: CitiesUserCountryAdapter
     private lateinit var citiesAutoComplete: List<AutoCompleteSearch>
@@ -44,16 +45,6 @@ class SearchFragment : Fragment() {
         savedInstanceState: Bundle?
     ): View {
         _binding = FragmentSearchBinding.inflate(inflater, container, false)
-
-        val costInfoRepository = CostInfoRepository(requireActivity().app, requireActivity().dataStore)
-        viewModel = ViewModelProvider(
-            this,
-            SearchViewModelFactory(
-                requireActivity(),
-                RequestUserCountryPrefsUC(costInfoRepository),
-                RequestCitiesListUC(costInfoRepository)
-            )
-        ).get(SearchViewModel::class.java)
 
         viewLifecycleOwner.lifecycleScope.launch {
             repeatOnLifecycle(Lifecycle.State.STARTED) {
