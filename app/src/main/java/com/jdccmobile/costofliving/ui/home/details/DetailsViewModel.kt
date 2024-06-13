@@ -6,8 +6,9 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.viewModelScope
 import com.jdccmobile.costofliving.R
-import com.jdccmobile.costofliving.data.CostInfoRepository
 import com.jdccmobile.costofliving.data.remote.model.cost.Price
+import com.jdccmobile.costofliving.domain.RequestCityCostUseCase
+import com.jdccmobile.costofliving.domain.RequestCountryCostUseCase
 import com.jdccmobile.costofliving.model.ItemCostInfo
 import com.jdccmobile.costofliving.model.Place
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -18,7 +19,8 @@ import kotlinx.coroutines.launch
 class DetailsViewModel(
     private val fragment: FragmentActivity,
     private val place: Place,
-    private val costInfoRepository: CostInfoRepository
+    private val requestCityCostUseCase: RequestCityCostUseCase,
+    private val requestCountryCostUseCase: RequestCountryCostUseCase,
 ) : ViewModel() {
 
     data class UiState(
@@ -54,15 +56,14 @@ class DetailsViewModel(
             val pricesList: List<Price>
             if (place.cityName != null) {
                 pricesList = try {
-                    costInfoRepository.requestCityCost(place.cityName, place.countryName).prices
+                    requestCityCostUseCase(place.cityName, place.countryName)
                 } catch (e: Exception) {
                     handleApiErrorMsg(e)
                     emptyList()
                 }
             } else {
                 pricesList = try {
-                    costInfoRepository.requestCountryCost(place.countryName).prices
-
+                    requestCountryCostUseCase(place.countryName)
                 } catch (e: Exception) {
                     handleApiErrorMsg(e)
                     emptyList()
@@ -108,9 +109,9 @@ class DetailsViewModel(
     }
 
 
-    fun changeFavStatus() {}
-
-
+    fun changeFavStatus() {
+        // TODO
+    }
 
 }
 
@@ -119,10 +120,11 @@ class DetailsViewModel(
 class DetailsViewModelFactory(
     private val fragment: FragmentActivity,
     private val place: Place,
-    private val costInfoRepository: CostInfoRepository
+    private val requestCityCostUseCase: RequestCityCostUseCase,
+    private val requestCountryCostUseCase: RequestCountryCostUseCase,
 ) :
     ViewModelProvider.Factory {
     override fun <T : ViewModel> create(modelClass: Class<T>): T {
-        return DetailsViewModel(fragment, place, costInfoRepository) as T
+        return DetailsViewModel(fragment, place, requestCityCostUseCase, requestCountryCostUseCase) as T
     }
 }

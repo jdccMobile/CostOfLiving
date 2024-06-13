@@ -15,6 +15,8 @@ import androidx.navigation.fragment.navArgs
 import com.jdccmobile.costofliving.R
 import com.jdccmobile.costofliving.data.CostInfoRepository
 import com.jdccmobile.costofliving.databinding.FragmentDetailsBinding
+import com.jdccmobile.costofliving.domain.RequestCityCostUseCase
+import com.jdccmobile.costofliving.domain.RequestCountryCostUseCase
 import com.jdccmobile.costofliving.ui.common.app
 import com.jdccmobile.costofliving.ui.main.dataStore
 import kotlinx.coroutines.launch
@@ -42,7 +44,8 @@ class DetailsFragment : Fragment() {
             DetailsViewModelFactory(
                 requireActivity(),
                 requireNotNull(safeArgs.place),
-                costInfoRepository
+                RequestCityCostUseCase(costInfoRepository),
+                RequestCountryCostUseCase(costInfoRepository),
             )
         ).get(DetailsViewModel::class.java)
 
