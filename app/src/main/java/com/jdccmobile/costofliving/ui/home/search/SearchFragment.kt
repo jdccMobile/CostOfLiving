@@ -17,6 +17,8 @@ import com.jdccmobile.costofliving.R
 import com.jdccmobile.costofliving.data.CostInfoRepository
 import com.jdccmobile.costofliving.data.remote.model.citieslist.City
 import com.jdccmobile.costofliving.databinding.FragmentSearchBinding
+import com.jdccmobile.costofliving.domain.RequestCitiesListUseCase
+import com.jdccmobile.costofliving.domain.RequestUserCountryPrefsUseCase
 import com.jdccmobile.costofliving.model.AutoCompleteSearch
 import com.jdccmobile.costofliving.model.Place
 import com.jdccmobile.costofliving.ui.common.app
@@ -43,10 +45,15 @@ class SearchFragment : Fragment() {
     ): View {
         _binding = FragmentSearchBinding.inflate(inflater, container, false)
 
-        val costInfoRepository = CostInfoRepository(requireActivity().app, requireActivity().dataStore)
+        val costInfoRepository =
+            CostInfoRepository(requireActivity().app, requireActivity().dataStore)
         viewModel = ViewModelProvider(
             this,
-            SearchViewModelFactory(requireActivity(), costInfoRepository)
+            SearchViewModelFactory(
+                requireActivity(),
+                RequestUserCountryPrefsUseCase(costInfoRepository),
+                RequestCitiesListUseCase(costInfoRepository),
+            )
         ).get(SearchViewModel::class.java)
 
         viewLifecycleOwner.lifecycleScope.launch {
@@ -134,7 +141,8 @@ class SearchFragment : Fragment() {
     }
 
     private fun hideKeyboard() {
-        val imm = requireActivity().getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
+        val imm =
+            requireActivity().getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
         val view = requireView()
         imm.hideSoftInputFromWindow(view.windowToken, 0)
     }

@@ -6,8 +6,9 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.viewModelScope
 import com.jdccmobile.costofliving.R
-import com.jdccmobile.costofliving.data.CostInfoRepository
 import com.jdccmobile.costofliving.data.remote.model.citieslist.City
+import com.jdccmobile.costofliving.domain.RequestCitiesListUseCase
+import com.jdccmobile.costofliving.domain.RequestUserCountryPrefsUseCase
 import com.jdccmobile.costofliving.model.AutoCompleteSearch
 import com.jdccmobile.costofliving.model.Place
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -17,7 +18,8 @@ import kotlinx.coroutines.launch
 
 class SearchViewModel(
     private val fragment: FragmentActivity,
-    private val costInfoRepository: CostInfoRepository
+    private val requestUserCountryPrefsUseCase: RequestUserCountryPrefsUseCase,
+    private val requestCitiesListUseCase: RequestCitiesListUseCase,
 ) : ViewModel() {
     data class UiState(
         val apiCallCompleted: Boolean = false,
@@ -38,7 +40,7 @@ class SearchViewModel(
 
     private fun refresh() {
         viewModelScope.launch{
-            val countryName = costInfoRepository.requestUserCountryPrefs()
+            val countryName = requestUserCountryPrefsUseCase()
             _state.value = UiState(countryName = countryName)
             createLists(countryName)
         }
@@ -48,7 +50,7 @@ class SearchViewModel(
         if(!_state.value.apiCallCompleted){
             try {
                 Log.i("JD Search VM", "API call: requestCitiesList")
-                val citiesList = costInfoRepository.requestCitiesList().cities
+                val citiesList = requestCitiesListUseCase().cities
                 val citiesInUserCountry = citiesList.filter { it.countryName == userCountryName }.sortedBy { it.cityName }
                 _state.value = _state.value.copy(citiesInUserCountry = citiesInUserCountry)
 
@@ -122,10 +124,11 @@ class SearchViewModel(
 @Suppress("UNCHECKED_CAST")
 class SearchViewModelFactory(
     private val fragment: FragmentActivity,
-    private val costInfoRepository: CostInfoRepository
+    private val requestUserCountryPrefsUseCase: RequestUserCountryPrefsUseCase,
+    private val requestCitiesListUseCase: RequestCitiesListUseCase,
 ) :
     ViewModelProvider.Factory {
     override fun <T : ViewModel> create(modelClass: Class<T>): T {
-        return SearchViewModel(fragment, costInfoRepository) as T
+        return SearchViewModel(fragment, requestUserCountryPrefsUseCase, requestCitiesListUseCase) as T
     }
 }
