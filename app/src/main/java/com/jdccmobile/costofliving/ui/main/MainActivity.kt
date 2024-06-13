@@ -12,6 +12,7 @@ import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
 import com.jdccmobile.costofliving.R
 import com.jdccmobile.costofliving.data.CostInfoRepository
+import com.jdccmobile.costofliving.domain.RequestUserCountryPrefsUseCase
 import com.jdccmobile.costofliving.ui.common.app
 import com.jdccmobile.costofliving.ui.home.HomeActivity
 import com.jdccmobile.costofliving.ui.intro.IntroActivity
@@ -27,6 +28,7 @@ class MainActivity : AppCompatActivity() {
         const val DEFAULT_COUNTRY_CODE = "es"
     }
 
+    // TODO utilizar la linea comentada
 //    private val viewModel: MainViewModel by viewModels { MainViewModelFactory(dataStore) }
     private lateinit var viewModel: MainViewModel
 
@@ -39,7 +41,7 @@ class MainActivity : AppCompatActivity() {
         val costInfoRepository = CostInfoRepository(app, this.dataStore)
         viewModel = ViewModelProvider(
             this,
-            MainViewModelFactory(costInfoRepository)
+            MainViewModelFactory(RequestUserCountryPrefsUseCase(costInfoRepository))
         ).get(MainViewModel::class.java)
 
         lifecycleScope.launch {
