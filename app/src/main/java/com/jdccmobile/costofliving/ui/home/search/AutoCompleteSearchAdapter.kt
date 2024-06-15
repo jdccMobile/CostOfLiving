@@ -13,12 +13,10 @@ import com.squareup.picasso.Picasso
 class AutoCompleteSearchAdapter(
     context: Context,
     items: List<AutoCompleteSearch>,
-    private val onClick: ((AutoCompleteSearch) -> Unit)
+    private val onClick: ((AutoCompleteSearch) -> Unit),
 ) :
     ArrayAdapter<AutoCompleteSearch>(context, 0, items) {
-
     override fun getView(position: Int, convertView: View?, parent: ViewGroup): View {
-
         val binding = if (convertView == null) {
             val inflater = LayoutInflater.from(context)
             ViewSearchAutocompleteItemBinding.inflate(inflater, parent, false)
@@ -34,11 +32,10 @@ class AutoCompleteSearchAdapter(
         }
 
         binding.root.setOnClickListener {
-            val item = AutoCompleteSearch(getItem(position)!!.textSearch, getItem(position)!!.country)
+            val item =
+                AutoCompleteSearch(getItem(position)!!.textSearch, getItem(position)!!.country)
             onClick(item)
         }
         return binding.root
     }
-
-
 }

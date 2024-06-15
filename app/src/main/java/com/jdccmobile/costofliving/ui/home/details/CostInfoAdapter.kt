@@ -10,11 +10,12 @@ import com.jdccmobile.costofliving.model.ItemCostInfo
 
 class CostInfoAdapter(
     private val name: String,
-    private val costInfo: List<ItemCostInfo>
-): RecyclerView.Adapter<CostInfoAdapter.CostInfoViewHolder>() {
-
+    private val costInfo: List<ItemCostInfo>,
+) : RecyclerView.Adapter<CostInfoAdapter.CostInfoViewHolder>() {
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): CostInfoViewHolder {
-        val view = LayoutInflater.from(parent.context).inflate(R.layout.view_cost_item, parent, false)
+        val view = LayoutInflater.from(
+            parent.context,
+        ).inflate(R.layout.view_cost_item, parent, false)
         return CostInfoViewHolder(view)
     }
 
@@ -36,4 +37,3 @@ class CostInfoAdapter(
         }
     }
 }
-

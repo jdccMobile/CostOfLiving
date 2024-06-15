@@ -7,12 +7,11 @@ import androidx.datastore.preferences.core.stringPreferencesKey
 import kotlinx.coroutines.flow.first
 
 class PreferencesDataSource(private val dataStore: DataStore<Preferences>) {
-
     companion object {
         const val COUNTRY_NAME = "country_name"
     }
 
-    suspend fun getUserCountryPrefs() : String {
+    suspend fun getUserCountryPrefs(): String {
         val preferences = dataStore.data.first()
         return preferences[stringPreferencesKey(COUNTRY_NAME)] ?: ""
     }

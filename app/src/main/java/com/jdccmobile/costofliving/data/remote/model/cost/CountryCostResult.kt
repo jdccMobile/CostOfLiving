@@ -8,5 +8,5 @@ data class CountryCostResult(
     @SerializedName("error") val error: Any,
     @SerializedName("exchange_rate") val exchangeRate: ExchangeRate,
     @SerializedName("exchange_rates_updated") val exchangeRatesUpdated: ExchangeRatesUpdated,
-    @SerializedName("prices") val prices: List<Price>
+    @SerializedName("prices") val prices: List<Price>,
 )

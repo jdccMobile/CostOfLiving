@@ -10,9 +10,8 @@ import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
 
 class MainViewModel(
-    private val requestUserCountryPrefsUseCase: RequestUserCountryPrefsUseCase
+    private val requestUserCountryPrefsUseCase: RequestUserCountryPrefsUseCase,
 ) : ViewModel() {
-
     data class UiState(
         val countryName: String? = null,
     )
@@ -27,7 +26,7 @@ class MainViewModel(
     private fun refresh() {
         viewModelScope.launch {
             _state.value = UiState(
-                requestUserCountryPrefsUseCase()
+                requestUserCountryPrefsUseCase(),
             )
         }
     }
@@ -35,7 +34,7 @@ class MainViewModel(
 
 @Suppress("UNCHECKED_CAST")
 class MainViewModelFactory(
-    private val requestUserCountryPrefsUseCase: RequestUserCountryPrefsUseCase
+    private val requestUserCountryPrefsUseCase: RequestUserCountryPrefsUseCase,
 ) : ViewModelProvider.Factory {
     override fun <T : ViewModel> create(modelClass: Class<T>): T {
         return MainViewModel(requestUserCountryPrefsUseCase) as T

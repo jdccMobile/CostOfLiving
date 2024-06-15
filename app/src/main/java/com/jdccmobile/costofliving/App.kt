@@ -4,8 +4,7 @@ import android.app.Application
 import androidx.room.Room
 import com.jdccmobile.costofliving.data.local.database.PlaceDatabase
 
-class App: Application() {
-
+class App : Application() {
     lateinit var db: PlaceDatabase
         private set
 
@@ -14,8 +13,7 @@ class App: Application() {
 
         db = Room.databaseBuilder(
             this,
-            PlaceDatabase::class.java, "movie-db"
+            PlaceDatabase::class.java, "movie-db",
         ).build()
     }
 }
-

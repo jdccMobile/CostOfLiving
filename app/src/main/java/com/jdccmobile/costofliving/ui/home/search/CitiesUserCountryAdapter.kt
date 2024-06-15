@@ -13,10 +13,9 @@ import com.squareup.picasso.Picasso
 
 class CitiesUserCountryAdapter(
     private val cities: List<City>,
-    private val onItemClick: (Place) -> Unit
-    ) :
+    private val onItemClick: (Place) -> Unit,
+) :
     RecyclerView.Adapter<CitiesUserCountryAdapter.CitiesViewHolder>() {
-
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): CitiesViewHolder {
         val view =
             LayoutInflater.from(parent.context).inflate(R.layout.view_city_item, parent, false)

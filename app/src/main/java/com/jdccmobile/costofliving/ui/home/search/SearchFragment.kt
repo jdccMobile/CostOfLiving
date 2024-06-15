@@ -2,12 +2,12 @@ package com.jdccmobile.costofliving.ui.home.search
 
 import android.content.Context
 import android.os.Bundle
-import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.view.inputmethod.InputMethodManager
 import android.widget.Toast
+import androidx.fragment.app.Fragment
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.lifecycleScope
@@ -26,7 +26,6 @@ import com.jdccmobile.costofliving.ui.main.dataStore
 import kotlinx.coroutines.launch
 
 class SearchFragment : Fragment() {
-
     private var _binding: FragmentSearchBinding? = null
     private val binding get() = _binding!!
 
@@ -38,10 +37,10 @@ class SearchFragment : Fragment() {
     private lateinit var countriesAutoComplete: List<AutoCompleteSearch>
     private lateinit var countriesAutoCompleteSearchAdapter: AutoCompleteSearchAdapter
 
-
     override fun onCreateView(
-        inflater: LayoutInflater, container: ViewGroup?,
-        savedInstanceState: Bundle?
+        inflater: LayoutInflater,
+        container: ViewGroup?,
+        savedInstanceState: Bundle?,
     ): View {
         _binding = FragmentSearchBinding.inflate(inflater, container, false)
 
@@ -53,7 +52,7 @@ class SearchFragment : Fragment() {
                 requireActivity(),
                 RequestUserCountryPrefsUseCase(costInfoRepository),
                 RequestCitiesListUseCase(costInfoRepository),
-            )
+            ),
         ).get(SearchViewModel::class.java)
 
         viewLifecycleOwner.lifecycleScope.launch {
@@ -115,8 +114,11 @@ class SearchFragment : Fragment() {
     }
 
     private fun selectAutoCompleteAdapter() {
-        if (isSearchByCity) binding.atSearch.setAdapter(citiesAutoCompleteSearchAdapter)
-        else binding.atSearch.setAdapter(countriesAutoCompleteSearchAdapter)
+        if (isSearchByCity) {
+            binding.atSearch.setAdapter(citiesAutoCompleteSearchAdapter)
+        } else {
+            binding.atSearch.setAdapter(countriesAutoCompleteSearchAdapter)
+        }
     }
 
     private fun onSearchClick() {
@@ -154,6 +156,4 @@ class SearchFragment : Fragment() {
         Toast.makeText(requireActivity(), msg, Toast.LENGTH_SHORT).show()
         viewModel.onApiErrorMsgShown()
     }
-
-
 }

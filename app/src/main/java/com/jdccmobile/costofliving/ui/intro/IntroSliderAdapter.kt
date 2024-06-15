@@ -8,13 +8,11 @@ import com.jdccmobile.costofliving.R
 import com.jdccmobile.costofliving.databinding.ViewIntroSlideBinding
 import com.jdccmobile.costofliving.model.IntroSlide
 
-
 class IntroSliderAdapter(private val introSlide: List<IntroSlide>) :
     RecyclerView.Adapter<IntroSliderAdapter.IntroSliderViewHolder>() {
-
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): IntroSliderViewHolder {
         return IntroSliderViewHolder(
-            LayoutInflater.from(parent.context).inflate(R.layout.view_intro_slide, parent, false)
+            LayoutInflater.from(parent.context).inflate(R.layout.view_intro_slide, parent, false),
         )
     }
 

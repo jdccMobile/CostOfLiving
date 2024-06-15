@@ -7,5 +7,5 @@ import androidx.room.PrimaryKey
 data class Place(
     @PrimaryKey(autoGenerate = true) val id: Int,
     val cityName: String,
-    val countryName: String
+    val countryName: String,
 )

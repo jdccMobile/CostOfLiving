@@ -12,5 +12,5 @@ data class Price(
     @SerializedName("max") val max: Double,
     @SerializedName("measure") val measure: String,
     @SerializedName("min") val min: Double,
-    @SerializedName("usd") val usd: Usd
+    @SerializedName("usd") val usd: Usd,
 )

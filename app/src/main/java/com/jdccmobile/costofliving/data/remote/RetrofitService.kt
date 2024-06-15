@@ -11,28 +11,29 @@ import retrofit2.http.Headers
 import retrofit2.http.Query
 
 interface RetrofitService {
-
     @Headers("X-RapidAPI-Host: cost-of-living-and-prices.p.rapidapi.com")
     @GET("cities")
-    suspend fun getCities(@Header("X-RapidAPI-Key") apiKey: String) : CitiesListResult
+    suspend fun getCities(
+        @Header("X-RapidAPI-Key") apiKey: String,
+    ): CitiesListResult
 
     @Headers("X-RapidAPI-Host: cost-of-living-and-prices.p.rapidapi.com")
     @GET("prices")
     suspend fun getCityCost(
         @Header("X-RapidAPI-Key") apiKey: String,
         @Query("city_name") cityName: String,
-        @Query("country_name") countryName: String
-    ) : CityCostResult
+        @Query("country_name") countryName: String,
+    ): CityCostResult
 
     @Headers("X-RapidAPI-Host: cost-of-living-and-prices.p.rapidapi.com")
     @GET("prices")
     suspend fun getCountryCost(
         @Header("X-RapidAPI-Key") apiKey: String,
-        @Query("country_name") countryName: String
-    ) : CountryCostResult
+        @Query("country_name") countryName: String,
+    ): CountryCostResult
 }
 
-object RetrofitServiceFactory{
+object RetrofitServiceFactory {
     fun makeRetrofitService(): RetrofitService {
         return Retrofit.Builder()
             .baseUrl("https://cost-of-living-and-prices.p.rapidapi.com/")

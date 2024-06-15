@@ -2,11 +2,11 @@ package com.jdccmobile.costofliving.ui.home.details
 
 import android.os.Bundle
 import android.util.Log
-import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
+import androidx.fragment.app.Fragment
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.lifecycleScope
@@ -21,9 +21,7 @@ import com.jdccmobile.costofliving.ui.common.app
 import com.jdccmobile.costofliving.ui.main.dataStore
 import kotlinx.coroutines.launch
 
-
 class DetailsFragment : Fragment() {
-
     private var _binding: FragmentDetailsBinding? = null
     private val binding get() = _binding!!
 
@@ -33,12 +31,14 @@ class DetailsFragment : Fragment() {
     private lateinit var costInfoAdapter: CostInfoAdapter
 
     override fun onCreateView(
-        inflater: LayoutInflater, container: ViewGroup?,
-        savedInstanceState: Bundle?
+        inflater: LayoutInflater,
+        container: ViewGroup?,
+        savedInstanceState: Bundle?,
     ): View {
         _binding = FragmentDetailsBinding.inflate(inflater, container, false)
 
-        val costInfoRepository = CostInfoRepository(requireActivity().app, requireActivity().dataStore)
+        val costInfoRepository =
+            CostInfoRepository(requireActivity().app, requireActivity().dataStore)
         viewModel = ViewModelProvider(
             this,
             DetailsViewModelFactory(
@@ -46,7 +46,7 @@ class DetailsFragment : Fragment() {
                 requireNotNull(safeArgs.place),
                 RequestCityCostUseCase(costInfoRepository),
                 RequestCountryCostUseCase(costInfoRepository),
-            )
+            ),
         ).get(DetailsViewModel::class.java)
 
         viewLifecycleOwner.lifecycleScope.launch {
@@ -60,19 +60,20 @@ class DetailsFragment : Fragment() {
         return binding.root
     }
 
-
     private fun updateUI(state: DetailsViewModel.UiState) {
         binding.tvCityName.text = state.cityName ?: state.countryName
         binding.tvCountryName.text = state.countryName
         Log.i("JD Details Fragment error", state.apiErrorMsg.toString())
-        if(state.apiCallCompleted){
+        if (state.apiCallCompleted) {
             if (state.apiErrorMsg == null) {
                 binding.pbCostInfo.visibility = View.GONE
                 binding.rvCostItems.visibility = View.VISIBLE
-                costInfoAdapter = CostInfoAdapter(state.cityName ?: state.countryName, state.itemCostInfoList)
+                costInfoAdapter = CostInfoAdapter(
+                    name = state.cityName ?: state.countryName,
+                    costInfo = state.itemCostInfoList,
+                )
                 binding.rvCostItems.adapter = costInfoAdapter
-            }
-            else {
+            } else {
                 handleErrorConnection(state.apiErrorMsg)
             }
         }
@@ -90,5 +91,4 @@ class DetailsFragment : Fragment() {
         binding.ivErrorImage.setImageResource(R.drawable.im_error_connection)
         Toast.makeText(requireActivity(), msg, Toast.LENGTH_SHORT).show()
     }
-
 }

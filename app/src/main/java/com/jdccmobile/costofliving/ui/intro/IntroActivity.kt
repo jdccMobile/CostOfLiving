@@ -1,12 +1,12 @@
 package com.jdccmobile.costofliving.ui.intro
 
 import android.content.Intent
-import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageView
 import android.widget.LinearLayout
+import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.ContextCompat
 import androidx.core.view.get
 import androidx.lifecycle.Lifecycle
@@ -16,8 +16,8 @@ import androidx.lifecycle.repeatOnLifecycle
 import androidx.viewpager2.widget.ViewPager2
 import com.jdccmobile.costofliving.R
 import com.jdccmobile.costofliving.data.CostInfoRepository
-import com.jdccmobile.costofliving.databinding.ActivityIntroBinding
 import com.jdccmobile.costofliving.data.RegionRepository
+import com.jdccmobile.costofliving.databinding.ActivityIntroBinding
 import com.jdccmobile.costofliving.model.IntroSlide
 import com.jdccmobile.costofliving.ui.common.app
 import com.jdccmobile.costofliving.ui.home.HomeActivity
@@ -26,13 +26,11 @@ import com.jdccmobile.costofliving.ui.main.dataStore
 import kotlinx.coroutines.launch
 
 class IntroActivity : AppCompatActivity() {
-
     private lateinit var binding: ActivityIntroBinding
     private lateinit var introSliderAdapter: IntroSliderAdapter
     private lateinit var viewModel: IntroViewModel
 
     override fun onCreate(savedInstanceState: Bundle?) {
-
         super.onCreate(savedInstanceState)
         binding = ActivityIntroBinding.inflate(layoutInflater)
         setContentView(binding.root)
@@ -42,12 +40,12 @@ class IntroActivity : AppCompatActivity() {
         viewModel =
             ViewModelProvider(
                 this,
-                IntroViewModelFactory(this, regionRepository, costInfoRepository)
+                IntroViewModelFactory(this, regionRepository, costInfoRepository),
             ).get(IntroViewModel::class.java)
 
         lifecycleScope.launch {
-            repeatOnLifecycle(Lifecycle.State.STARTED){
-                viewModel.state.collect{ updateUI(it.introSlidesInfo) }
+            repeatOnLifecycle(Lifecycle.State.STARTED) {
+                viewModel.state.collect { updateUI(it.introSlidesInfo) }
             }
         }
     }
@@ -69,18 +67,19 @@ class IntroActivity : AppCompatActivity() {
         })
     }
 
+    @Suppress("MagicNumber")
     private fun setUpDots() {
         val dots = arrayOfNulls<ImageView>(introSliderAdapter.itemCount)
         val layoutParams: LinearLayout.LayoutParams = LinearLayout.LayoutParams(
             ViewGroup.LayoutParams.WRAP_CONTENT,
-            ViewGroup.LayoutParams.WRAP_CONTENT
+            ViewGroup.LayoutParams.WRAP_CONTENT,
         )
         layoutParams.setMargins(8, 0, 8, 0)
         for (i in dots.indices) {
             dots[i] = ImageView(applicationContext)
             dots[i].apply {
                 this?.setImageDrawable(
-                    ContextCompat.getDrawable(applicationContext, R.drawable.ic_inactive_intro_dot)
+                    ContextCompat.getDrawable(applicationContext, R.drawable.ic_inactive_intro_dot),
                 )
                 this?.layoutParams = layoutParams
             }
@@ -94,11 +93,11 @@ class IntroActivity : AppCompatActivity() {
             val imageView = binding.llDotsIndicators[i] as ImageView
             if (i == index) {
                 imageView.setImageDrawable(
-                    ContextCompat.getDrawable(applicationContext, R.drawable.ic_active_intro_dot)
+                    ContextCompat.getDrawable(applicationContext, R.drawable.ic_active_intro_dot),
                 )
             } else {
                 imageView.setImageDrawable(
-                    ContextCompat.getDrawable(applicationContext, R.drawable.ic_inactive_intro_dot)
+                    ContextCompat.getDrawable(applicationContext, R.drawable.ic_inactive_intro_dot),
                 )
             }
         }
@@ -128,5 +127,4 @@ class IntroActivity : AppCompatActivity() {
         startActivity(Intent(this@IntroActivity, HomeActivity::class.java))
         finish()
     }
-
 }

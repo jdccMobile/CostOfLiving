@@ -22,21 +22,20 @@ class DetailsViewModel(
     private val requestCityCostUseCase: RequestCityCostUseCase,
     private val requestCountryCostUseCase: RequestCountryCostUseCase,
 ) : ViewModel() {
-
     data class UiState(
         val cityName: String? = null,
         val countryName: String,
         val apiCallCompleted: Boolean = false,
         val itemCostInfoList: List<ItemCostInfo> = emptyList(),
         val isFavorite: Boolean? = null,
-        val apiErrorMsg: String? = null
+        val apiErrorMsg: String? = null,
     )
 
     private val _state = MutableStateFlow(
         UiState(
             cityName = place.cityName?.replaceFirstChar { it.uppercase() },
-            countryName = place.countryName.replaceFirstChar { it.uppercase() }
-        )
+            countryName = place.countryName.replaceFirstChar { it.uppercase() },
+        ),
     )
     val state: StateFlow<UiState> = _state.asStateFlow()
 
@@ -48,9 +47,9 @@ class DetailsViewModel(
         viewModelScope.launch {
             createCostInfoList()
         }
-
     }
 
+    @Suppress("TooGenericExceptionCaught")
     private suspend fun createCostInfoList() {
         if (!_state.value.apiCallCompleted) {
             val pricesList: List<Price>
@@ -71,22 +70,6 @@ class DetailsViewModel(
             }
             _state.value = _state.value.copy(apiCallCompleted = true)
 
-            val itemsToSearch = arrayOf(
-                "in City Center",
-                "Gasoline",
-                "Dress",
-                "Fitness",
-                "Coca-Cola",
-                "McMeal"
-            )
-            val itemsImageId = intArrayOf(
-                R.drawable.im_city_centre,
-                R.drawable.im_gasoline,
-                R.drawable.im_dress,
-                R.drawable.im_fitness,
-                R.drawable.im_coca_cola,
-                R.drawable.im_mc_meal
-            )
             val itemsCostInfo: MutableList<ItemCostInfo> = mutableListOf()
             for (price in pricesList) {
                 for (item in itemsToSearch.indices) {
@@ -101,20 +84,38 @@ class DetailsViewModel(
 
     private fun handleApiErrorMsg(e: Exception) {
         Log.e("JD Search VM", "API call requestCitiesList error: $e")
-        if(e.message?.contains("429") == true){
-            _state.value = _state.value.copy(apiErrorMsg = fragment.getString(R.string.http_429))
+        if (e.message?.contains("429") == true) {
+            _state.value = _state.value.copy(
+                apiErrorMsg = fragment.getString(R.string.http_429),
+            )
         } else {
-            _state.value = _state.value.copy(apiErrorMsg = fragment.getString(R.string.connection_error))
+            _state.value = _state.value.copy(
+                apiErrorMsg = fragment.getString(R.string.connection_error),
+            )
         }
     }
-
 
     fun changeFavStatus() {
         // TODO
     }
-
 }
 
+val itemsToSearch = arrayOf(
+    "in City Center",
+    "Gasoline",
+    "Dress",
+    "Fitness",
+    "Coca-Cola",
+    "McMeal",
+)
+val itemsImageId = intArrayOf(
+    R.drawable.im_city_centre,
+    R.drawable.im_gasoline,
+    R.drawable.im_dress,
+    R.drawable.im_fitness,
+    R.drawable.im_coca_cola,
+    R.drawable.im_mc_meal,
+)
 
 @Suppress("UNCHECKED_CAST")
 class DetailsViewModelFactory(
@@ -125,6 +126,11 @@ class DetailsViewModelFactory(
 ) :
     ViewModelProvider.Factory {
     override fun <T : ViewModel> create(modelClass: Class<T>): T {
-        return DetailsViewModel(fragment, place, requestCityCostUseCase, requestCountryCostUseCase) as T
+        return DetailsViewModel(
+            fragment,
+            place,
+            requestCityCostUseCase,
+            requestCountryCostUseCase,
+        ) as T
     }
 }

@@ -10,4 +10,3 @@ val Context.app: App
 // Get countryCode from country name
 fun getCountryCode(countryName: String) =
     Locale.getISOCountries().find { Locale("", it).getDisplayCountry(Locale.ENGLISH) == countryName }
-

@@ -19,5 +19,5 @@ data class ExchangeRate(
     @SerializedName("RUB") val rub: Double,
     @SerializedName("SEK") val sek: Double,
     @SerializedName("UAH") val uah: Double,
-    @SerializedName("USD") val usd: Int
+    @SerializedName("USD") val usd: Int,
 )

@@ -12,9 +12,9 @@ import kotlinx.coroutines.suspendCancellableCoroutine
 import kotlin.coroutines.resume
 
 class RegionRepository(activity: AppCompatActivity) {
-
     private val fusedLocationClient = LocationServices.getFusedLocationProviderClient(activity)
-    private val coarsePermissionChecker = PermissionChecker(activity, Manifest.permission.ACCESS_COARSE_LOCATION)
+    private val coarsePermissionChecker =
+        PermissionChecker(activity, Manifest.permission.ACCESS_COARSE_LOCATION)
 
     private val geocoder = Geocoder(activity)
 

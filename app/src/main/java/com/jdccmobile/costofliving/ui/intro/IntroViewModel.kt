@@ -5,8 +5,8 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.viewModelScope
 import com.jdccmobile.costofliving.data.CostInfoRepository
-import com.jdccmobile.costofliving.data.local.IntroSlidesProvider
 import com.jdccmobile.costofliving.data.RegionRepository
+import com.jdccmobile.costofliving.data.local.IntroSlidesProvider
 import com.jdccmobile.costofliving.model.IntroSlide
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
@@ -17,16 +17,15 @@ import java.util.Locale
 class IntroViewModel(
     private val activity: AppCompatActivity,
     private val regionRepository: RegionRepository,
-    private val costInfoRepository: CostInfoRepository
-) : ViewModel(
-
-) {
+    private val costInfoRepository: CostInfoRepository,
+) : ViewModel() {
     data class UiState(
         val introSlidesInfo: List<IntroSlide> = emptyList(),
     )
 
     private val _state = MutableStateFlow(UiState())
     val state: StateFlow<UiState> = _state.asStateFlow()
+
     init {
         refresh()
     }
@@ -34,7 +33,7 @@ class IntroViewModel(
     private fun refresh() {
         viewModelScope.launch {
             _state.value = UiState(
-                introSlidesInfo = IntroSlidesProvider(activity).getIntroSlides()
+                introSlidesInfo = IntroSlidesProvider(activity).getIntroSlides(),
             )
         }
     }
@@ -46,12 +45,11 @@ class IntroViewModel(
     }
 }
 
-
 @Suppress("UNCHECKED_CAST")
 class IntroViewModelFactory(
     private val activity: AppCompatActivity,
     private val regionRepository: RegionRepository,
-    private val costInfoRepository: CostInfoRepository
+    private val costInfoRepository: CostInfoRepository,
 ) : ViewModelProvider.Factory {
     override fun <T : ViewModel> create(modelClass: Class<T>): T {
         return IntroViewModel(activity, regionRepository, costInfoRepository) as T
