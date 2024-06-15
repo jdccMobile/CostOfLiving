@@ -4,6 +4,7 @@ plugins {
     id("androidx.navigation.safeargs.kotlin")
     id("kotlin-parcelize")
     id("org.jetbrains.kotlin.kapt")
+    id("io.gitlab.arturbosch.detekt")
 }
 
 android {
