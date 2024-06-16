@@ -1,8 +1,8 @@
-package com.jdccmobile.costofliving.data.remote.model.cost
+package com.jdccmobile.costofliving.data.remote.models.cost
 
 import com.google.gson.annotations.SerializedName
 
-data class Price(
+data class PriceResponse(
     @SerializedName("avg") val avg: Double,
     @SerializedName("category_id") val categoryId: Int,
     @SerializedName("category_name") val categoryName: String,
@@ -12,5 +12,5 @@ data class Price(
     @SerializedName("max") val max: Double,
     @SerializedName("measure") val measure: String,
     @SerializedName("min") val min: Double,
-    @SerializedName("usd") val usd: Usd,
+    @SerializedName("usd") val usd: UsdResponse,
 )

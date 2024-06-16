@@ -11,8 +11,8 @@ import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
 import com.jdccmobile.costofliving.R
-import com.jdccmobile.costofliving.data.CostInfoRepository
-import com.jdccmobile.costofliving.domain.RequestUserCountryPrefsUseCase
+import com.jdccmobile.costofliving.data.repositories.CostInfoRepository
+import com.jdccmobile.costofliving.domain.usecases.RequestUserCountryPrefsUseCase
 import com.jdccmobile.costofliving.ui.common.app
 import com.jdccmobile.costofliving.ui.home.HomeActivity
 import com.jdccmobile.costofliving.ui.intro.IntroActivity

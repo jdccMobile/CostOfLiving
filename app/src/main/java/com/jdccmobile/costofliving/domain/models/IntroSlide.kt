@@ -1,4 +1,4 @@
-package com.jdccmobile.costofliving.model
+package com.jdccmobile.costofliving.domain.models
 
 data class IntroSlide(
     val title: String,

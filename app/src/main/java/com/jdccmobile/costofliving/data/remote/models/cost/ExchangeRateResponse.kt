@@ -1,8 +1,8 @@
-package com.jdccmobile.costofliving.data.remote.model.cost
+package com.jdccmobile.costofliving.data.remote.models.cost
 
 import com.google.gson.annotations.SerializedName
 
-data class ExchangeRate(
+data class ExchangeRateResponse(
     @SerializedName("AUD") val aud: Double,
     @SerializedName("CAD") val cad: Double,
     @SerializedName("CHF") val chf: Double,

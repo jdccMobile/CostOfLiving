@@ -8,15 +8,15 @@ import kotlinx.coroutines.flow.Flow
 
 @Dao
 interface PlaceDao {
-    @Query("SELECT * FROM Place")
-    fun getAll(): Flow<List<Place>>
+    @Query("SELECT * FROM PlaceDb")
+    fun getAll(): Flow<List<PlaceDb>>
 
-    @Query("SELECT * FROM Place WHERE id = :id")
-    fun findById(id: Int): Flow<Place>
+    @Query("SELECT * FROM PlaceDb WHERE id = :id")
+    fun findById(id: Int): Flow<PlaceDb>
 
-    @Query("SELECT COUNT(id) FROM Place")
+    @Query("SELECT COUNT(id) FROM PlaceDb")
     fun placeCount(): Int
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
-    fun insertPlaces(places: List<Place>)
+    fun insertPlaces(places: List<PlaceDb>)
 }

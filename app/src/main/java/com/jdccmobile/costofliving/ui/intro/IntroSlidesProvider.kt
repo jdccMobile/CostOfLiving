@@ -1,8 +1,8 @@
-package com.jdccmobile.costofliving.data.local
+package com.jdccmobile.costofliving.ui.intro
 
 import androidx.appcompat.app.AppCompatActivity
 import com.jdccmobile.costofliving.R
-import com.jdccmobile.costofliving.model.IntroSlide
+import com.jdccmobile.costofliving.domain.models.IntroSlide
 
 class IntroSlidesProvider(activity: AppCompatActivity) {
     private val introSlides = listOf(

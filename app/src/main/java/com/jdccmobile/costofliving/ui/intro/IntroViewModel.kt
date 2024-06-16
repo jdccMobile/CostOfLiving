@@ -4,10 +4,9 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.viewModelScope
-import com.jdccmobile.costofliving.data.CostInfoRepository
-import com.jdccmobile.costofliving.data.RegionRepository
-import com.jdccmobile.costofliving.data.local.IntroSlidesProvider
-import com.jdccmobile.costofliving.model.IntroSlide
+import com.jdccmobile.costofliving.data.repositories.CostInfoRepository
+import com.jdccmobile.costofliving.data.repositories.RegionRepository
+import com.jdccmobile.costofliving.domain.models.IntroSlide
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow

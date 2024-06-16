@@ -6,7 +6,7 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.ArrayAdapter
 import com.jdccmobile.costofliving.databinding.ViewSearchAutocompleteItemBinding
-import com.jdccmobile.costofliving.model.AutoCompleteSearch
+import com.jdccmobile.costofliving.domain.models.AutoCompleteSearch
 import com.jdccmobile.costofliving.ui.common.getCountryCode
 import com.squareup.picasso.Picasso
 
@@ -25,7 +25,7 @@ class AutoCompleteSearchAdapter(
         }
 
         getItem(position)?.let {
-            binding.tvSearchItemCity.text = it.textSearch
+            binding.tvSearchItemCity.text = it.searchedText
             Picasso.get()
                 .load("https://flagsapi.com/${getCountryCode(it.country)}/flat/64.png")
                 .into(binding.ivSearchItemCountry)
@@ -33,7 +33,7 @@ class AutoCompleteSearchAdapter(
 
         binding.root.setOnClickListener {
             val item =
-                AutoCompleteSearch(getItem(position)!!.textSearch, getItem(position)!!.country)
+                AutoCompleteSearch(getItem(position)!!.searchedText, getItem(position)!!.country)
             onClick(item)
         }
         return binding.root

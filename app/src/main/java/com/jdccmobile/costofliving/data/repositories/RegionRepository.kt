@@ -1,4 +1,4 @@
-package com.jdccmobile.costofliving.data
+package com.jdccmobile.costofliving.data.repositories
 
 import android.Manifest
 import android.annotation.SuppressLint

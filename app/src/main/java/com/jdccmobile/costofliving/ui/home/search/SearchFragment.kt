@@ -14,13 +14,12 @@ import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
 import androidx.navigation.fragment.findNavController
 import com.jdccmobile.costofliving.R
-import com.jdccmobile.costofliving.data.CostInfoRepository
-import com.jdccmobile.costofliving.data.remote.model.citieslist.City
+import com.jdccmobile.costofliving.data.repositories.CostInfoRepository
 import com.jdccmobile.costofliving.databinding.FragmentSearchBinding
-import com.jdccmobile.costofliving.domain.RequestCitiesListUseCase
-import com.jdccmobile.costofliving.domain.RequestUserCountryPrefsUseCase
-import com.jdccmobile.costofliving.model.AutoCompleteSearch
-import com.jdccmobile.costofliving.model.Place
+import com.jdccmobile.costofliving.domain.models.AutoCompleteSearch
+import com.jdccmobile.costofliving.domain.models.Place
+import com.jdccmobile.costofliving.domain.usecases.RequestCitiesListUseCase
+import com.jdccmobile.costofliving.domain.usecases.RequestUserCountryPrefsUseCase
 import com.jdccmobile.costofliving.ui.common.app
 import com.jdccmobile.costofliving.ui.main.dataStore
 import kotlinx.coroutines.launch
@@ -31,7 +30,7 @@ class SearchFragment : Fragment() {
 
     private lateinit var viewModel: SearchViewModel
     private var isSearchByCity: Boolean = true
-    private lateinit var citiesUserCountryAdapter: CitiesUserCountryAdapter
+    private lateinit var citiesInUserCountryAdapter: CitiesUserCountryAdapter
     private lateinit var citiesAutoComplete: List<AutoCompleteSearch>
     private lateinit var citiesAutoCompleteSearchAdapter: AutoCompleteSearchAdapter
     private lateinit var countriesAutoComplete: List<AutoCompleteSearch>
@@ -81,7 +80,7 @@ class SearchFragment : Fragment() {
                 countriesAutoComplete = state.countriesAutoComplete
                 createAdapters(state.citiesInUserCountry)
                 selectAutoCompleteAdapter()
-                binding.rvSearchCities.adapter = citiesUserCountryAdapter
+                binding.rvSearchCities.adapter = citiesInUserCountryAdapter
                 binding.rvSearchCities.visibility = View.VISIBLE
                 binding.pbSearchCities.visibility = View.GONE
             } else {
@@ -90,17 +89,22 @@ class SearchFragment : Fragment() {
         }
     }
 
-    private fun createAdapters(citiesInUserCountry: List<City>) {
-        citiesUserCountryAdapter = CitiesUserCountryAdapter(citiesInUserCountry) {
+    private fun createAdapters(citiesInUserCountry: List<Place.City>) {
+        citiesInUserCountryAdapter = CitiesUserCountryAdapter(citiesInUserCountry) {
             viewModel.onPlaceClicked(it)
         }
         citiesAutoCompleteSearchAdapter =
             AutoCompleteSearchAdapter(requireContext(), citiesAutoComplete) {
-                viewModel.onPlaceClicked(Place(it.textSearch, it.country))
+                viewModel.onPlaceClicked(
+                    Place.City(
+                        countryName = it.country,
+                        cityName = it.searchedText,
+                    ),
+                )
             }
         countriesAutoCompleteSearchAdapter =
             AutoCompleteSearchAdapter(requireContext(), countriesAutoComplete) {
-                viewModel.onPlaceClicked(Place(countryName = it.textSearch))
+                viewModel.onPlaceClicked(Place.Country(countryName = it.searchedText))
             }
     }
 

@@ -1,8 +1,8 @@
-package com.jdccmobile.costofliving.data.remote.model.citieslist
+package com.jdccmobile.costofliving.data.remote.models.city
 
 import com.google.gson.annotations.SerializedName
 
-data class City(
+data class CityResponse(
     @SerializedName("city_name") val cityName: String,
     @SerializedName("country_name") val countryName: String,
 )
