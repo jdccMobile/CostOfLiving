@@ -1,4 +1,4 @@
-package com.jdccmobile.costofliving.ui.main
+package com.jdccmobile.costofliving.ui.features.main
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider

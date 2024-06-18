@@ -1,4 +1,4 @@
-package com.jdccmobile.costofliving.data.datasources
+package com.jdccmobile.costofliving.data.local.datasources
 
 import androidx.datastore.core.DataStore
 import androidx.datastore.preferences.core.Preferences

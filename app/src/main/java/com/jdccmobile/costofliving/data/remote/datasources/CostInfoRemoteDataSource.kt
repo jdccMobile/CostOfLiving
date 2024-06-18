@@ -1,4 +1,4 @@
-package com.jdccmobile.costofliving.data.datasources
+package com.jdccmobile.costofliving.data.remote.datasources
 
 import com.jdccmobile.costofliving.App
 import com.jdccmobile.costofliving.R

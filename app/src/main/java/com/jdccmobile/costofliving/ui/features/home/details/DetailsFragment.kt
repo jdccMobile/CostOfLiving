@@ -1,4 +1,4 @@
-package com.jdccmobile.costofliving.ui.home.details
+package com.jdccmobile.costofliving.ui.features.home.details
 
 import android.os.Bundle
 import android.util.Log
@@ -18,7 +18,8 @@ import com.jdccmobile.costofliving.databinding.FragmentDetailsBinding
 import com.jdccmobile.costofliving.domain.usecases.RequestCityCostUseCase
 import com.jdccmobile.costofliving.domain.usecases.RequestCountryCostUseCase
 import com.jdccmobile.costofliving.ui.common.app
-import com.jdccmobile.costofliving.ui.main.dataStore
+import com.jdccmobile.costofliving.ui.features.main.dataStore
+import com.jdccmobile.costofliving.ui.models.toDomain
 import kotlinx.coroutines.launch
 
 class DetailsFragment : Fragment() {
@@ -43,7 +44,7 @@ class DetailsFragment : Fragment() {
             this,
             DetailsViewModelFactory(
                 requireActivity(),
-                requireNotNull(safeArgs.place),
+                requireNotNull(safeArgs.placeUi.toDomain()),
                 RequestCityCostUseCase(costInfoRepository),
                 RequestCountryCostUseCase(costInfoRepository),
             ),

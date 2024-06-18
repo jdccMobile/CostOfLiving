@@ -3,9 +3,9 @@ package com.jdccmobile.costofliving.data.repositories
 import androidx.datastore.core.DataStore
 import androidx.datastore.preferences.core.Preferences
 import com.jdccmobile.costofliving.App
-import com.jdccmobile.costofliving.data.datasources.CostInfoLocalDataSource
-import com.jdccmobile.costofliving.data.datasources.CostInfoRemoteDataSource
-import com.jdccmobile.costofliving.data.datasources.PreferencesDataSource
+import com.jdccmobile.costofliving.data.local.datasources.CostInfoLocalDataSource
+import com.jdccmobile.costofliving.data.local.datasources.PreferencesDataSource
+import com.jdccmobile.costofliving.data.remote.datasources.CostInfoRemoteDataSource
 import com.jdccmobile.costofliving.domain.models.ItemPrice
 import com.jdccmobile.costofliving.domain.models.Place
 

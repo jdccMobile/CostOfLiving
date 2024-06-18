@@ -1,4 +1,4 @@
-package com.jdccmobile.costofliving.ui.intro
+package com.jdccmobile.costofliving.ui.features.intro
 
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.ViewModel

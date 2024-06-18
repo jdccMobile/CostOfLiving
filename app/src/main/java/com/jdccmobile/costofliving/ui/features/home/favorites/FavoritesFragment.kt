@@ -1,4 +1,4 @@
-package com.jdccmobile.costofliving.ui.home.favorites
+package com.jdccmobile.costofliving.ui.features.home.favorites
 
 import android.os.Bundle
 import android.view.LayoutInflater

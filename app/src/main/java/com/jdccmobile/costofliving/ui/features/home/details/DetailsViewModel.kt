@@ -1,4 +1,4 @@
-package com.jdccmobile.costofliving.ui.home.details
+package com.jdccmobile.costofliving.ui.features.home.details
 
 import android.util.Log
 import androidx.fragment.app.FragmentActivity

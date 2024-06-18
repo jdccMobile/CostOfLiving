@@ -1,4 +1,4 @@
-package com.jdccmobile.costofliving.ui.intro
+package com.jdccmobile.costofliving.ui.features.intro
 
 import android.view.LayoutInflater
 import android.view.View

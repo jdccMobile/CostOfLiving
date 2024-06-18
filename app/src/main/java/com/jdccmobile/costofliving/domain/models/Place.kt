@@ -1,10 +1,8 @@
 package com.jdccmobile.costofliving.domain.models
 
-import android.os.Parcelable
-import kotlinx.parcelize.Parcelize
+import com.jdccmobile.costofliving.ui.models.PlaceUi
 
-@Parcelize // TODO in domain we dont should hace a parcelabe
-sealed class Place : Parcelable {
+sealed class Place {
     abstract val countryName: String
 
     data class City(
@@ -15,4 +13,11 @@ sealed class Place : Parcelable {
     data class Country(
         override val countryName: String,
     ) : Place()
+}
+
+fun List<Place.City>.toUi() = map {
+    PlaceUi.City(
+        cityName = it.cityName,
+        countryName = it.countryName,
+    )
 }

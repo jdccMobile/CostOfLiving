@@ -1,4 +1,4 @@
-package com.jdccmobile.costofliving.ui.home.search
+package com.jdccmobile.costofliving.ui.features.home.search
 
 import android.content.Context
 import android.os.Bundle
@@ -16,12 +16,12 @@ import androidx.navigation.fragment.findNavController
 import com.jdccmobile.costofliving.R
 import com.jdccmobile.costofliving.data.repositories.CostInfoRepository
 import com.jdccmobile.costofliving.databinding.FragmentSearchBinding
-import com.jdccmobile.costofliving.domain.models.AutoCompleteSearch
-import com.jdccmobile.costofliving.domain.models.Place
+import com.jdccmobile.costofliving.domain.models.AutoCompleteSearchUi
 import com.jdccmobile.costofliving.domain.usecases.RequestCitiesListUseCase
 import com.jdccmobile.costofliving.domain.usecases.RequestUserCountryPrefsUseCase
 import com.jdccmobile.costofliving.ui.common.app
-import com.jdccmobile.costofliving.ui.main.dataStore
+import com.jdccmobile.costofliving.ui.features.main.dataStore
+import com.jdccmobile.costofliving.ui.models.PlaceUi
 import kotlinx.coroutines.launch
 
 class SearchFragment : Fragment() {
@@ -31,9 +31,9 @@ class SearchFragment : Fragment() {
     private lateinit var viewModel: SearchViewModel
     private var isSearchByCity: Boolean = true
     private lateinit var citiesInUserCountryAdapter: CitiesUserCountryAdapter
-    private lateinit var citiesAutoComplete: List<AutoCompleteSearch>
+    private lateinit var citiesAutoComplete: List<AutoCompleteSearchUi>
     private lateinit var citiesAutoCompleteSearchAdapter: AutoCompleteSearchAdapter
-    private lateinit var countriesAutoComplete: List<AutoCompleteSearch>
+    private lateinit var countriesAutoComplete: List<AutoCompleteSearchUi>
     private lateinit var countriesAutoCompleteSearchAdapter: AutoCompleteSearchAdapter
 
     override fun onCreateView(
@@ -89,14 +89,14 @@ class SearchFragment : Fragment() {
         }
     }
 
-    private fun createAdapters(citiesInUserCountry: List<Place.City>) {
+    private fun createAdapters(citiesInUserCountry: List<PlaceUi.City>) {
         citiesInUserCountryAdapter = CitiesUserCountryAdapter(citiesInUserCountry) {
-            viewModel.onPlaceClicked(it)
+            viewModel.onCityClicked(it)
         }
         citiesAutoCompleteSearchAdapter =
             AutoCompleteSearchAdapter(requireContext(), citiesAutoComplete) {
-                viewModel.onPlaceClicked(
-                    Place.City(
+                viewModel.onCityClicked(
+                    PlaceUi.City(
                         countryName = it.country,
                         cityName = it.searchedText,
                     ),
@@ -104,7 +104,7 @@ class SearchFragment : Fragment() {
             }
         countriesAutoCompleteSearchAdapter =
             AutoCompleteSearchAdapter(requireContext(), countriesAutoComplete) {
-                viewModel.onPlaceClicked(Place.Country(countryName = it.searchedText))
+                viewModel.onCityClicked(PlaceUi.Country(countryName = it.searchedText))
             }
     }
 
@@ -132,7 +132,7 @@ class SearchFragment : Fragment() {
         }
     }
 
-    private fun navigateToDetails(place: Place) {
+    private fun navigateToDetails(place: PlaceUi) {
         binding.atSearch.setText("")
         hideKeyboard()
         val navAction = SearchFragmentDirections.actionSearchToDetails(place)

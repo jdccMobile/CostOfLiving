@@ -1,4 +1,4 @@
-package com.jdccmobile.costofliving.ui.home.search
+package com.jdccmobile.costofliving.ui.features.home.search
 
 import android.util.Log
 import androidx.fragment.app.FragmentActivity
@@ -6,10 +6,11 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.viewModelScope
 import com.jdccmobile.costofliving.R
-import com.jdccmobile.costofliving.domain.models.AutoCompleteSearch
-import com.jdccmobile.costofliving.domain.models.Place
+import com.jdccmobile.costofliving.domain.models.AutoCompleteSearchUi
+import com.jdccmobile.costofliving.domain.models.toUi
 import com.jdccmobile.costofliving.domain.usecases.RequestCitiesListUseCase
 import com.jdccmobile.costofliving.domain.usecases.RequestUserCountryPrefsUseCase
+import com.jdccmobile.costofliving.ui.models.PlaceUi
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
@@ -24,10 +25,10 @@ class SearchViewModel(
         val apiCallCompleted: Boolean = false,
         val countryName: String? = null,
         val isSearchByCity: Boolean = true,
-        val citiesInUserCountry: List<Place.City> = emptyList(),
-        val citiesAutoComplete: List<AutoCompleteSearch> = emptyList(),
-        val countriesAutoComplete: List<AutoCompleteSearch> = emptyList(),
-        val navigateTo: Place? = null,
+        val citiesInUserCountry: List<PlaceUi.City> = emptyList(),
+        val citiesAutoComplete: List<AutoCompleteSearchUi> = emptyList(),
+        val countriesAutoComplete: List<AutoCompleteSearchUi> = emptyList(),
+        val navigateTo: PlaceUi? = null,
         val errorMsg: String? = null,
         val apiErrorMsg: String? = null,
     )
@@ -54,16 +55,16 @@ class SearchViewModel(
                 val citiesList = requestCitiesListUseCase()
                 val citiesInUserCountry = citiesList.filter {
                     it.countryName == userCountryName
-                }.sortedBy { it.cityName }
+                }.sortedBy { it.cityName }.toUi()
                 _state.value = _state.value.copy(citiesInUserCountry = citiesInUserCountry)
 
                 val citiesAutoComplete =
-                    citiesList.map { AutoCompleteSearch(it.cityName, it.countryName) }
+                    citiesList.map { AutoCompleteSearchUi(it.cityName, it.countryName) }
                 _state.value = _state.value.copy(citiesAutoComplete = citiesAutoComplete)
 
                 val countriesAutoComplete =
                     citiesList.distinctBy { it.countryName }
-                        .map { AutoCompleteSearch(it.countryName, it.countryName) }
+                        .map { AutoCompleteSearchUi(it.countryName, it.countryName) }
                 _state.value = _state.value.copy(countriesAutoComplete = countriesAutoComplete)
             } catch (e: Exception) {
                 if (e.message?.contains("429") == true) {
@@ -87,7 +88,7 @@ class SearchViewModel(
         _state.value = _state.value.copy(isSearchByCity = isSearchByCity)
     }
 
-    fun onPlaceClicked(place: Place) {
+    fun onCityClicked(place: PlaceUi) {
         _state.value = _state.value.copy(navigateTo = place)
     }
 
@@ -100,7 +101,7 @@ class SearchViewModel(
                 val countryName = _state.value.citiesAutoComplete.find {
                     it.searchedText.equals(nameSearch, ignoreCase = true)
                 }?.country ?: ""
-                _state.value = _state.value.copy(navigateTo = Place.City(nameSearch, countryName))
+                _state.value = _state.value.copy(navigateTo = PlaceUi.City(nameSearch, countryName))
             } else {
                 _state.value =
                     _state.value.copy(
@@ -113,7 +114,7 @@ class SearchViewModel(
                 }
             ) {
                 _state.value =
-                    _state.value.copy(navigateTo = Place.Country(countryName = nameSearch))
+                    _state.value.copy(navigateTo = PlaceUi.Country(countryName = nameSearch))
             } else {
                 _state.value =
                     _state.value.copy(

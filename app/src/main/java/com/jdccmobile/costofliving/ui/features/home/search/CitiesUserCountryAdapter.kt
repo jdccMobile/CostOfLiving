@@ -1,4 +1,4 @@
-package com.jdccmobile.costofliving.ui.home.search
+package com.jdccmobile.costofliving.ui.features.home.search
 
 import android.view.LayoutInflater
 import android.view.View
@@ -6,13 +6,13 @@ import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import com.jdccmobile.costofliving.R
 import com.jdccmobile.costofliving.databinding.ViewCityItemBinding
-import com.jdccmobile.costofliving.domain.models.Place
 import com.jdccmobile.costofliving.ui.common.getCountryCode
+import com.jdccmobile.costofliving.ui.models.PlaceUi
 import com.squareup.picasso.Picasso
 
 class CitiesUserCountryAdapter(
-    private val cities: List<Place.City>,
-    private val onItemClick: (Place.City) -> Unit,
+    private val cities: List<PlaceUi.City>,
+    private val onItemClick: (PlaceUi.City) -> Unit,
 ) :
     RecyclerView.Adapter<CitiesUserCountryAdapter.CitiesViewHolder>() {
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): CitiesViewHolder {
@@ -28,20 +28,15 @@ class CitiesUserCountryAdapter(
         holder.bind(item)
 
         holder.itemView.setOnClickListener {
-            onItemClick(
-                Place.City(
-                    countryName = item.countryName,
-                    cityName = item.cityName,
-                ),
-            )
+            onItemClick(item)
         }
     }
 
     inner class CitiesViewHolder(view: View) : RecyclerView.ViewHolder(view) {
         private val binding = ViewCityItemBinding.bind(view)
 
-        fun bind(city: Place.City) {
-            binding.tvCountryNameItem.text = city.cityName
+        fun bind(city: PlaceUi.City) {
+            binding.tvCountryNameItem.text = city.cityName // todo jdc rename text view
             val countryCode = getCountryCode(city.countryName)
             Picasso.get()
                 .load("https://flagsapi.com/$countryCode/flat/64.png")

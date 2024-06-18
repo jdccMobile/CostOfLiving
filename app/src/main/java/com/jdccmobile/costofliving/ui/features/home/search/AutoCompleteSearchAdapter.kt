@@ -1,4 +1,4 @@
-package com.jdccmobile.costofliving.ui.home.search
+package com.jdccmobile.costofliving.ui.features.home.search
 
 import android.content.Context
 import android.view.LayoutInflater
@@ -6,16 +6,16 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.ArrayAdapter
 import com.jdccmobile.costofliving.databinding.ViewSearchAutocompleteItemBinding
-import com.jdccmobile.costofliving.domain.models.AutoCompleteSearch
+import com.jdccmobile.costofliving.domain.models.AutoCompleteSearchUi
 import com.jdccmobile.costofliving.ui.common.getCountryCode
 import com.squareup.picasso.Picasso
 
 class AutoCompleteSearchAdapter(
     context: Context,
-    items: List<AutoCompleteSearch>,
-    private val onClick: ((AutoCompleteSearch) -> Unit),
+    items: List<AutoCompleteSearchUi>,
+    private val onClick: ((AutoCompleteSearchUi) -> Unit),
 ) :
-    ArrayAdapter<AutoCompleteSearch>(context, 0, items) {
+    ArrayAdapter<AutoCompleteSearchUi>(context, 0, items) {
     override fun getView(position: Int, convertView: View?, parent: ViewGroup): View {
         val binding = if (convertView == null) {
             val inflater = LayoutInflater.from(context)
@@ -33,7 +33,7 @@ class AutoCompleteSearchAdapter(
 
         binding.root.setOnClickListener {
             val item =
-                AutoCompleteSearch(getItem(position)!!.searchedText, getItem(position)!!.country)
+                AutoCompleteSearchUi(getItem(position)!!.searchedText, getItem(position)!!.country)
             onClick(item)
         }
         return binding.root

@@ -1,4 +1,4 @@
-package com.jdccmobile.costofliving.ui.intro
+package com.jdccmobile.costofliving.ui.features.intro
 
 import android.content.Intent
 import android.os.Bundle
@@ -20,9 +20,9 @@ import com.jdccmobile.costofliving.data.repositories.RegionRepository
 import com.jdccmobile.costofliving.databinding.ActivityIntroBinding
 import com.jdccmobile.costofliving.domain.models.IntroSlide
 import com.jdccmobile.costofliving.ui.common.app
-import com.jdccmobile.costofliving.ui.home.HomeActivity
-import com.jdccmobile.costofliving.ui.main.MainActivity.Companion.HALF_SECOND
-import com.jdccmobile.costofliving.ui.main.dataStore
+import com.jdccmobile.costofliving.ui.features.home.HomeActivity
+import com.jdccmobile.costofliving.ui.features.main.MainActivity.Companion.HALF_SECOND
+import com.jdccmobile.costofliving.ui.features.main.dataStore
 import kotlinx.coroutines.launch
 
 class IntroActivity : AppCompatActivity() {

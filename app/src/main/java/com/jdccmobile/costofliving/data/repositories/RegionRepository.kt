@@ -7,7 +7,7 @@ import android.location.Location
 import androidx.appcompat.app.AppCompatActivity
 import com.google.android.gms.location.LocationServices
 import com.jdccmobile.costofliving.ui.common.PermissionChecker
-import com.jdccmobile.costofliving.ui.main.MainActivity.Companion.DEFAULT_COUNTRY_CODE
+import com.jdccmobile.costofliving.ui.features.main.MainActivity.Companion.DEFAULT_COUNTRY_CODE
 import kotlinx.coroutines.suspendCancellableCoroutine
 import kotlin.coroutines.resume
 

@@ -1,4 +1,4 @@
-package com.jdccmobile.costofliving.ui.main
+package com.jdccmobile.costofliving.ui.features.main
 
 import android.content.Context
 import android.content.Intent
@@ -14,8 +14,8 @@ import com.jdccmobile.costofliving.R
 import com.jdccmobile.costofliving.data.repositories.CostInfoRepository
 import com.jdccmobile.costofliving.domain.usecases.RequestUserCountryPrefsUseCase
 import com.jdccmobile.costofliving.ui.common.app
-import com.jdccmobile.costofliving.ui.home.HomeActivity
-import com.jdccmobile.costofliving.ui.intro.IntroActivity
+import com.jdccmobile.costofliving.ui.features.home.HomeActivity
+import com.jdccmobile.costofliving.ui.features.intro.IntroActivity
 import kotlinx.coroutines.launch
 
 const val PREFERENCES = "preferences"
@@ -53,7 +53,11 @@ class MainActivity : AppCompatActivity() {
     }
 
     private fun navigateTo(countryName: String) {
-        val intentActivity = if (countryName != "") HomeActivity::class.java else IntroActivity::class.java
+        val intentActivity = if (countryName != "") {
+            HomeActivity::class.java
+        } else {
+            IntroActivity::class.java
+        }
         startActivity(Intent(this@MainActivity, intentActivity))
         finish()
     }
