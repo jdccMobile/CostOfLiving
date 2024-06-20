@@ -1,5 +1,6 @@
 package com.jdccmobile.costofliving.ui.features.intro
 
+import android.util.Log
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider

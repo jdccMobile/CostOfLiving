@@ -1,5 +1,6 @@
 package com.jdccmobile.costofliving.ui.features.intro
 
+import android.Manifest
 import android.content.Intent
 import android.os.Bundle
 import android.view.View
@@ -19,6 +20,7 @@ import com.jdccmobile.costofliving.data.repositories.CostInfoRepository
 import com.jdccmobile.costofliving.data.repositories.RegionRepository
 import com.jdccmobile.costofliving.databinding.ActivityIntroBinding
 import com.jdccmobile.costofliving.domain.models.IntroSlide
+import com.jdccmobile.costofliving.ui.common.PermissionRequester
 import com.jdccmobile.costofliving.ui.common.app
 import com.jdccmobile.costofliving.ui.features.home.HomeActivity
 import com.jdccmobile.costofliving.ui.features.main.MainActivity.Companion.HALF_SECOND
@@ -35,7 +37,7 @@ class IntroActivity : AppCompatActivity() {
         binding = ActivityIntroBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
-        val regionRepository = RegionRepository(this)
+        val regionRepository = RegionRepository(app)
         val costInfoRepository = CostInfoRepository(app, this.dataStore)
         viewModel =
             ViewModelProvider(
@@ -50,6 +52,11 @@ class IntroActivity : AppCompatActivity() {
         }
     }
 
+    private val coarsePermissionRequester = PermissionRequester(
+        this,
+        Manifest.permission.ACCESS_COARSE_LOCATION,
+    )
+
     private fun updateUI(introSlidesInfo: List<IntroSlide>) {
         introSliderAdapter = IntroSliderAdapter(introSlidesInfo)
         binding.vpIntroSlider.adapter = introSliderAdapter
@@ -57,14 +64,16 @@ class IntroActivity : AppCompatActivity() {
         setUpDots()
         setCurrentDot(0)
 
-        binding.vpIntroSlider.registerOnPageChangeCallback(object :
-            ViewPager2.OnPageChangeCallback() {
-            override fun onPageSelected(position: Int) {
-                super.onPageSelected(position)
-                setCurrentDot(position)
-                showGetLocationButton(position, introSlidesInfo.size)
-            }
-        })
+        binding.vpIntroSlider.registerOnPageChangeCallback(
+            object :
+                ViewPager2.OnPageChangeCallback() {
+                override fun onPageSelected(position: Int) {
+                    super.onPageSelected(position)
+                    setCurrentDot(position)
+                    showGetLocationButton(position, introSlidesInfo.size)
+                }
+            },
+        )
     }
 
     @Suppress("MagicNumber")
@@ -118,6 +127,7 @@ class IntroActivity : AppCompatActivity() {
 
     private fun askForLocation() {
         lifecycleScope.launch {
+            coarsePermissionRequester.request()
             viewModel.getCountryName()
             navigateToHome()
         }

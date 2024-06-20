@@ -1,37 +1,31 @@
 package com.jdccmobile.costofliving.data.repositories
 
 import android.Manifest
-import android.annotation.SuppressLint
 import android.location.Geocoder
 import android.location.Location
-import androidx.appcompat.app.AppCompatActivity
 import com.google.android.gms.location.LocationServices
+import com.jdccmobile.costofliving.App
+import com.jdccmobile.costofliving.data.LocationDataSource
+import com.jdccmobile.costofliving.data.PlayServicesLocationDataSource
 import com.jdccmobile.costofliving.ui.common.PermissionChecker
 import com.jdccmobile.costofliving.ui.features.main.MainActivity.Companion.DEFAULT_COUNTRY_CODE
-import kotlinx.coroutines.suspendCancellableCoroutine
-import kotlin.coroutines.resume
 
-class RegionRepository(activity: AppCompatActivity) {
-    private val fusedLocationClient = LocationServices.getFusedLocationProviderClient(activity)
-    private val coarsePermissionChecker =
-        PermissionChecker(activity, Manifest.permission.ACCESS_COARSE_LOCATION)
+class RegionRepository(application: App) {
+    private val locationDataSource: LocationDataSource = PlayServicesLocationDataSource(application)
+    private val fusedLocationClient = LocationServices.getFusedLocationProviderClient(application)
+    private val coarsePermissionChecker = PermissionChecker(
+        application,
+        Manifest.permission.ACCESS_COARSE_LOCATION,
+    )
 
-    private val geocoder = Geocoder(activity)
+    private val geocoder = Geocoder(application)
 
     suspend fun findLastRegion(): String = findLastLocation().toRegion()
 
     private suspend fun findLastLocation(): Location? {
-        val success = coarsePermissionChecker.request()
-        return if (success) lastLocationSuspended() else null
+        val success = coarsePermissionChecker.check()
+        return if (success) locationDataSource.findLastLocation() else null
     }
-
-    @SuppressLint("MissingPermission")
-    private suspend fun lastLocationSuspended(): Location? =
-        suspendCancellableCoroutine { continuation ->
-            fusedLocationClient.lastLocation.addOnCompleteListener {
-                continuation.resume(it.result)
-            }
-        }
 
     private fun Location?.toRegion(): String {
         val addresses = this?.let {

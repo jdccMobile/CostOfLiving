@@ -24,7 +24,7 @@ val Context.dataStore by preferencesDataStore(name = PREFERENCES)
 class MainActivity : AppCompatActivity() {
     companion object {
         const val HALF_SECOND = 500L
-        const val DEFAULT_COUNTRY_CODE = "es"
+        const val DEFAULT_COUNTRY_CODE = "pt"
     }
 
     // TODO utilizar la linea comentada
