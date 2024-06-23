@@ -2,6 +2,7 @@ package com.jdccmobile.costofliving.ui.features.intro
 
 import android.Manifest
 import android.content.Intent
+import android.location.Geocoder
 import android.os.Bundle
 import android.view.View
 import android.view.ViewGroup
@@ -16,10 +17,16 @@ import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
 import androidx.viewpager2.widget.ViewPager2
 import com.jdccmobile.costofliving.R
+import com.jdccmobile.costofliving.data.LocationDataSource
+import com.jdccmobile.costofliving.data.PlayServicesLocationDataSource
+import com.jdccmobile.costofliving.data.local.datasources.CostInfoLocalDataSource
+import com.jdccmobile.costofliving.data.local.datasources.PreferencesDataSource
+import com.jdccmobile.costofliving.data.remote.datasources.CostInfoRemoteDataSource
 import com.jdccmobile.costofliving.data.repositories.CostInfoRepository
 import com.jdccmobile.costofliving.data.repositories.RegionRepository
 import com.jdccmobile.costofliving.databinding.ActivityIntroBinding
 import com.jdccmobile.costofliving.domain.models.IntroSlide
+import com.jdccmobile.costofliving.ui.common.PermissionChecker
 import com.jdccmobile.costofliving.ui.common.PermissionRequester
 import com.jdccmobile.costofliving.ui.common.app
 import com.jdccmobile.costofliving.ui.features.home.HomeActivity
@@ -36,9 +43,26 @@ class IntroActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         binding = ActivityIntroBinding.inflate(layoutInflater)
         setContentView(binding.root)
-
-        val regionRepository = RegionRepository(app)
-        val costInfoRepository = CostInfoRepository(app, this.dataStore)
+        val locationDataSource: LocationDataSource = PlayServicesLocationDataSource(app)
+//        val fusedLocationClient = LocationServices.getFusedLocationProviderClient(app)
+        val coarsePermissionChecker = PermissionChecker(
+            app,
+            Manifest.permission.ACCESS_COARSE_LOCATION,
+        )
+        val geocoder = Geocoder(app)
+        val regionRepository = RegionRepository(
+            locationDataSource = locationDataSource,
+            coarsePermissionChecker = coarsePermissionChecker,
+            geocoder = geocoder,
+        )
+        val preferencesDataSource = PreferencesDataSource(app.dataStore)
+        val localDataSource = CostInfoLocalDataSource()
+        val remoteDataSource = CostInfoRemoteDataSource(app)
+        val costInfoRepository = CostInfoRepository(
+            preferencesDataSource = preferencesDataSource,
+            localDataSource = localDataSource,
+            remoteDataSource = remoteDataSource,
+        )
         viewModel =
             ViewModelProvider(
                 this,

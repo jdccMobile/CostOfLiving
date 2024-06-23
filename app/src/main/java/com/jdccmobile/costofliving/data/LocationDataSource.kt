@@ -3,7 +3,6 @@ package com.jdccmobile.costofliving.data
 import android.annotation.SuppressLint
 import android.app.Application
 import android.location.Location
-import android.util.Log
 import com.google.android.gms.location.LocationServices
 import kotlinx.coroutines.suspendCancellableCoroutine
 import kotlin.coroutines.resume

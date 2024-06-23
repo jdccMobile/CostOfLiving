@@ -11,6 +11,9 @@ import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
 import com.jdccmobile.costofliving.R
+import com.jdccmobile.costofliving.data.local.datasources.CostInfoLocalDataSource
+import com.jdccmobile.costofliving.data.local.datasources.PreferencesDataSource
+import com.jdccmobile.costofliving.data.remote.datasources.CostInfoRemoteDataSource
 import com.jdccmobile.costofliving.data.repositories.CostInfoRepository
 import com.jdccmobile.costofliving.domain.usecases.RequestUserCountryPrefsUseCase
 import com.jdccmobile.costofliving.ui.common.app
@@ -37,7 +40,14 @@ class MainActivity : AppCompatActivity() {
         setContentView(R.layout.activity_main)
         splashScreen.setKeepOnScreenCondition { true }
 
-        val costInfoRepository = CostInfoRepository(app, this.dataStore)
+        val preferencesDataSource = PreferencesDataSource(app.dataStore)
+        val localDataSource = CostInfoLocalDataSource()
+        val remoteDataSource = CostInfoRemoteDataSource(app)
+        val costInfoRepository = CostInfoRepository(
+            preferencesDataSource = preferencesDataSource,
+            localDataSource = localDataSource,
+            remoteDataSource = remoteDataSource,
+        )
         viewModel = ViewModelProvider(
             this,
             MainViewModelFactory(RequestUserCountryPrefsUseCase(costInfoRepository)),

@@ -13,6 +13,9 @@ import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
 import androidx.navigation.fragment.navArgs
 import com.jdccmobile.costofliving.R
+import com.jdccmobile.costofliving.data.local.datasources.CostInfoLocalDataSource
+import com.jdccmobile.costofliving.data.local.datasources.PreferencesDataSource
+import com.jdccmobile.costofliving.data.remote.datasources.CostInfoRemoteDataSource
 import com.jdccmobile.costofliving.data.repositories.CostInfoRepository
 import com.jdccmobile.costofliving.databinding.FragmentDetailsBinding
 import com.jdccmobile.costofliving.domain.usecases.RequestCityCostUseCase
@@ -37,9 +40,14 @@ class DetailsFragment : Fragment() {
         savedInstanceState: Bundle?,
     ): View {
         _binding = FragmentDetailsBinding.inflate(inflater, container, false)
-
-        val costInfoRepository =
-            CostInfoRepository(requireActivity().app, requireActivity().dataStore)
+        val preferencesDataSource = PreferencesDataSource(requireActivity().dataStore)
+        val localDataSource = CostInfoLocalDataSource()
+        val remoteDataSource = CostInfoRemoteDataSource(requireActivity().app)
+        val costInfoRepository = CostInfoRepository(
+            preferencesDataSource = preferencesDataSource,
+            localDataSource = localDataSource,
+            remoteDataSource = remoteDataSource,
+        )
         viewModel = ViewModelProvider(
             this,
             DetailsViewModelFactory(
