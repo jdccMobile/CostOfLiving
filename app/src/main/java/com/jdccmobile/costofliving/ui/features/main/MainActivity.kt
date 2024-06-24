@@ -11,13 +11,12 @@ import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
 import com.jdccmobile.costofliving.R
-import com.jdccmobile.costofliving.data.local.datasources.CostInfoLocalDataSource
-import com.jdccmobile.costofliving.data.local.datasources.PreferencesDataSource
 import com.jdccmobile.costofliving.ui.common.app
 import com.jdccmobile.costofliving.ui.features.home.HomeActivity
 import com.jdccmobile.costofliving.ui.features.intro.IntroActivity
-import com.jdccmobile.data.remote.datasources.CostInfoRemoteDataSource
-import com.jdccmobile.data.repositories.CostInfoRepository
+import com.jdccmobile.data.local.datasources.PreferencesDataSource
+import com.jdccmobile.data.repositories.PrefsRepositoryImpl
+import com.jdccmobile.domain.usecase.GetUserCountryPrefsUseCase
 import kotlinx.coroutines.launch
 
 const val PREFERENCES = "preferences"
@@ -40,19 +39,13 @@ class MainActivity : AppCompatActivity() {
         splashScreen.setKeepOnScreenCondition { true }
 
         val preferencesDataSource = PreferencesDataSource(app.dataStore)
-        val localDataSource = CostInfoLocalDataSource()
-        val remoteDataSource = com.jdccmobile.data.remote.datasources.CostInfoRemoteDataSource(app)
-        val costInfoRepository = com.jdccmobile.data.repositories.CostInfoRepository(
+        val prefsRepository = PrefsRepositoryImpl(
             preferencesDataSource = preferencesDataSource,
-            localDataSource = localDataSource,
-            remoteDataSource = remoteDataSource,
         )
         viewModel = ViewModelProvider(
             this,
             MainViewModelFactory(
-                com.jdccmobile.domain.usecase.GetUserCountryPrefsUseCase(
-                    costInfoRepository,
-                ),
+                GetUserCountryPrefsUseCase(prefsRepository),
             ),
         ).get(MainViewModel::class.java)
 

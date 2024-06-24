@@ -17,11 +17,6 @@ import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
 import androidx.viewpager2.widget.ViewPager2
 import com.jdccmobile.costofliving.R
-import com.jdccmobile.costofliving.data.LocationDataSource
-import com.jdccmobile.costofliving.data.PlayServicesLocationDataSource
-import com.jdccmobile.costofliving.data.local.datasources.CostInfoLocalDataSource
-import com.jdccmobile.costofliving.data.local.datasources.PreferencesDataSource
-import com.jdccmobile.costofliving.data.repositories.RegionRepository
 import com.jdccmobile.costofliving.databinding.ActivityIntroBinding
 import com.jdccmobile.costofliving.ui.common.PermissionChecker
 import com.jdccmobile.costofliving.ui.common.PermissionRequester
@@ -29,8 +24,14 @@ import com.jdccmobile.costofliving.ui.common.app
 import com.jdccmobile.costofliving.ui.features.home.HomeActivity
 import com.jdccmobile.costofliving.ui.features.main.MainActivity.Companion.HALF_SECOND
 import com.jdccmobile.costofliving.ui.features.main.dataStore
-import com.jdccmobile.data.remote.datasources.CostInfoRemoteDataSource
-import com.jdccmobile.data.repositories.CostInfoRepository
+import com.jdccmobile.data.LocationDataSource
+import com.jdccmobile.data.PlayServicesLocationDataSource
+import com.jdccmobile.data.local.datasources.PlaceLocalDataSource
+import com.jdccmobile.data.local.datasources.PreferencesDataSource
+import com.jdccmobile.data.remote.datasources.PlaceRemoteDataSource
+import com.jdccmobile.data.repositories.PlaceRepositoryImpl
+import com.jdccmobile.data.repositories.PrefsRepositoryImpl
+import com.jdccmobile.data.repositories.RegionRepository
 import kotlinx.coroutines.launch
 
 class IntroActivity : AppCompatActivity() {
@@ -54,18 +55,20 @@ class IntroActivity : AppCompatActivity() {
             coarsePermissionChecker = coarsePermissionChecker,
             geocoder = geocoder,
         )
-        val preferencesDataSource = PreferencesDataSource(app.dataStore)
-        val localDataSource = CostInfoLocalDataSource()
-        val remoteDataSource = com.jdccmobile.data.remote.datasources.CostInfoRemoteDataSource(app)
-        val costInfoRepository = com.jdccmobile.data.repositories.CostInfoRepository(
-            preferencesDataSource = preferencesDataSource,
+        val localDataSource = PlaceLocalDataSource()
+        val remoteDataSource = PlaceRemoteDataSource(app)
+        val costInfoRepository = PlaceRepositoryImpl(
             localDataSource = localDataSource,
             remoteDataSource = remoteDataSource,
+        )
+        val preferencesDataSource = PreferencesDataSource(app.dataStore)
+        val prefsRepositoryImpl = PrefsRepositoryImpl(
+            preferencesDataSource = preferencesDataSource,
         )
         viewModel =
             ViewModelProvider(
                 this,
-                IntroViewModelFactory(this, regionRepository, costInfoRepository),
+                IntroViewModelFactory(this, regionRepository, costInfoRepository, prefsRepositoryImpl),
             ).get(IntroViewModel::class.java)
 
         lifecycleScope.launch {

@@ -1,3 +1,3 @@
 package com.jdccmobile.data.local.datasources
 
-class CostInfoLocalDataSource
+class PlaceLocalDataSource

@@ -4,8 +4,10 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.viewModelScope
-import com.jdccmobile.costofliving.data.repositories.RegionRepository
-import com.jdccmobile.data.repositories.CostInfoRepository
+import com.jdccmobile.data.repositories.PlaceRepositoryImpl
+import com.jdccmobile.data.repositories.PrefsRepositoryImpl
+import com.jdccmobile.data.repositories.RegionRepository
+import com.jdccmobile.domain.model.IntroSlide
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
@@ -15,10 +17,11 @@ import java.util.Locale
 class IntroViewModel(
     private val activity: AppCompatActivity,
     private val regionRepository: RegionRepository,
-    private val costInfoRepository: com.jdccmobile.data.repositories.CostInfoRepository,
+    private val placeRepository: PlaceRepositoryImpl,
+    private val prefsRepository: PrefsRepositoryImpl,
 ) : ViewModel() {
     data class UiState(
-        val introSlidesInfo: List<com.jdccmobile.domain.model.IntroSlide> = emptyList(),
+        val introSlidesInfo: List<IntroSlide> = emptyList(),
     )
 
     private val _state = MutableStateFlow(UiState())
@@ -39,7 +42,7 @@ class IntroViewModel(
     suspend fun getCountryName() {
         val countryCode = regionRepository.findLastRegion()
         val countryName = Locale("", countryCode).getDisplayCountry(Locale("EN"))
-        costInfoRepository.saveUserCountryPrefs(countryName)
+        prefsRepository.setUserCountry(countryName)
     }
 }
 
@@ -47,9 +50,10 @@ class IntroViewModel(
 class IntroViewModelFactory(
     private val activity: AppCompatActivity,
     private val regionRepository: RegionRepository,
-    private val costInfoRepository: com.jdccmobile.data.repositories.CostInfoRepository,
+    private val costInfoRepository: PlaceRepositoryImpl,
+    private val prefsRepository: PrefsRepositoryImpl,
 ) : ViewModelProvider.Factory {
     override fun <T : ViewModel> create(modelClass: Class<T>): T {
-        return IntroViewModel(activity, regionRepository, costInfoRepository) as T
+        return IntroViewModel(activity, regionRepository, costInfoRepository, prefsRepository) as T
     }
 }

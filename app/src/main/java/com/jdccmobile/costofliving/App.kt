@@ -2,7 +2,7 @@ package com.jdccmobile.costofliving
 
 import android.app.Application
 import androidx.room.Room
-import com.jdccmobile.costofliving.data.local.database.PlaceDatabase
+import com.jdccmobile.data.local.database.PlaceDatabase
 
 class App : Application() {
     lateinit var db: PlaceDatabase

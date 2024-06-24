@@ -1,8 +1,8 @@
 package com.jdccmobile.data.remote
 
-import com.jdccmobile.costofliving.data.remote.models.city.CitiesListResponseResult
-import com.jdccmobile.costofliving.data.remote.models.cost.CityCostResponseResult
-import com.jdccmobile.costofliving.data.remote.models.cost.CountryCostResponseResult
+import com.jdccmobile.data.remote.models.city.CitiesListResponseResult
+import com.jdccmobile.data.remote.models.cost.CityCostResponseResult
+import com.jdccmobile.data.remote.models.cost.CountryCostResponseResult
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
 import retrofit2.http.GET

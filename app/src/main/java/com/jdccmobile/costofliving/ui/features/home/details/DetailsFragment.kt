@@ -13,14 +13,13 @@ import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
 import androidx.navigation.fragment.navArgs
 import com.jdccmobile.costofliving.R
-import com.jdccmobile.costofliving.data.local.datasources.CostInfoLocalDataSource
-import com.jdccmobile.costofliving.data.local.datasources.PreferencesDataSource
 import com.jdccmobile.costofliving.databinding.FragmentDetailsBinding
 import com.jdccmobile.costofliving.ui.common.app
-import com.jdccmobile.costofliving.ui.features.main.dataStore
 import com.jdccmobile.costofliving.ui.models.toDomain
-import com.jdccmobile.data.remote.datasources.CostInfoRemoteDataSource
-import com.jdccmobile.data.repositories.CostInfoRepository
+import com.jdccmobile.data.local.datasources.PlaceLocalDataSource
+import com.jdccmobile.data.remote.datasources.PlaceRemoteDataSource
+import com.jdccmobile.domain.usecase.GetCityCostUseCase
+import com.jdccmobile.domain.usecase.GetCountryCostUseCase
 import kotlinx.coroutines.launch
 
 class DetailsFragment : Fragment() {
@@ -38,12 +37,9 @@ class DetailsFragment : Fragment() {
         savedInstanceState: Bundle?,
     ): View {
         _binding = FragmentDetailsBinding.inflate(inflater, container, false)
-        val preferencesDataSource = PreferencesDataSource(requireActivity().dataStore)
-        val localDataSource = CostInfoLocalDataSource()
-        val remoteDataSource =
-            com.jdccmobile.data.remote.datasources.CostInfoRemoteDataSource(requireActivity().app)
-        val costInfoRepository = com.jdccmobile.data.repositories.CostInfoRepository(
-            preferencesDataSource = preferencesDataSource,
+        val localDataSource = PlaceLocalDataSource()
+        val remoteDataSource = PlaceRemoteDataSource(requireActivity().app)
+        val placeRepositoryImpl = com.jdccmobile.data.repositories.PlaceRepositoryImpl(
             localDataSource = localDataSource,
             remoteDataSource = remoteDataSource,
         )
@@ -52,8 +48,8 @@ class DetailsFragment : Fragment() {
             DetailsViewModelFactory(
                 requireActivity(),
                 requireNotNull(safeArgs.placeUi.toDomain()),
-                com.jdccmobile.domain.usecase.GetCityCostUseCase(costInfoRepository),
-                com.jdccmobile.domain.usecase.GetCountryCostUseCase(costInfoRepository),
+                GetCityCostUseCase(placeRepositoryImpl),
+                GetCountryCostUseCase(placeRepositoryImpl),
             ),
         ).get(DetailsViewModel::class.java)
 

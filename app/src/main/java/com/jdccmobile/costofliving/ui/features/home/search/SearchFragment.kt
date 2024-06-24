@@ -14,15 +14,18 @@ import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
 import androidx.navigation.fragment.findNavController
 import com.jdccmobile.costofliving.R
-import com.jdccmobile.costofliving.data.local.datasources.CostInfoLocalDataSource
-import com.jdccmobile.costofliving.data.local.datasources.PreferencesDataSource
 import com.jdccmobile.costofliving.databinding.FragmentSearchBinding
 import com.jdccmobile.costofliving.ui.common.app
 import com.jdccmobile.costofliving.ui.features.main.dataStore
 import com.jdccmobile.costofliving.ui.models.AutoCompleteSearchUi
 import com.jdccmobile.costofliving.ui.models.PlaceUi
-import com.jdccmobile.data.remote.datasources.CostInfoRemoteDataSource
-import com.jdccmobile.data.repositories.CostInfoRepository
+import com.jdccmobile.data.local.datasources.PlaceLocalDataSource
+import com.jdccmobile.data.local.datasources.PreferencesDataSource
+import com.jdccmobile.data.remote.datasources.PlaceRemoteDataSource
+import com.jdccmobile.data.repositories.PlaceRepositoryImpl
+import com.jdccmobile.data.repositories.PrefsRepositoryImpl
+import com.jdccmobile.domain.usecase.GetCitiesListUseCase
+import com.jdccmobile.domain.usecase.GetUserCountryPrefsUseCase
 import kotlinx.coroutines.launch
 
 class SearchFragment : Fragment() {
@@ -46,20 +49,21 @@ class SearchFragment : Fragment() {
         _binding = FragmentSearchBinding.inflate(inflater, container, false)
 
         val preferencesDataSource = PreferencesDataSource(requireActivity().dataStore)
-        val localDataSource = CostInfoLocalDataSource()
-        val remoteDataSource =
-            com.jdccmobile.data.remote.datasources.CostInfoRemoteDataSource(requireActivity().app)
-        val costInfoRepository = com.jdccmobile.data.repositories.CostInfoRepository(
-            preferencesDataSource = preferencesDataSource,
+        val localDataSource = PlaceLocalDataSource()
+        val remoteDataSource = PlaceRemoteDataSource(requireActivity().app)
+        val placeRepositoryImpl = PlaceRepositoryImpl(
             localDataSource = localDataSource,
             remoteDataSource = remoteDataSource,
+        )
+        val prefsRepositoryImpl = PrefsRepositoryImpl(
+            preferencesDataSource = preferencesDataSource,
         )
         viewModel = ViewModelProvider(
             this,
             SearchViewModelFactory(
                 requireActivity(),
-                com.jdccmobile.domain.usecase.GetUserCountryPrefsUseCase(costInfoRepository),
-                com.jdccmobile.domain.usecase.GetCitiesListUseCase(costInfoRepository),
+                GetUserCountryPrefsUseCase(prefsRepositoryImpl),
+                GetCitiesListUseCase(placeRepositoryImpl),
             ),
         ).get(SearchViewModel::class.java)
 

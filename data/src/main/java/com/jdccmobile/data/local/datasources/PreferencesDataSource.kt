@@ -1,10 +1,8 @@
 package com.jdccmobile.data.local.datasources
 
-import androidx.datastore.core.DataStore
-import androidx.datastore.preferences.core.Preferences
-import androidx.datastore.preferences.core.edit
 import androidx.datastore.preferences.core.stringPreferencesKey
 import kotlinx.coroutines.flow.first
+import java.util.prefs.Preferences
 
 class PreferencesDataSource(private val dataStore: DataStore<Preferences>) {
     companion object {
