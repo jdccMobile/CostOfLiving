@@ -15,8 +15,8 @@ import kotlinx.coroutines.launch
 class DetailsViewModel(
     private val fragment: FragmentActivity,
     private val place: com.jdccmobile.domain.model.Place,
-    private val requestCityCostUseCase: com.jdccmobile.domain.usecase.RequestCityCostUseCase,
-    private val requestCountryCostUseCase: com.jdccmobile.domain.usecase.RequestCountryCostUseCase,
+    private val getCityCostUseCase: com.jdccmobile.domain.usecase.GetCityCostUseCase,
+    private val getCountryCostUseCase: com.jdccmobile.domain.usecase.GetCountryCostUseCase,
 ) : ViewModel() {
     data class UiState(
         val cityName: String? = null,
@@ -61,7 +61,7 @@ class DetailsViewModel(
             val pricesList: List<ItemPriceUi> = when (place) {
                 is com.jdccmobile.domain.model.Place.City -> {
                     try {
-                        requestCityCostUseCase(
+                        getCityCostUseCase(
                             cityName = place.cityName,
                             countryName = place.countryName,
                         )
@@ -73,7 +73,7 @@ class DetailsViewModel(
 
                 is com.jdccmobile.domain.model.Place.Country -> {
                     try {
-                        requestCountryCostUseCase(countryName = place.countryName)
+                        getCountryCostUseCase(countryName = place.countryName)
                     } catch (e: Exception) {
                         handleApiErrorMsg(e)
                         emptyList()
@@ -128,16 +128,16 @@ private fun List<com.jdccmobile.domain.model.ItemPrice>.toUi(): List<ItemPriceUi
 class DetailsViewModelFactory(
     private val fragment: FragmentActivity,
     private val place: com.jdccmobile.domain.model.Place,
-    private val requestCityCostUseCase: com.jdccmobile.domain.usecase.RequestCityCostUseCase,
-    private val requestCountryCostUseCase: com.jdccmobile.domain.usecase.RequestCountryCostUseCase,
+    private val getCityCostUseCase: com.jdccmobile.domain.usecase.GetCityCostUseCase,
+    private val getCountryCostUseCase: com.jdccmobile.domain.usecase.GetCountryCostUseCase,
 ) :
     ViewModelProvider.Factory {
     override fun <T : ViewModel> create(modelClass: Class<T>): T {
         return DetailsViewModel(
             fragment,
             place,
-            requestCityCostUseCase,
-            requestCountryCostUseCase,
+            getCityCostUseCase,
+            getCountryCostUseCase,
         ) as T
     }
 }

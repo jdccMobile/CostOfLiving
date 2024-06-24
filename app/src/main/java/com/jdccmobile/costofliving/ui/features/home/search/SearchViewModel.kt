@@ -6,8 +6,9 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.viewModelScope
 import com.jdccmobile.costofliving.R
-import com.jdccmobile.domain.model.toUi
+import com.jdccmobile.costofliving.ui.models.AutoCompleteSearchUi
 import com.jdccmobile.costofliving.ui.models.PlaceUi
+import com.jdccmobile.domain.model.Place
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
@@ -15,16 +16,19 @@ import kotlinx.coroutines.launch
 
 class SearchViewModel(
     private val fragment: FragmentActivity,
-    private val requestUserCountryPrefsUseCase: com.jdccmobile.domain.usecase.RequestUserCountryPrefsUseCase,
-    private val requestCitiesListUseCase: com.jdccmobile.domain.usecase.RequestCitiesListUseCase,
+    private val getUserCountryPrefsUseCase:
+        com.jdccmobile.domain.usecase.GetUserCountryPrefsUseCase,
+    private val getCitiesListUseCase: com.jdccmobile.domain.usecase.GetCitiesListUseCase,
 ) : ViewModel() {
     data class UiState(
         val apiCallCompleted: Boolean = false,
         val countryName: String? = null,
         val isSearchByCity: Boolean = true,
         val citiesInUserCountry: List<PlaceUi.City> = emptyList(),
-        val citiesAutoComplete: List<com.jdccmobile.domain.model.AutoCompleteSearchUi> = emptyList(),
-        val countriesAutoComplete: List<com.jdccmobile.domain.model.AutoCompleteSearchUi> = emptyList(),
+        val citiesAutoComplete: List<AutoCompleteSearchUi> =
+            emptyList(),
+        val countriesAutoComplete: List<AutoCompleteSearchUi> =
+            emptyList(),
         val navigateTo: PlaceUi? = null,
         val errorMsg: String? = null,
         val apiErrorMsg: String? = null,
@@ -39,7 +43,7 @@ class SearchViewModel(
 
     private fun refresh() {
         viewModelScope.launch {
-            val countryName = requestUserCountryPrefsUseCase()
+            val countryName = getUserCountryPrefsUseCase()
             _state.value = UiState(countryName = countryName)
             createLists(countryName)
         }
@@ -49,7 +53,7 @@ class SearchViewModel(
         if (!_state.value.apiCallCompleted) {
             try {
                 Log.i("JD Search VM", "API call: requestCitiesList")
-                val citiesList = requestCitiesListUseCase()
+                val citiesList = getCitiesListUseCase()
                 val citiesInUserCountry = citiesList.filter {
                     it.countryName == userCountryName
                 }.sortedBy { it.cityName }.toUi()
@@ -57,9 +61,9 @@ class SearchViewModel(
 
                 val citiesAutoComplete =
                     citiesList.map {
-                        com.jdccmobile.domain.model.AutoCompleteSearchUi(
+                        AutoCompleteSearchUi(
                             it.cityName,
-                            it.countryName
+                            it.countryName,
                         )
                     }
                 _state.value = _state.value.copy(citiesAutoComplete = citiesAutoComplete)
@@ -67,9 +71,9 @@ class SearchViewModel(
                 val countriesAutoComplete =
                     citiesList.distinctBy { it.countryName }
                         .map {
-                            com.jdccmobile.domain.model.AutoCompleteSearchUi(
+                            AutoCompleteSearchUi(
                                 it.countryName,
-                                it.countryName
+                                it.countryName,
                             )
                         }
                 _state.value = _state.value.copy(countriesAutoComplete = countriesAutoComplete)
@@ -144,18 +148,26 @@ class SearchViewModel(
     }
 }
 
+fun List<Place.City>.toUi() = map {
+    PlaceUi.City(
+        cityName = it.cityName,
+        countryName = it.countryName,
+    )
+}
+
 @Suppress("UNCHECKED_CAST")
 class SearchViewModelFactory(
     private val fragment: FragmentActivity,
-    private val requestUserCountryPrefsUseCase: com.jdccmobile.domain.usecase.RequestUserCountryPrefsUseCase,
-    private val requestCitiesListUseCase: com.jdccmobile.domain.usecase.RequestCitiesListUseCase,
+    private val getUserCountryPrefsUseCase:
+        com.jdccmobile.domain.usecase.GetUserCountryPrefsUseCase,
+    private val getCitiesListUseCase: com.jdccmobile.domain.usecase.GetCitiesListUseCase,
 ) :
     ViewModelProvider.Factory {
     override fun <T : ViewModel> create(modelClass: Class<T>): T {
         return SearchViewModel(
             fragment,
-            requestUserCountryPrefsUseCase,
-            requestCitiesListUseCase,
+            getUserCountryPrefsUseCase,
+            getCitiesListUseCase,
         ) as T
     }
 }

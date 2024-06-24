@@ -7,14 +7,15 @@ import android.view.ViewGroup
 import android.widget.ArrayAdapter
 import com.jdccmobile.costofliving.databinding.ViewSearchAutocompleteItemBinding
 import com.jdccmobile.costofliving.ui.common.getCountryCode
+import com.jdccmobile.costofliving.ui.models.AutoCompleteSearchUi
 import com.squareup.picasso.Picasso
 
 class AutoCompleteSearchAdapter(
     context: Context,
-    items: List<com.jdccmobile.domain.model.AutoCompleteSearchUi>,
-    private val onClick: ((com.jdccmobile.domain.model.AutoCompleteSearchUi) -> Unit),
+    items: List<AutoCompleteSearchUi>,
+    private val onClick: ((AutoCompleteSearchUi) -> Unit),
 ) :
-    ArrayAdapter<com.jdccmobile.domain.model.AutoCompleteSearchUi>(context, 0, items) {
+    ArrayAdapter<AutoCompleteSearchUi>(context, 0, items) {
     override fun getView(position: Int, convertView: View?, parent: ViewGroup): View {
         val binding = if (convertView == null) {
             val inflater = LayoutInflater.from(context)
@@ -32,9 +33,9 @@ class AutoCompleteSearchAdapter(
 
         binding.root.setOnClickListener {
             val item =
-                com.jdccmobile.domain.model.AutoCompleteSearchUi(
+                AutoCompleteSearchUi(
                     getItem(position)!!.searchedText,
-                    getItem(position)!!.country
+                    getItem(position)!!.country,
                 )
             onClick(item)
         }

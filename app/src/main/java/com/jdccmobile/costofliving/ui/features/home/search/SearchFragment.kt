@@ -16,12 +16,13 @@ import androidx.navigation.fragment.findNavController
 import com.jdccmobile.costofliving.R
 import com.jdccmobile.costofliving.data.local.datasources.CostInfoLocalDataSource
 import com.jdccmobile.costofliving.data.local.datasources.PreferencesDataSource
-import com.jdccmobile.data.remote.datasources.CostInfoRemoteDataSource
-import com.jdccmobile.data.repositories.CostInfoRepository
 import com.jdccmobile.costofliving.databinding.FragmentSearchBinding
 import com.jdccmobile.costofliving.ui.common.app
 import com.jdccmobile.costofliving.ui.features.main.dataStore
+import com.jdccmobile.costofliving.ui.models.AutoCompleteSearchUi
 import com.jdccmobile.costofliving.ui.models.PlaceUi
+import com.jdccmobile.data.remote.datasources.CostInfoRemoteDataSource
+import com.jdccmobile.data.repositories.CostInfoRepository
 import kotlinx.coroutines.launch
 
 class SearchFragment : Fragment() {
@@ -31,9 +32,10 @@ class SearchFragment : Fragment() {
     private lateinit var viewModel: SearchViewModel
     private var isSearchByCity: Boolean = true
     private lateinit var citiesInUserCountryAdapter: CitiesUserCountryAdapter
-    private lateinit var citiesAutoComplete: List<com.jdccmobile.domain.model.AutoCompleteSearchUi>
+    private lateinit var citiesAutoComplete: List<AutoCompleteSearchUi>
     private lateinit var citiesAutoCompleteSearchAdapter: AutoCompleteSearchAdapter
-    private lateinit var countriesAutoComplete: List<com.jdccmobile.domain.model.AutoCompleteSearchUi>
+    private lateinit var countriesAutoComplete:
+        List<AutoCompleteSearchUi>
     private lateinit var countriesAutoCompleteSearchAdapter: AutoCompleteSearchAdapter
 
     override fun onCreateView(
@@ -56,8 +58,8 @@ class SearchFragment : Fragment() {
             this,
             SearchViewModelFactory(
                 requireActivity(),
-                com.jdccmobile.domain.usecase.RequestUserCountryPrefsUseCase(costInfoRepository),
-                com.jdccmobile.domain.usecase.RequestCitiesListUseCase(costInfoRepository),
+                com.jdccmobile.domain.usecase.GetUserCountryPrefsUseCase(costInfoRepository),
+                com.jdccmobile.domain.usecase.GetCitiesListUseCase(costInfoRepository),
             ),
         ).get(SearchViewModel::class.java)
 

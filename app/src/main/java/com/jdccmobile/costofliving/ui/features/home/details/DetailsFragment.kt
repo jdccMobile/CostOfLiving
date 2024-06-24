@@ -15,12 +15,12 @@ import androidx.navigation.fragment.navArgs
 import com.jdccmobile.costofliving.R
 import com.jdccmobile.costofliving.data.local.datasources.CostInfoLocalDataSource
 import com.jdccmobile.costofliving.data.local.datasources.PreferencesDataSource
-import com.jdccmobile.data.remote.datasources.CostInfoRemoteDataSource
-import com.jdccmobile.data.repositories.CostInfoRepository
 import com.jdccmobile.costofliving.databinding.FragmentDetailsBinding
 import com.jdccmobile.costofliving.ui.common.app
 import com.jdccmobile.costofliving.ui.features.main.dataStore
 import com.jdccmobile.costofliving.ui.models.toDomain
+import com.jdccmobile.data.remote.datasources.CostInfoRemoteDataSource
+import com.jdccmobile.data.repositories.CostInfoRepository
 import kotlinx.coroutines.launch
 
 class DetailsFragment : Fragment() {
@@ -52,8 +52,8 @@ class DetailsFragment : Fragment() {
             DetailsViewModelFactory(
                 requireActivity(),
                 requireNotNull(safeArgs.placeUi.toDomain()),
-                com.jdccmobile.domain.usecase.RequestCityCostUseCase(costInfoRepository),
-                com.jdccmobile.domain.usecase.RequestCountryCostUseCase(costInfoRepository),
+                com.jdccmobile.domain.usecase.GetCityCostUseCase(costInfoRepository),
+                com.jdccmobile.domain.usecase.GetCountryCostUseCase(costInfoRepository),
             ),
         ).get(DetailsViewModel::class.java)
 

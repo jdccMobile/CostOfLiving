@@ -1,7 +1,5 @@
 package com.jdccmobile.domain.model
 
-import com.jdccmobile.costofliving.ui.models.PlaceUi
-
 sealed class Place {
     abstract val countryName: String
 
@@ -13,11 +11,4 @@ sealed class Place {
     data class Country(
         override val countryName: String,
     ) : Place()
-}
-
-fun List<Place.City>.toUi() = map {
-    PlaceUi.City(
-        cityName = it.cityName,
-        countryName = it.countryName,
-    )
 }

@@ -13,11 +13,11 @@ import androidx.lifecycle.repeatOnLifecycle
 import com.jdccmobile.costofliving.R
 import com.jdccmobile.costofliving.data.local.datasources.CostInfoLocalDataSource
 import com.jdccmobile.costofliving.data.local.datasources.PreferencesDataSource
-import com.jdccmobile.data.remote.datasources.CostInfoRemoteDataSource
-import com.jdccmobile.data.repositories.CostInfoRepository
 import com.jdccmobile.costofliving.ui.common.app
 import com.jdccmobile.costofliving.ui.features.home.HomeActivity
 import com.jdccmobile.costofliving.ui.features.intro.IntroActivity
+import com.jdccmobile.data.remote.datasources.CostInfoRemoteDataSource
+import com.jdccmobile.data.repositories.CostInfoRepository
 import kotlinx.coroutines.launch
 
 const val PREFERENCES = "preferences"
@@ -50,9 +50,9 @@ class MainActivity : AppCompatActivity() {
         viewModel = ViewModelProvider(
             this,
             MainViewModelFactory(
-                com.jdccmobile.domain.usecase.RequestUserCountryPrefsUseCase(
-                    costInfoRepository
-                )
+                com.jdccmobile.domain.usecase.GetUserCountryPrefsUseCase(
+                    costInfoRepository,
+                ),
             ),
         ).get(MainViewModel::class.java)
 

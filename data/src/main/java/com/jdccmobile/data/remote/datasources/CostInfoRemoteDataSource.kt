@@ -11,7 +11,9 @@ class CostInfoRemoteDataSource(application: App) {
     private val service = RetrofitServiceFactory.makeRetrofitService()
     private val apiKey = application.getString(R.string.api_key)
 
-    suspend fun getCitiesList(): List<com.jdccmobile.domain.model.Place.City> = service.getCities(apiKey).toDomain()
+    suspend fun getCitiesList(): List<com.jdccmobile.domain.model.Place.City> = service.getCities(
+        apiKey,
+    ).toDomain()
 
     suspend fun getCityCost(cityName: String, countryName: String): List<com.jdccmobile.domain.model.ItemPrice> =
         service.getCityCost(apiKey, cityName, countryName).prices.toDomain()

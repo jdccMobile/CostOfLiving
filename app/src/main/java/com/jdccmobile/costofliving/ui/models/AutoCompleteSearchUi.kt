@@ -1,4 +1,4 @@
-package com.jdccmobile.domain.model
+package com.jdccmobile.costofliving.ui.models
 
 data class AutoCompleteSearchUi(
     val searchedText: String,

@@ -21,8 +21,6 @@ import com.jdccmobile.costofliving.data.LocationDataSource
 import com.jdccmobile.costofliving.data.PlayServicesLocationDataSource
 import com.jdccmobile.costofliving.data.local.datasources.CostInfoLocalDataSource
 import com.jdccmobile.costofliving.data.local.datasources.PreferencesDataSource
-import com.jdccmobile.data.remote.datasources.CostInfoRemoteDataSource
-import com.jdccmobile.data.repositories.CostInfoRepository
 import com.jdccmobile.costofliving.data.repositories.RegionRepository
 import com.jdccmobile.costofliving.databinding.ActivityIntroBinding
 import com.jdccmobile.costofliving.ui.common.PermissionChecker
@@ -31,6 +29,8 @@ import com.jdccmobile.costofliving.ui.common.app
 import com.jdccmobile.costofliving.ui.features.home.HomeActivity
 import com.jdccmobile.costofliving.ui.features.main.MainActivity.Companion.HALF_SECOND
 import com.jdccmobile.costofliving.ui.features.main.dataStore
+import com.jdccmobile.data.remote.datasources.CostInfoRemoteDataSource
+import com.jdccmobile.data.repositories.CostInfoRepository
 import kotlinx.coroutines.launch
 
 class IntroActivity : AppCompatActivity() {
