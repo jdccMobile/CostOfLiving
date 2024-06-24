@@ -16,12 +16,9 @@ import androidx.navigation.fragment.findNavController
 import com.jdccmobile.costofliving.R
 import com.jdccmobile.costofliving.data.local.datasources.CostInfoLocalDataSource
 import com.jdccmobile.costofliving.data.local.datasources.PreferencesDataSource
-import com.jdccmobile.costofliving.data.remote.datasources.CostInfoRemoteDataSource
-import com.jdccmobile.costofliving.data.repositories.CostInfoRepository
+import com.jdccmobile.data.remote.datasources.CostInfoRemoteDataSource
+import com.jdccmobile.data.repositories.CostInfoRepository
 import com.jdccmobile.costofliving.databinding.FragmentSearchBinding
-import com.jdccmobile.costofliving.domain.models.AutoCompleteSearchUi
-import com.jdccmobile.costofliving.domain.usecases.RequestCitiesListUseCase
-import com.jdccmobile.costofliving.domain.usecases.RequestUserCountryPrefsUseCase
 import com.jdccmobile.costofliving.ui.common.app
 import com.jdccmobile.costofliving.ui.features.main.dataStore
 import com.jdccmobile.costofliving.ui.models.PlaceUi
@@ -34,9 +31,9 @@ class SearchFragment : Fragment() {
     private lateinit var viewModel: SearchViewModel
     private var isSearchByCity: Boolean = true
     private lateinit var citiesInUserCountryAdapter: CitiesUserCountryAdapter
-    private lateinit var citiesAutoComplete: List<AutoCompleteSearchUi>
+    private lateinit var citiesAutoComplete: List<com.jdccmobile.domain.model.AutoCompleteSearchUi>
     private lateinit var citiesAutoCompleteSearchAdapter: AutoCompleteSearchAdapter
-    private lateinit var countriesAutoComplete: List<AutoCompleteSearchUi>
+    private lateinit var countriesAutoComplete: List<com.jdccmobile.domain.model.AutoCompleteSearchUi>
     private lateinit var countriesAutoCompleteSearchAdapter: AutoCompleteSearchAdapter
 
     override fun onCreateView(
@@ -48,8 +45,9 @@ class SearchFragment : Fragment() {
 
         val preferencesDataSource = PreferencesDataSource(requireActivity().dataStore)
         val localDataSource = CostInfoLocalDataSource()
-        val remoteDataSource = CostInfoRemoteDataSource(requireActivity().app)
-        val costInfoRepository = CostInfoRepository(
+        val remoteDataSource =
+            com.jdccmobile.data.remote.datasources.CostInfoRemoteDataSource(requireActivity().app)
+        val costInfoRepository = com.jdccmobile.data.repositories.CostInfoRepository(
             preferencesDataSource = preferencesDataSource,
             localDataSource = localDataSource,
             remoteDataSource = remoteDataSource,
@@ -58,8 +56,8 @@ class SearchFragment : Fragment() {
             this,
             SearchViewModelFactory(
                 requireActivity(),
-                RequestUserCountryPrefsUseCase(costInfoRepository),
-                RequestCitiesListUseCase(costInfoRepository),
+                com.jdccmobile.domain.usecase.RequestUserCountryPrefsUseCase(costInfoRepository),
+                com.jdccmobile.domain.usecase.RequestCitiesListUseCase(costInfoRepository),
             ),
         ).get(SearchViewModel::class.java)
 

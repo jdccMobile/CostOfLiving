@@ -13,9 +13,8 @@ import androidx.lifecycle.repeatOnLifecycle
 import com.jdccmobile.costofliving.R
 import com.jdccmobile.costofliving.data.local.datasources.CostInfoLocalDataSource
 import com.jdccmobile.costofliving.data.local.datasources.PreferencesDataSource
-import com.jdccmobile.costofliving.data.remote.datasources.CostInfoRemoteDataSource
-import com.jdccmobile.costofliving.data.repositories.CostInfoRepository
-import com.jdccmobile.costofliving.domain.usecases.RequestUserCountryPrefsUseCase
+import com.jdccmobile.data.remote.datasources.CostInfoRemoteDataSource
+import com.jdccmobile.data.repositories.CostInfoRepository
 import com.jdccmobile.costofliving.ui.common.app
 import com.jdccmobile.costofliving.ui.features.home.HomeActivity
 import com.jdccmobile.costofliving.ui.features.intro.IntroActivity
@@ -42,15 +41,19 @@ class MainActivity : AppCompatActivity() {
 
         val preferencesDataSource = PreferencesDataSource(app.dataStore)
         val localDataSource = CostInfoLocalDataSource()
-        val remoteDataSource = CostInfoRemoteDataSource(app)
-        val costInfoRepository = CostInfoRepository(
+        val remoteDataSource = com.jdccmobile.data.remote.datasources.CostInfoRemoteDataSource(app)
+        val costInfoRepository = com.jdccmobile.data.repositories.CostInfoRepository(
             preferencesDataSource = preferencesDataSource,
             localDataSource = localDataSource,
             remoteDataSource = remoteDataSource,
         )
         viewModel = ViewModelProvider(
             this,
-            MainViewModelFactory(RequestUserCountryPrefsUseCase(costInfoRepository)),
+            MainViewModelFactory(
+                com.jdccmobile.domain.usecase.RequestUserCountryPrefsUseCase(
+                    costInfoRepository
+                )
+            ),
         ).get(MainViewModel::class.java)
 
         lifecycleScope.launch {

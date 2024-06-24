@@ -4,9 +4,8 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.viewModelScope
-import com.jdccmobile.costofliving.data.repositories.CostInfoRepository
+import com.jdccmobile.data.repositories.CostInfoRepository
 import com.jdccmobile.costofliving.data.repositories.RegionRepository
-import com.jdccmobile.costofliving.domain.models.IntroSlide
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
@@ -16,10 +15,10 @@ import java.util.Locale
 class IntroViewModel(
     private val activity: AppCompatActivity,
     private val regionRepository: RegionRepository,
-    private val costInfoRepository: CostInfoRepository,
+    private val costInfoRepository: com.jdccmobile.data.repositories.CostInfoRepository,
 ) : ViewModel() {
     data class UiState(
-        val introSlidesInfo: List<IntroSlide> = emptyList(),
+        val introSlidesInfo: List<com.jdccmobile.domain.model.IntroSlide> = emptyList(),
     )
 
     private val _state = MutableStateFlow(UiState())
@@ -48,7 +47,7 @@ class IntroViewModel(
 class IntroViewModelFactory(
     private val activity: AppCompatActivity,
     private val regionRepository: RegionRepository,
-    private val costInfoRepository: CostInfoRepository,
+    private val costInfoRepository: com.jdccmobile.data.repositories.CostInfoRepository,
 ) : ViewModelProvider.Factory {
     override fun <T : ViewModel> create(modelClass: Class<T>): T {
         return IntroViewModel(activity, regionRepository, costInfoRepository) as T

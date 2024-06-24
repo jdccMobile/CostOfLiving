@@ -15,11 +15,9 @@ import androidx.navigation.fragment.navArgs
 import com.jdccmobile.costofliving.R
 import com.jdccmobile.costofliving.data.local.datasources.CostInfoLocalDataSource
 import com.jdccmobile.costofliving.data.local.datasources.PreferencesDataSource
-import com.jdccmobile.costofliving.data.remote.datasources.CostInfoRemoteDataSource
-import com.jdccmobile.costofliving.data.repositories.CostInfoRepository
+import com.jdccmobile.data.remote.datasources.CostInfoRemoteDataSource
+import com.jdccmobile.data.repositories.CostInfoRepository
 import com.jdccmobile.costofliving.databinding.FragmentDetailsBinding
-import com.jdccmobile.costofliving.domain.usecases.RequestCityCostUseCase
-import com.jdccmobile.costofliving.domain.usecases.RequestCountryCostUseCase
 import com.jdccmobile.costofliving.ui.common.app
 import com.jdccmobile.costofliving.ui.features.main.dataStore
 import com.jdccmobile.costofliving.ui.models.toDomain
@@ -42,8 +40,9 @@ class DetailsFragment : Fragment() {
         _binding = FragmentDetailsBinding.inflate(inflater, container, false)
         val preferencesDataSource = PreferencesDataSource(requireActivity().dataStore)
         val localDataSource = CostInfoLocalDataSource()
-        val remoteDataSource = CostInfoRemoteDataSource(requireActivity().app)
-        val costInfoRepository = CostInfoRepository(
+        val remoteDataSource =
+            com.jdccmobile.data.remote.datasources.CostInfoRemoteDataSource(requireActivity().app)
+        val costInfoRepository = com.jdccmobile.data.repositories.CostInfoRepository(
             preferencesDataSource = preferencesDataSource,
             localDataSource = localDataSource,
             remoteDataSource = remoteDataSource,
@@ -53,8 +52,8 @@ class DetailsFragment : Fragment() {
             DetailsViewModelFactory(
                 requireActivity(),
                 requireNotNull(safeArgs.placeUi.toDomain()),
-                RequestCityCostUseCase(costInfoRepository),
-                RequestCountryCostUseCase(costInfoRepository),
+                com.jdccmobile.domain.usecase.RequestCityCostUseCase(costInfoRepository),
+                com.jdccmobile.domain.usecase.RequestCountryCostUseCase(costInfoRepository),
             ),
         ).get(DetailsViewModel::class.java)
 

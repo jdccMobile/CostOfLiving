@@ -21,11 +21,10 @@ import com.jdccmobile.costofliving.data.LocationDataSource
 import com.jdccmobile.costofliving.data.PlayServicesLocationDataSource
 import com.jdccmobile.costofliving.data.local.datasources.CostInfoLocalDataSource
 import com.jdccmobile.costofliving.data.local.datasources.PreferencesDataSource
-import com.jdccmobile.costofliving.data.remote.datasources.CostInfoRemoteDataSource
-import com.jdccmobile.costofliving.data.repositories.CostInfoRepository
+import com.jdccmobile.data.remote.datasources.CostInfoRemoteDataSource
+import com.jdccmobile.data.repositories.CostInfoRepository
 import com.jdccmobile.costofliving.data.repositories.RegionRepository
 import com.jdccmobile.costofliving.databinding.ActivityIntroBinding
-import com.jdccmobile.costofliving.domain.models.IntroSlide
 import com.jdccmobile.costofliving.ui.common.PermissionChecker
 import com.jdccmobile.costofliving.ui.common.PermissionRequester
 import com.jdccmobile.costofliving.ui.common.app
@@ -57,8 +56,8 @@ class IntroActivity : AppCompatActivity() {
         )
         val preferencesDataSource = PreferencesDataSource(app.dataStore)
         val localDataSource = CostInfoLocalDataSource()
-        val remoteDataSource = CostInfoRemoteDataSource(app)
-        val costInfoRepository = CostInfoRepository(
+        val remoteDataSource = com.jdccmobile.data.remote.datasources.CostInfoRemoteDataSource(app)
+        val costInfoRepository = com.jdccmobile.data.repositories.CostInfoRepository(
             preferencesDataSource = preferencesDataSource,
             localDataSource = localDataSource,
             remoteDataSource = remoteDataSource,
@@ -81,7 +80,7 @@ class IntroActivity : AppCompatActivity() {
         Manifest.permission.ACCESS_COARSE_LOCATION,
     )
 
-    private fun updateUI(introSlidesInfo: List<IntroSlide>) {
+    private fun updateUI(introSlidesInfo: List<com.jdccmobile.domain.model.IntroSlide>) {
         introSliderAdapter = IntroSliderAdapter(introSlidesInfo)
         binding.vpIntroSlider.adapter = introSliderAdapter
 

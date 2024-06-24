@@ -6,9 +6,8 @@ import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import com.jdccmobile.costofliving.R
 import com.jdccmobile.costofliving.databinding.ViewIntroSlideBinding
-import com.jdccmobile.costofliving.domain.models.IntroSlide
 
-class IntroSliderAdapter(private val introSlide: List<IntroSlide>) :
+class IntroSliderAdapter(private val introSlide: List<com.jdccmobile.domain.model.IntroSlide>) :
     RecyclerView.Adapter<IntroSliderAdapter.IntroSliderViewHolder>() {
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): IntroSliderViewHolder {
         return IntroSliderViewHolder(
@@ -25,7 +24,7 @@ class IntroSliderAdapter(private val introSlide: List<IntroSlide>) :
     inner class IntroSliderViewHolder(view: View) : RecyclerView.ViewHolder(view) {
         private val binding = ViewIntroSlideBinding.bind(view)
 
-        fun bind(introSlide: IntroSlide) {
+        fun bind(introSlide: com.jdccmobile.domain.model.IntroSlide) {
             binding.tvTitle.text = introSlide.title
             binding.tvDescription.text = introSlide.description
             binding.ivSlideImage.setImageResource(introSlide.image)
