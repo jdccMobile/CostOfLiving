@@ -14,17 +14,17 @@ import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
 import androidx.navigation.fragment.findNavController
 import com.jdccmobile.costofliving.R
+import com.jdccmobile.costofliving.common.app
 import com.jdccmobile.costofliving.databinding.FragmentSearchBinding
-import com.jdccmobile.costofliving.ui.common.app
 import com.jdccmobile.costofliving.ui.features.main.dataStore
 import com.jdccmobile.costofliving.ui.models.AutoCompleteSearchUi
 import com.jdccmobile.costofliving.ui.models.PlaceUi
-import com.jdccmobile.data.local.datasources.PlaceLocalDataSource
-import com.jdccmobile.data.local.datasources.PreferencesDataSource
+import com.jdccmobile.data.database.datasources.PlaceLocalDataSource
+import com.jdccmobile.data.preferences.PreferencesDataSource
 import com.jdccmobile.data.remote.datasources.PlaceRemoteDataSource
 import com.jdccmobile.data.repositories.PlaceRepositoryImpl
 import com.jdccmobile.data.repositories.PrefsRepositoryImpl
-import com.jdccmobile.domain.usecase.GetCitiesListUseCase
+import com.jdccmobile.domain.usecase.GetCityListUseCase
 import com.jdccmobile.domain.usecase.GetUserCountryPrefsUseCase
 import kotlinx.coroutines.launch
 
@@ -50,7 +50,8 @@ class SearchFragment : Fragment() {
 
         val preferencesDataSource = PreferencesDataSource(requireActivity().dataStore)
         val localDataSource = PlaceLocalDataSource()
-        val remoteDataSource = PlaceRemoteDataSource(requireActivity().app)
+        val remoteDataSource =
+            PlaceRemoteDataSource(requireActivity().app.getString(R.string.api_key))
         val placeRepositoryImpl = PlaceRepositoryImpl(
             localDataSource = localDataSource,
             remoteDataSource = remoteDataSource,
@@ -63,7 +64,7 @@ class SearchFragment : Fragment() {
             SearchViewModelFactory(
                 requireActivity(),
                 GetUserCountryPrefsUseCase(prefsRepositoryImpl),
-                GetCitiesListUseCase(placeRepositoryImpl),
+                GetCityListUseCase(placeRepositoryImpl),
             ),
         ).get(SearchViewModel::class.java)
 

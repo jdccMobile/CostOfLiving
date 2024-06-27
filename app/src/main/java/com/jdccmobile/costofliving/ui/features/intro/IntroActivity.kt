@@ -2,7 +2,6 @@ package com.jdccmobile.costofliving.ui.features.intro
 
 import android.Manifest
 import android.content.Intent
-import android.location.Geocoder
 import android.os.Bundle
 import android.view.View
 import android.view.ViewGroup
@@ -17,17 +16,17 @@ import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
 import androidx.viewpager2.widget.ViewPager2
 import com.jdccmobile.costofliving.R
+import com.jdccmobile.costofliving.common.PermissionCheckerImpl
+import com.jdccmobile.costofliving.common.PermissionRequester
+import com.jdccmobile.costofliving.common.PlayServicesLocationDataSourceImpl
+import com.jdccmobile.costofliving.common.app
 import com.jdccmobile.costofliving.databinding.ActivityIntroBinding
-import com.jdccmobile.costofliving.ui.common.PermissionChecker
-import com.jdccmobile.costofliving.ui.common.PermissionRequester
-import com.jdccmobile.costofliving.ui.common.app
 import com.jdccmobile.costofliving.ui.features.home.HomeActivity
 import com.jdccmobile.costofliving.ui.features.main.MainActivity.Companion.HALF_SECOND
 import com.jdccmobile.costofliving.ui.features.main.dataStore
-import com.jdccmobile.data.LocationDataSource
-import com.jdccmobile.data.PlayServicesLocationDataSource
-import com.jdccmobile.data.local.datasources.PlaceLocalDataSource
-import com.jdccmobile.data.local.datasources.PreferencesDataSource
+import com.jdccmobile.data.database.datasources.PlaceLocalDataSource
+import com.jdccmobile.data.location.LocationDataSource
+import com.jdccmobile.data.preferences.PreferencesDataSource
 import com.jdccmobile.data.remote.datasources.PlaceRemoteDataSource
 import com.jdccmobile.data.repositories.PlaceRepositoryImpl
 import com.jdccmobile.data.repositories.PrefsRepositoryImpl
@@ -43,20 +42,16 @@ class IntroActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         binding = ActivityIntroBinding.inflate(layoutInflater)
         setContentView(binding.root)
-        val locationDataSource: LocationDataSource = PlayServicesLocationDataSource(app)
+        val locationDataSource: LocationDataSource = PlayServicesLocationDataSourceImpl(app)
 //        val fusedLocationClient = LocationServices.getFusedLocationProviderClient(app)
-        val coarsePermissionChecker = PermissionChecker(
-            app,
-            Manifest.permission.ACCESS_COARSE_LOCATION,
-        )
-        val geocoder = Geocoder(app)
+        val permissionChecker = PermissionCheckerImpl(app)
         val regionRepository = RegionRepository(
             locationDataSource = locationDataSource,
-            coarsePermissionChecker = coarsePermissionChecker,
-            geocoder = geocoder,
+            permissionChecker = permissionChecker,
         )
         val localDataSource = PlaceLocalDataSource()
-        val remoteDataSource = PlaceRemoteDataSource(app)
+
+        val remoteDataSource = PlaceRemoteDataSource(app.getString(R.string.api_key))
         val costInfoRepository = PlaceRepositoryImpl(
             localDataSource = localDataSource,
             remoteDataSource = remoteDataSource,
@@ -68,7 +63,11 @@ class IntroActivity : AppCompatActivity() {
         viewModel =
             ViewModelProvider(
                 this,
-                IntroViewModelFactory(this, regionRepository, costInfoRepository, prefsRepositoryImpl),
+                IntroViewModelFactory(
+                    activity = this,
+                    regionRepository = regionRepository,
+                    prefsRepository = prefsRepositoryImpl,
+                ),
             ).get(IntroViewModel::class.java)
 
         lifecycleScope.launch {

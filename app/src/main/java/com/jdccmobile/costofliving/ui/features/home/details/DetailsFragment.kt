@@ -13,10 +13,10 @@ import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
 import androidx.navigation.fragment.navArgs
 import com.jdccmobile.costofliving.R
+import com.jdccmobile.costofliving.common.app
 import com.jdccmobile.costofliving.databinding.FragmentDetailsBinding
-import com.jdccmobile.costofliving.ui.common.app
 import com.jdccmobile.costofliving.ui.models.toDomain
-import com.jdccmobile.data.local.datasources.PlaceLocalDataSource
+import com.jdccmobile.data.database.datasources.PlaceLocalDataSource
 import com.jdccmobile.data.remote.datasources.PlaceRemoteDataSource
 import com.jdccmobile.domain.usecase.GetCityCostUseCase
 import com.jdccmobile.domain.usecase.GetCountryCostUseCase
@@ -38,7 +38,8 @@ class DetailsFragment : Fragment() {
     ): View {
         _binding = FragmentDetailsBinding.inflate(inflater, container, false)
         val localDataSource = PlaceLocalDataSource()
-        val remoteDataSource = PlaceRemoteDataSource(requireActivity().app)
+        val remoteDataSource =
+            PlaceRemoteDataSource(requireActivity().app.getString(R.string.api_key))
         val placeRepositoryImpl = com.jdccmobile.data.repositories.PlaceRepositoryImpl(
             localDataSource = localDataSource,
             remoteDataSource = remoteDataSource,

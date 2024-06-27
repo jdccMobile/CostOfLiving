@@ -11,10 +11,10 @@ import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
 import com.jdccmobile.costofliving.R
-import com.jdccmobile.costofliving.ui.common.app
+import com.jdccmobile.costofliving.common.app
 import com.jdccmobile.costofliving.ui.features.home.HomeActivity
 import com.jdccmobile.costofliving.ui.features.intro.IntroActivity
-import com.jdccmobile.data.local.datasources.PreferencesDataSource
+import com.jdccmobile.data.preferences.PreferencesDataSource
 import com.jdccmobile.data.repositories.PrefsRepositoryImpl
 import com.jdccmobile.domain.usecase.GetUserCountryPrefsUseCase
 import kotlinx.coroutines.launch

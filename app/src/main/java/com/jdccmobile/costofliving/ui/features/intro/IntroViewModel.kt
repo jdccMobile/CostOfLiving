@@ -17,7 +17,6 @@ import java.util.Locale
 class IntroViewModel(
     private val activity: AppCompatActivity,
     private val regionRepository: RegionRepository,
-    private val placeRepository: PlaceRepositoryImpl,
     private val prefsRepository: PrefsRepositoryImpl,
 ) : ViewModel() {
     data class UiState(
@@ -50,10 +49,9 @@ class IntroViewModel(
 class IntroViewModelFactory(
     private val activity: AppCompatActivity,
     private val regionRepository: RegionRepository,
-    private val costInfoRepository: PlaceRepositoryImpl,
     private val prefsRepository: PrefsRepositoryImpl,
 ) : ViewModelProvider.Factory {
     override fun <T : ViewModel> create(modelClass: Class<T>): T {
-        return IntroViewModel(activity, regionRepository, costInfoRepository, prefsRepository) as T
+        return IntroViewModel(activity, regionRepository, prefsRepository) as T
     }
 }

@@ -5,8 +5,8 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import com.jdccmobile.costofliving.R
+import com.jdccmobile.costofliving.common.getCountryCode
 import com.jdccmobile.costofliving.databinding.ViewCityItemBinding
-import com.jdccmobile.costofliving.ui.common.getCountryCode
 import com.jdccmobile.costofliving.ui.models.PlaceUi
 import com.squareup.picasso.Picasso
 

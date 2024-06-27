@@ -1,6 +1,6 @@
 package com.jdccmobile.data.repositories
 
-import com.jdccmobile.data.local.datasources.PreferencesDataSource
+import com.jdccmobile.data.preferences.PreferencesDataSource
 import com.jdccmobile.domain.repository.PrefsRepository
 
 class PrefsRepositoryImpl(

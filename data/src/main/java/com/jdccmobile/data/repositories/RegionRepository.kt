@@ -1,27 +1,21 @@
 package com.jdccmobile.data.repositories
 
-import android.location.Geocoder
-import android.location.Location
-import com.jdccmobile.costofliving.data.LocationDataSource
-import com.jdccmobile.costofliving.ui.common.PermissionChecker
-import com.jdccmobile.costofliving.ui.features.main.MainActivity.Companion.DEFAULT_COUNTRY_CODE
+import com.jdccmobile.data.location.LocationDataSource
+import com.jdccmobile.data.location.PermissionChecker
 
 class RegionRepository(
     private val locationDataSource: LocationDataSource,
-    private val coarsePermissionChecker: PermissionChecker,
-    private val geocoder: Geocoder,
+    private val permissionChecker: PermissionChecker,
 ) {
-    suspend fun findLastRegion(): String = findLastLocation().toRegion()
-
-    private suspend fun findLastLocation(): Location? {
-        val success = coarsePermissionChecker.check()
-        return if (success) locationDataSource.findLastLocation() else null
+    companion object {
+        private const val DEFAULT_REGION = "US"
     }
 
-    private fun Location?.toRegion(): String {
-        val addresses = this?.let {
-            geocoder.getFromLocation(latitude, longitude, 1)
+    suspend fun findLastRegion(): String {
+        return if (permissionChecker.check(PermissionChecker.Permission.COARSE_LOCATION)) {
+            locationDataSource.findLastRegion() ?: DEFAULT_REGION
+        } else {
+            DEFAULT_REGION
         }
-        return addresses?.firstOrNull()?.countryCode?.lowercase() ?: DEFAULT_COUNTRY_CODE
     }
 }

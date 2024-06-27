@@ -1,16 +1,13 @@
 package com.jdccmobile.data.remote.datasources
 
-import com.jdccmobile.costofliving.App
-import com.jdccmobile.costofliving.R
 import com.jdccmobile.data.remote.RetrofitServiceFactory
 import com.jdccmobile.data.remote.models.city.CitiesListResponseResult
 import com.jdccmobile.data.remote.models.cost.PriceResponse
 import com.jdccmobile.domain.model.ItemPrice
 import com.jdccmobile.domain.model.Place
 
-class PlaceRemoteDataSource(application: App) {
+class PlaceRemoteDataSource(private val apiKey: String) {
     private val service = RetrofitServiceFactory.makeRetrofitService()
-    private val apiKey = application.getString(R.string.api_key)
 
     suspend fun getCitiesList(): List<Place.City> = service.getCities(
         apiKey,

@@ -5,8 +5,8 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.ArrayAdapter
+import com.jdccmobile.costofliving.common.getCountryCode
 import com.jdccmobile.costofliving.databinding.ViewSearchAutocompleteItemBinding
-import com.jdccmobile.costofliving.ui.common.getCountryCode
 import com.jdccmobile.costofliving.ui.models.AutoCompleteSearchUi
 import com.squareup.picasso.Picasso
 

@@ -1,6 +1,6 @@
 package com.jdccmobile.data.repositories
 
-import com.jdccmobile.data.local.datasources.PlaceLocalDataSource
+import com.jdccmobile.data.database.datasources.PlaceLocalDataSource
 import com.jdccmobile.data.remote.datasources.PlaceRemoteDataSource
 import com.jdccmobile.domain.model.ItemPrice
 import com.jdccmobile.domain.model.Place

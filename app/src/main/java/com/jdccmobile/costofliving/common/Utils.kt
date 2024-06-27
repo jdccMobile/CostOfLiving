@@ -1,4 +1,4 @@
-package com.jdccmobile.costofliving.ui.common
+package com.jdccmobile.costofliving.common
 
 import android.content.Context
 import com.jdccmobile.costofliving.App

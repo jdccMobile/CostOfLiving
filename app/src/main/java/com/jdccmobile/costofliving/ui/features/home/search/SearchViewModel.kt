@@ -18,7 +18,7 @@ class SearchViewModel(
     private val fragment: FragmentActivity,
     private val getUserCountryPrefsUseCase:
         com.jdccmobile.domain.usecase.GetUserCountryPrefsUseCase,
-    private val getCitiesListUseCase: com.jdccmobile.domain.usecase.GetCitiesListUseCase,
+    private val getCityListUseCase: com.jdccmobile.domain.usecase.GetCityListUseCase,
 ) : ViewModel() {
     data class UiState(
         val apiCallCompleted: Boolean = false,
@@ -53,7 +53,7 @@ class SearchViewModel(
         if (!_state.value.apiCallCompleted) {
             try {
                 Log.i("JD Search VM", "API call: requestCitiesList")
-                val citiesList = getCitiesListUseCase()
+                val citiesList = getCityListUseCase()
                 val citiesInUserCountry = citiesList.filter {
                     it.countryName == userCountryName
                 }.sortedBy { it.cityName }.toUi()
@@ -160,14 +160,14 @@ class SearchViewModelFactory(
     private val fragment: FragmentActivity,
     private val getUserCountryPrefsUseCase:
         com.jdccmobile.domain.usecase.GetUserCountryPrefsUseCase,
-    private val getCitiesListUseCase: com.jdccmobile.domain.usecase.GetCitiesListUseCase,
+    private val getCityListUseCase: com.jdccmobile.domain.usecase.GetCityListUseCase,
 ) :
     ViewModelProvider.Factory {
     override fun <T : ViewModel> create(modelClass: Class<T>): T {
         return SearchViewModel(
             fragment,
             getUserCountryPrefsUseCase,
-            getCitiesListUseCase,
+            getCityListUseCase,
         ) as T
     }
 }

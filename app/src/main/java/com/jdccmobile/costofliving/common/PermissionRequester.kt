@@ -1,4 +1,4 @@
-package com.jdccmobile.costofliving.ui.common
+package com.jdccmobile.costofliving.common
 
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AppCompatActivity
