@@ -24,11 +24,8 @@ import com.jdccmobile.costofliving.databinding.ActivityIntroBinding
 import com.jdccmobile.costofliving.ui.features.home.HomeActivity
 import com.jdccmobile.costofliving.ui.features.main.MainActivity.Companion.HALF_SECOND
 import com.jdccmobile.costofliving.ui.features.main.dataStore
-import com.jdccmobile.data.database.datasources.PlaceLocalDataSource
 import com.jdccmobile.data.location.LocationDataSource
 import com.jdccmobile.data.preferences.PreferencesDataSource
-import com.jdccmobile.data.remote.datasources.PlaceRemoteDataSource
-import com.jdccmobile.data.repositories.PlaceRepositoryImpl
 import com.jdccmobile.data.repositories.PrefsRepositoryImpl
 import com.jdccmobile.data.repositories.RegionRepository
 import kotlinx.coroutines.launch
@@ -48,13 +45,6 @@ class IntroActivity : AppCompatActivity() {
         val regionRepository = RegionRepository(
             locationDataSource = locationDataSource,
             permissionChecker = permissionChecker,
-        )
-        val localDataSource = PlaceLocalDataSource()
-
-        val remoteDataSource = PlaceRemoteDataSource(app.getString(R.string.api_key))
-        val costInfoRepository = PlaceRepositoryImpl(
-            localDataSource = localDataSource,
-            remoteDataSource = remoteDataSource,
         )
         val preferencesDataSource = PreferencesDataSource(app.dataStore)
         val prefsRepositoryImpl = PrefsRepositoryImpl(
