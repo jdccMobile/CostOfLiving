@@ -17,14 +17,14 @@
         android:theme="@style/Theme.CostOfLiving"
         tools:targetApi="31">
         <activity
-            android:name=".ui.home.HomeActivity"
+            android:name=".ui.features.home.HomeActivity"
             android:exported="false"
             android:windowSoftInputMode="stateHidden" />
         <activity
-            android:name=".ui.intro.IntroActivity"
+            android:name=".ui.features.intro.IntroActivity"
             android:exported="false" />
         <activity
-            android:name=".ui.main.MainActivity"
+            android:name=".ui.features.main.MainActivity"
             android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
