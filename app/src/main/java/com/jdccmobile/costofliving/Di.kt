@@ -12,7 +12,6 @@ import com.jdccmobile.costofliving.ui.features.home.details.DetailsViewModel
 import com.jdccmobile.costofliving.ui.features.home.search.SearchViewModel
 import com.jdccmobile.costofliving.ui.features.intro.IntroSlidesProvider
 import com.jdccmobile.costofliving.ui.features.main.MainViewModel
-import com.jdccmobile.costofliving.ui.models.PlaceUi
 import com.jdccmobile.data.database.datasources.PlaceLocalDataSource
 import com.jdccmobile.data.location.LocationDataSource
 import com.jdccmobile.data.location.PermissionChecker
@@ -30,10 +29,13 @@ import com.jdccmobile.domain.usecase.GetUserCountryPrefsUseCase
 import org.koin.android.ext.koin.androidApplication
 import org.koin.android.ext.koin.androidContext
 import org.koin.android.ext.koin.androidLogger
-import org.koin.androidx.viewmodel.dsl.viewModel
+import org.koin.androidx.viewmodel.dsl.viewModelOf
 import org.koin.core.context.startKoin
 import org.koin.core.logger.Level
+import org.koin.core.module.dsl.factoryOf
+import org.koin.core.module.dsl.singleOf
 import org.koin.core.qualifier.named
+import org.koin.dsl.bind
 import org.koin.dsl.module
 
 const val PREFERENCES = "preferences"
@@ -51,34 +53,33 @@ private val appModule = module {
     single(named(API_KEY_NAMED)) { androidApplication().getString(R.string.api_key) }
     single { androidContext().dataStore }
 
-    single { ResourceProvider(get()) }
-    single { IntroSlidesProvider(get()) }
+    singleOf(::ResourceProvider)
+    singleOf(::IntroSlidesProvider)
 
-    factory<LocationDataSource> { PlayServicesLocationDataSourceImpl(get()) }
-    factory<PermissionChecker> { PermissionCheckerImpl(get()) }
+    factoryOf(::PlayServicesLocationDataSourceImpl) bind LocationDataSource::class
+    factoryOf(::PermissionCheckerImpl) bind PermissionChecker::class
 
-    viewModel { MainViewModel(get()) }
-    viewModel { SearchViewModel(get(), get(), get()) }
-    viewModel { (place: PlaceUi) -> DetailsViewModel(place, get(), get(), get()) }
+    viewModelOf(::MainViewModel)
+    viewModelOf(::SearchViewModel)
+    viewModelOf(::DetailsViewModel)
 }
 
 // TODO add room
 private val dataModule = module {
-    factory<PreferencesDataSource> { PreferencesDataSource(get()) }
-    factory<PrefsRepository> { PrefsRepositoryImpl(get()) }
-
-    factory<PlaceLocalDataSource> { PlaceLocalDataSource() }
+    factoryOf(::PreferencesDataSource)
+    factoryOf(::PrefsRepositoryImpl) bind PrefsRepository::class
+    factoryOf(::PlaceLocalDataSource)
     factory<PlaceRemoteDataSource> { PlaceRemoteDataSource(get(named("apiKey"))) }
-    factory<PlaceRepository> { PlaceRepositoryImpl(get(), get()) }
+    factoryOf(::PlaceRepositoryImpl) bind PlaceRepository::class
 
-    factory<RegionRepository> { RegionRepository(get(), get()) }
+    factoryOf(::RegionRepository)
 }
 
 private val domainModule = module {
-    factory { GetUserCountryPrefsUseCase(get()) }
-    factory { GetCityListUseCase(get()) }
-    factory { GetCityCostUseCase(get()) }
-    factory { GetCountryCostUseCase(get()) }
+    factoryOf(::GetUserCountryPrefsUseCase)
+    factoryOf(::GetCityListUseCase)
+    factoryOf(::GetCityCostUseCase)
+    factoryOf(::GetCountryCostUseCase)
 }
 
 private const val API_KEY_NAMED = "apiKey"
