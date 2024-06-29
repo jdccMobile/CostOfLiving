@@ -1,31 +1,32 @@
 package com.jdccmobile.costofliving.ui.features.intro
 
-import androidx.appcompat.app.AppCompatActivity
+import android.content.Context
 import com.jdccmobile.costofliving.R
+import com.jdccmobile.domain.model.IntroSlide
 
-class IntroSlidesProvider(activity: AppCompatActivity) {
+class IntroSlidesProvider(context: Context) {
+    fun getIntroSlides() = introSlides
+
     private val introSlides = listOf(
-        com.jdccmobile.domain.model.IntroSlide(
-            activity.getString(R.string.app_name),
-            activity.getString(R.string.cost_of_living_des),
+        IntroSlide(
+            context.getString(R.string.app_name),
+            context.getString(R.string.cost_of_living_des),
             R.drawable.im_world,
         ),
-        com.jdccmobile.domain.model.IntroSlide(
-            activity.getString(R.string.cities),
-            activity.getString(R.string.cities_des),
+        IntroSlide(
+            context.getString(R.string.cities),
+            context.getString(R.string.cities_des),
             R.drawable.im_town,
         ),
-        com.jdccmobile.domain.model.IntroSlide(
-            activity.getString(R.string.favorites),
-            activity.getString(R.string.favorites_des),
+        IntroSlide(
+            context.getString(R.string.favorites),
+            context.getString(R.string.favorites_des),
             R.drawable.im_saved_town,
         ),
-        com.jdccmobile.domain.model.IntroSlide(
-            activity.getString(R.string.location),
-            activity.getString(R.string.location_des),
+        IntroSlide(
+            context.getString(R.string.location),
+            context.getString(R.string.location_des),
             R.drawable.im_current_location,
         ),
     )
-
-    fun getIntroSlides() = introSlides
 }

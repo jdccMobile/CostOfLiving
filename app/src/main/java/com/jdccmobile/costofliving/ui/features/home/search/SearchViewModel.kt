@@ -1,24 +1,24 @@
 package com.jdccmobile.costofliving.ui.features.home.search
 
 import android.util.Log
-import androidx.fragment.app.FragmentActivity
 import androidx.lifecycle.ViewModel
-import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.viewModelScope
 import com.jdccmobile.costofliving.R
+import com.jdccmobile.costofliving.common.ResourceProvider
 import com.jdccmobile.costofliving.ui.models.AutoCompleteSearchUi
 import com.jdccmobile.costofliving.ui.models.PlaceUi
 import com.jdccmobile.domain.model.Place
+import com.jdccmobile.domain.usecase.GetCityListUseCase
+import com.jdccmobile.domain.usecase.GetUserCountryPrefsUseCase
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
 
 class SearchViewModel(
-    private val fragment: FragmentActivity,
-    private val getUserCountryPrefsUseCase:
-        com.jdccmobile.domain.usecase.GetUserCountryPrefsUseCase,
-    private val getCityListUseCase: com.jdccmobile.domain.usecase.GetCityListUseCase,
+    private val getUserCountryPrefsUseCase: GetUserCountryPrefsUseCase,
+    private val getCityListUseCase: GetCityListUseCase,
+    private val resourceProvider: ResourceProvider,
 ) : ViewModel() {
     data class UiState(
         val apiCallCompleted: Boolean = false,
@@ -81,12 +81,12 @@ class SearchViewModel(
                 if (e.message?.contains("429") == true) {
                     _state.value =
                         _state.value.copy(
-                            apiErrorMsg = fragment.getString(R.string.http_429),
+                            apiErrorMsg = resourceProvider.getString(R.string.http_429),
                         )
                 } else {
                     _state.value =
                         _state.value.copy(
-                            apiErrorMsg = fragment.getString(R.string.connection_error),
+                            apiErrorMsg = resourceProvider.getString(R.string.connection_error),
                         )
                 }
                 Log.e("JD Search VM", "API call requestCitiesList error: $e")
@@ -116,7 +116,8 @@ class SearchViewModel(
             } else {
                 _state.value =
                     _state.value.copy(
-                        errorMsg = "$nameSearch ${fragment.getString(R.string.does_not_exist)}",
+                        errorMsg =
+                            "$nameSearch ${resourceProvider.getString(R.string.does_not_exist)}",
                     )
             }
         } else {
@@ -129,7 +130,8 @@ class SearchViewModel(
             } else {
                 _state.value =
                     _state.value.copy(
-                        errorMsg = "$nameSearch ${fragment.getString(R.string.does_not_exist)}",
+                        errorMsg =
+                            "$nameSearch ${resourceProvider.getString(R.string.does_not_exist)}",
                     )
             }
         }
@@ -155,19 +157,19 @@ fun List<Place.City>.toUi() = map {
     )
 }
 
-@Suppress("UNCHECKED_CAST")
-class SearchViewModelFactory(
-    private val fragment: FragmentActivity,
-    private val getUserCountryPrefsUseCase:
-        com.jdccmobile.domain.usecase.GetUserCountryPrefsUseCase,
-    private val getCityListUseCase: com.jdccmobile.domain.usecase.GetCityListUseCase,
-) :
-    ViewModelProvider.Factory {
-    override fun <T : ViewModel> create(modelClass: Class<T>): T {
-        return SearchViewModel(
-            fragment,
-            getUserCountryPrefsUseCase,
-            getCityListUseCase,
-        ) as T
-    }
-}
+// @Suppress("UNCHECKED_CAST")
+// class SearchViewModelFactory(
+//    private val fragment: FragmentActivity,
+//    private val getUserCountryPrefsUseCase:
+//        com.jdccmobile.domain.usecase.GetUserCountryPrefsUseCase,
+//    private val getCityListUseCase: com.jdccmobile.domain.usecase.GetCityListUseCase,
+// ) :
+//    ViewModelProvider.Factory {
+//    override fun <T : ViewModel> create(modelClass: Class<T>): T {
+//        return SearchViewModel(
+//            fragment,
+//            getUserCountryPrefsUseCase,
+//            getCityListUseCase,
+//        ) as T
+//    }
+// }

@@ -11,54 +11,46 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.ContextCompat
 import androidx.core.view.get
 import androidx.lifecycle.Lifecycle
-import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
 import androidx.viewpager2.widget.ViewPager2
 import com.jdccmobile.costofliving.R
-import com.jdccmobile.costofliving.common.PermissionCheckerImpl
 import com.jdccmobile.costofliving.common.PermissionRequester
-import com.jdccmobile.costofliving.common.PlayServicesLocationDataSourceImpl
-import com.jdccmobile.costofliving.common.app
 import com.jdccmobile.costofliving.databinding.ActivityIntroBinding
 import com.jdccmobile.costofliving.ui.features.home.HomeActivity
 import com.jdccmobile.costofliving.ui.features.main.MainActivity.Companion.HALF_SECOND
-import com.jdccmobile.costofliving.ui.features.main.dataStore
-import com.jdccmobile.data.location.LocationDataSource
-import com.jdccmobile.data.preferences.PreferencesDataSource
-import com.jdccmobile.data.repositories.PrefsRepositoryImpl
-import com.jdccmobile.data.repositories.RegionRepository
 import kotlinx.coroutines.launch
+import org.koin.androidx.viewmodel.ext.android.viewModel
 
 class IntroActivity : AppCompatActivity() {
     private lateinit var binding: ActivityIntroBinding
     private lateinit var introSliderAdapter: IntroSliderAdapter
-    private lateinit var viewModel: IntroViewModel
+    private val viewModel: IntroViewModel by viewModel()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = ActivityIntroBinding.inflate(layoutInflater)
         setContentView(binding.root)
-        val locationDataSource: LocationDataSource = PlayServicesLocationDataSourceImpl(app)
+//        val locationDataSource: LocationDataSource = PlayServicesLocationDataSourceImpl(app)
 //        val fusedLocationClient = LocationServices.getFusedLocationProviderClient(app)
-        val permissionChecker = PermissionCheckerImpl(app)
-        val regionRepository = RegionRepository(
-            locationDataSource = locationDataSource,
-            permissionChecker = permissionChecker,
-        )
-        val preferencesDataSource = PreferencesDataSource(app.dataStore)
-        val prefsRepositoryImpl = PrefsRepositoryImpl(
-            preferencesDataSource = preferencesDataSource,
-        )
-        viewModel =
-            ViewModelProvider(
-                this,
-                IntroViewModelFactory(
-                    activity = this,
-                    regionRepository = regionRepository,
-                    prefsRepository = prefsRepositoryImpl,
-                ),
-            ).get(IntroViewModel::class.java)
+//        val permissionChecker = PermissionCheckerImpl(app)
+//        val regionRepository = RegionRepository(
+//            locationDataSource = locationDataSource,
+//            permissionChecker = permissionChecker,
+//        )
+//        val preferencesDataSource = PreferencesDataSource(app.dataStore)
+//        val prefsRepositoryImpl = PrefsRepositoryImpl(
+//            preferencesDataSource = preferencesDataSource,
+//        )
+//        viewModel =
+//            ViewModelProvider(
+//                this,
+//                IntroViewModelFactory(
+//                    activity = this,
+//                    regionRepository = regionRepository,
+//                    prefsRepository = prefsRepositoryImpl,
+//                ),
+//            ).get(IntroViewModel::class.java)
 
         lifecycleScope.launch {
             repeatOnLifecycle(Lifecycle.State.STARTED) {

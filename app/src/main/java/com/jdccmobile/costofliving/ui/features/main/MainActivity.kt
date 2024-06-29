@@ -1,26 +1,20 @@
 package com.jdccmobile.costofliving.ui.features.main
 
-import android.content.Context
 import android.content.Intent
 import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.splashscreen.SplashScreen.Companion.installSplashScreen
-import androidx.datastore.preferences.preferencesDataStore
 import androidx.lifecycle.Lifecycle
-import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
 import com.jdccmobile.costofliving.R
-import com.jdccmobile.costofliving.common.app
 import com.jdccmobile.costofliving.ui.features.home.HomeActivity
 import com.jdccmobile.costofliving.ui.features.intro.IntroActivity
-import com.jdccmobile.data.preferences.PreferencesDataSource
-import com.jdccmobile.data.repositories.PrefsRepositoryImpl
-import com.jdccmobile.domain.usecase.GetUserCountryPrefsUseCase
 import kotlinx.coroutines.launch
+import org.koin.androidx.viewmodel.ext.android.viewModel
 
-const val PREFERENCES = "preferences"
-val Context.dataStore by preferencesDataStore(name = PREFERENCES)
+// const val PREFERENCES = "preferences"
+// val Context.dataStore by preferencesDataStore(name = PREFERENCES)
 
 class MainActivity : AppCompatActivity() {
     companion object {
@@ -30,7 +24,8 @@ class MainActivity : AppCompatActivity() {
 
     // TODO utilizar la linea comentada
 //    private val viewModel: MainViewModel by viewModels { MainViewModelFactory(dataStore) }
-    private lateinit var viewModel: MainViewModel
+//    private lateinit var viewModel: MainViewModel
+    private val viewModel: MainViewModel by viewModel()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         val splashScreen = installSplashScreen()
@@ -38,16 +33,16 @@ class MainActivity : AppCompatActivity() {
         setContentView(R.layout.activity_main)
         splashScreen.setKeepOnScreenCondition { true }
 
-        val preferencesDataSource = PreferencesDataSource(app.dataStore)
-        val prefsRepository = PrefsRepositoryImpl(
-            preferencesDataSource = preferencesDataSource,
-        )
-        viewModel = ViewModelProvider(
-            this,
-            MainViewModelFactory(
-                GetUserCountryPrefsUseCase(prefsRepository),
-            ),
-        ).get(MainViewModel::class.java)
+//        val preferencesDataSource = PreferencesDataSource(app.dataStore)
+//        val prefsRepository = PrefsRepositoryImpl(
+//            preferencesDataSource = preferencesDataSource,
+//        )
+//        viewModel = ViewModelProvider(
+//            this,
+//            MainViewModelFactory(
+//                GetUserCountryPrefsUseCase(prefsRepository),
+//            ),
+//        ).get(MainViewModel::class.java)
 
         lifecycleScope.launch {
             repeatOnLifecycle(Lifecycle.State.STARTED) {

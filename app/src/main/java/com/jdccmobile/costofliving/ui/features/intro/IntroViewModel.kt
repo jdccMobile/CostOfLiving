@@ -1,8 +1,6 @@
 package com.jdccmobile.costofliving.ui.features.intro
 
-import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.ViewModel
-import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.viewModelScope
 import com.jdccmobile.data.repositories.PrefsRepositoryImpl
 import com.jdccmobile.data.repositories.RegionRepository
@@ -14,9 +12,9 @@ import kotlinx.coroutines.launch
 import java.util.Locale
 
 class IntroViewModel(
-    private val activity: AppCompatActivity,
     private val regionRepository: RegionRepository,
     private val prefsRepository: PrefsRepositoryImpl,
+    private val introSlidesProvider: IntroSlidesProvider,
 ) : ViewModel() {
     data class UiState(
         val introSlidesInfo: List<IntroSlide> = emptyList(),
@@ -32,7 +30,7 @@ class IntroViewModel(
     private fun refresh() {
         viewModelScope.launch {
             _state.value = UiState(
-                introSlidesInfo = IntroSlidesProvider(activity).getIntroSlides(),
+                introSlidesInfo = introSlidesProvider.getIntroSlides(),
             )
         }
     }
@@ -41,16 +39,5 @@ class IntroViewModel(
         val countryCode = regionRepository.findLastRegion()
         val countryName = Locale("", countryCode).getDisplayCountry(Locale("EN"))
         prefsRepository.setUserCountry(countryName)
-    }
-}
-
-@Suppress("UNCHECKED_CAST")
-class IntroViewModelFactory(
-    private val activity: AppCompatActivity,
-    private val regionRepository: RegionRepository,
-    private val prefsRepository: PrefsRepositoryImpl,
-) : ViewModelProvider.Factory {
-    override fun <T : ViewModel> create(modelClass: Class<T>): T {
-        return IntroViewModel(activity, regionRepository, prefsRepository) as T
     }
 }
