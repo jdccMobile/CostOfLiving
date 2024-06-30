@@ -81,7 +81,7 @@ class DetailsViewModel(
                         emptyList()
                     }
                 }
-            }.filter {
+            }.filter { // TODO improve this code
                 it.name.contains("in City Center") || it.name.contains("Gasoline") ||
                     it.name.contains("Dress") || it.name.contains("Fitness") ||
                     it.name.contains("Gasoline") || it.name.contains("McMeal") ||

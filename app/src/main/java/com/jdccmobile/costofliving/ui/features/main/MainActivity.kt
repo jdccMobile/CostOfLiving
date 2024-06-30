@@ -13,18 +13,12 @@ import com.jdccmobile.costofliving.ui.features.intro.IntroActivity
 import kotlinx.coroutines.launch
 import org.koin.androidx.viewmodel.ext.android.viewModel
 
-// const val PREFERENCES = "preferences"
-// val Context.dataStore by preferencesDataStore(name = PREFERENCES)
-
 class MainActivity : AppCompatActivity() {
     companion object {
         const val HALF_SECOND = 500L
         const val DEFAULT_COUNTRY_CODE = "pt"
     }
 
-    // TODO utilizar la linea comentada
-//    private val viewModel: MainViewModel by viewModels { MainViewModelFactory(dataStore) }
-//    private lateinit var viewModel: MainViewModel
     private val viewModel: MainViewModel by viewModel()
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -32,17 +26,6 @@ class MainActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
         splashScreen.setKeepOnScreenCondition { true }
-
-//        val preferencesDataSource = PreferencesDataSource(app.dataStore)
-//        val prefsRepository = PrefsRepositoryImpl(
-//            preferencesDataSource = preferencesDataSource,
-//        )
-//        viewModel = ViewModelProvider(
-//            this,
-//            MainViewModelFactory(
-//                GetUserCountryPrefsUseCase(prefsRepository),
-//            ),
-//        ).get(MainViewModel::class.java)
 
         lifecycleScope.launch {
             repeatOnLifecycle(Lifecycle.State.STARTED) {

@@ -2,6 +2,7 @@ package com.jdccmobile.costofliving
 
 import android.app.Application
 import android.content.Context
+import android.location.Geocoder
 import androidx.datastore.core.DataStore
 import androidx.datastore.preferences.core.Preferences
 import androidx.datastore.preferences.preferencesDataStore
@@ -11,6 +12,7 @@ import com.jdccmobile.costofliving.common.ResourceProvider
 import com.jdccmobile.costofliving.ui.features.home.details.DetailsViewModel
 import com.jdccmobile.costofliving.ui.features.home.search.SearchViewModel
 import com.jdccmobile.costofliving.ui.features.intro.IntroSlidesProvider
+import com.jdccmobile.costofliving.ui.features.intro.IntroViewModel
 import com.jdccmobile.costofliving.ui.features.main.MainViewModel
 import com.jdccmobile.data.database.datasources.PlaceLocalDataSource
 import com.jdccmobile.data.location.LocationDataSource
@@ -52,6 +54,7 @@ fun Application.initDi() { // si tenemos application no necesitamos pasarselo po
 private val appModule = module {
     single(named(API_KEY_NAMED)) { androidApplication().getString(R.string.api_key) }
     single { androidContext().dataStore }
+    single { Geocoder(androidContext()) }
 
     singleOf(::ResourceProvider)
     singleOf(::IntroSlidesProvider)
@@ -60,6 +63,7 @@ private val appModule = module {
     factoryOf(::PermissionCheckerImpl) bind PermissionChecker::class
 
     viewModelOf(::MainViewModel)
+    viewModelOf(::IntroViewModel)
     viewModelOf(::SearchViewModel)
     viewModelOf(::DetailsViewModel)
 }

@@ -31,26 +31,6 @@ class IntroActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         binding = ActivityIntroBinding.inflate(layoutInflater)
         setContentView(binding.root)
-//        val locationDataSource: LocationDataSource = PlayServicesLocationDataSourceImpl(app)
-//        val fusedLocationClient = LocationServices.getFusedLocationProviderClient(app)
-//        val permissionChecker = PermissionCheckerImpl(app)
-//        val regionRepository = RegionRepository(
-//            locationDataSource = locationDataSource,
-//            permissionChecker = permissionChecker,
-//        )
-//        val preferencesDataSource = PreferencesDataSource(app.dataStore)
-//        val prefsRepositoryImpl = PrefsRepositoryImpl(
-//            preferencesDataSource = preferencesDataSource,
-//        )
-//        viewModel =
-//            ViewModelProvider(
-//                this,
-//                IntroViewModelFactory(
-//                    activity = this,
-//                    regionRepository = regionRepository,
-//                    prefsRepository = prefsRepositoryImpl,
-//                ),
-//            ).get(IntroViewModel::class.java)
 
         lifecycleScope.launch {
             repeatOnLifecycle(Lifecycle.State.STARTED) {

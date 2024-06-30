@@ -9,9 +9,11 @@ import com.jdccmobile.data.location.LocationDataSource
 import kotlinx.coroutines.suspendCancellableCoroutine
 import kotlin.coroutines.resume
 
-class PlayServicesLocationDataSourceImpl(application: Application) : LocationDataSource {
+class PlayServicesLocationDataSourceImpl(
+    application: Application,
+    private val geocoder: Geocoder,
+) : LocationDataSource {
     private val fusedLocationClient = LocationServices.getFusedLocationProviderClient(application)
-    private val geocoder = Geocoder(application)
 
     override suspend fun findLastRegion(): String? = findLastLocation().toRegion()
 
