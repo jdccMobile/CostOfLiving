@@ -9,30 +9,22 @@ import android.view.inputmethod.InputMethodManager
 import android.widget.Toast
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.Lifecycle
-import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
 import androidx.navigation.fragment.findNavController
 import com.jdccmobile.costofliving.R
-import com.jdccmobile.costofliving.common.app
 import com.jdccmobile.costofliving.databinding.FragmentSearchBinding
-import com.jdccmobile.costofliving.ui.features.main.dataStore
 import com.jdccmobile.costofliving.ui.models.AutoCompleteSearchUi
 import com.jdccmobile.costofliving.ui.models.PlaceUi
-import com.jdccmobile.data.database.datasources.PlaceLocalDataSource
-import com.jdccmobile.data.preferences.PreferencesDataSource
-import com.jdccmobile.data.remote.datasources.PlaceRemoteDataSource
-import com.jdccmobile.data.repositories.PlaceRepositoryImpl
-import com.jdccmobile.data.repositories.PrefsRepositoryImpl
-import com.jdccmobile.domain.usecase.GetCityListUseCase
-import com.jdccmobile.domain.usecase.GetUserCountryPrefsUseCase
 import kotlinx.coroutines.launch
+import org.koin.androidx.viewmodel.ext.android.viewModel
 
 class SearchFragment : Fragment() {
     private var _binding: FragmentSearchBinding? = null
     private val binding get() = _binding!!
 
-    private lateinit var viewModel: SearchViewModel
+    private val viewModel: SearchViewModel by viewModel()
+
     private var isSearchByCity: Boolean = true
     private lateinit var citiesInUserCountryAdapter: CitiesUserCountryAdapter
     private lateinit var citiesAutoComplete: List<AutoCompleteSearchUi>
@@ -48,25 +40,25 @@ class SearchFragment : Fragment() {
     ): View {
         _binding = FragmentSearchBinding.inflate(inflater, container, false)
 
-        val preferencesDataSource = PreferencesDataSource(requireActivity().dataStore)
-        val localDataSource = PlaceLocalDataSource()
-        val remoteDataSource =
-            PlaceRemoteDataSource(requireActivity().app.getString(R.string.api_key))
-        val placeRepositoryImpl = PlaceRepositoryImpl(
-            localDataSource = localDataSource,
-            remoteDataSource = remoteDataSource,
-        )
-        val prefsRepositoryImpl = PrefsRepositoryImpl(
-            preferencesDataSource = preferencesDataSource,
-        )
-        viewModel = ViewModelProvider(
-            this,
-            SearchViewModelFactory(
-                requireActivity(),
-                GetUserCountryPrefsUseCase(prefsRepositoryImpl),
-                GetCityListUseCase(placeRepositoryImpl),
-            ),
-        ).get(SearchViewModel::class.java)
+//        val preferencesDataSource = PreferencesDataSource(requireActivity().dataStore)
+//        val localDataSource = PlaceLocalDataSource()
+//        val remoteDataSource =
+//            PlaceRemoteDataSource(requireActivity().app.getString(R.string.api_key))
+//        val placeRepositoryImpl = PlaceRepositoryImpl(
+//            localDataSource = localDataSource,
+//            remoteDataSource = remoteDataSource,
+//        )
+//        val prefsRepositoryImpl = PrefsRepositoryImpl(
+//            preferencesDataSource = preferencesDataSource,
+//        )
+//        viewModel = ViewModelProvider(
+//            this,
+//            SearchViewModelFactory(
+//                requireActivity(),
+//                GetUserCountryPrefsUseCase(prefsRepositoryImpl),
+//                GetCityListUseCase(placeRepositoryImpl),
+//            ),
+//        ).get(SearchViewModel::class.java)
 
         viewLifecycleOwner.lifecycleScope.launch {
             repeatOnLifecycle(Lifecycle.State.STARTED) {
