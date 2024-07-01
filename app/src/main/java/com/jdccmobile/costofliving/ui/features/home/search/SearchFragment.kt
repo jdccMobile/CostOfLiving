@@ -40,26 +40,6 @@ class SearchFragment : Fragment() {
     ): View {
         _binding = FragmentSearchBinding.inflate(inflater, container, false)
 
-//        val preferencesDataSource = PreferencesDataSource(requireActivity().dataStore)
-//        val localDataSource = PlaceLocalDataSource()
-//        val remoteDataSource =
-//            PlaceRemoteDataSource(requireActivity().app.getString(R.string.api_key))
-//        val placeRepositoryImpl = PlaceRepositoryImpl(
-//            localDataSource = localDataSource,
-//            remoteDataSource = remoteDataSource,
-//        )
-//        val prefsRepositoryImpl = PrefsRepositoryImpl(
-//            preferencesDataSource = preferencesDataSource,
-//        )
-//        viewModel = ViewModelProvider(
-//            this,
-//            SearchViewModelFactory(
-//                requireActivity(),
-//                GetUserCountryPrefsUseCase(prefsRepositoryImpl),
-//                GetCityListUseCase(placeRepositoryImpl),
-//            ),
-//        ).get(SearchViewModel::class.java)
-
         viewLifecycleOwner.lifecycleScope.launch {
             repeatOnLifecycle(Lifecycle.State.STARTED) {
                 viewModel.state.collect { updateUI(it) }

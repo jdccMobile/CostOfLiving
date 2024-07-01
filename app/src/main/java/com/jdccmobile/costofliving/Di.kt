@@ -10,6 +10,7 @@ import com.jdccmobile.costofliving.common.PermissionCheckerImpl
 import com.jdccmobile.costofliving.common.PlayServicesLocationDataSourceImpl
 import com.jdccmobile.costofliving.common.ResourceProvider
 import com.jdccmobile.costofliving.ui.features.home.details.DetailsViewModel
+import com.jdccmobile.costofliving.ui.features.home.favorites.FavoritesViewModel
 import com.jdccmobile.costofliving.ui.features.home.search.SearchViewModel
 import com.jdccmobile.costofliving.ui.features.intro.IntroSlidesProvider
 import com.jdccmobile.costofliving.ui.features.intro.IntroViewModel
@@ -66,6 +67,7 @@ private val appModule = module {
     viewModelOf(::IntroViewModel)
     viewModelOf(::SearchViewModel)
     viewModelOf(::DetailsViewModel)
+    viewModelOf(::FavoritesViewModel)
 }
 
 // TODO add room

@@ -156,20 +156,3 @@ fun List<Place.City>.toUi() = map {
         countryName = it.countryName,
     )
 }
-
-// @Suppress("UNCHECKED_CAST")
-// class SearchViewModelFactory(
-//    private val fragment: FragmentActivity,
-//    private val getUserCountryPrefsUseCase:
-//        com.jdccmobile.domain.usecase.GetUserCountryPrefsUseCase,
-//    private val getCityListUseCase: com.jdccmobile.domain.usecase.GetCityListUseCase,
-// ) :
-//    ViewModelProvider.Factory {
-//    override fun <T : ViewModel> create(modelClass: Class<T>): T {
-//        return SearchViewModel(
-//            fragment,
-//            getUserCountryPrefsUseCase,
-//            getCityListUseCase,
-//        ) as T
-//    }
-// }
