@@ -7,6 +7,7 @@ import com.jdccmobile.costofliving.R
 import com.jdccmobile.costofliving.common.ResourceProvider
 import com.jdccmobile.costofliving.ui.models.ItemPriceUi
 import com.jdccmobile.costofliving.ui.models.PlaceUi
+import com.jdccmobile.domain.model.ItemPrice
 import com.jdccmobile.domain.usecase.GetCityCostUseCase
 import com.jdccmobile.domain.usecase.GetCountryCostUseCase
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -113,7 +114,7 @@ class DetailsViewModel(
 }
 
 // TODO improve this code
-private fun List<com.jdccmobile.domain.model.ItemPrice>.toUi(): List<ItemPriceUi> = map {
+private fun List<ItemPrice>.toUi(): List<ItemPriceUi> = map {
     ItemPriceUi(
         name = it.name,
         cost = it.cost,

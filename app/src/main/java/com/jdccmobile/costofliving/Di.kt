@@ -28,6 +28,7 @@ import com.jdccmobile.domain.repository.PrefsRepository
 import com.jdccmobile.domain.usecase.GetCityCostUseCase
 import com.jdccmobile.domain.usecase.GetCityListUseCase
 import com.jdccmobile.domain.usecase.GetCountryCostUseCase
+import com.jdccmobile.domain.usecase.GetFavoriteCitiesUseCase
 import com.jdccmobile.domain.usecase.GetUserCountryPrefsUseCase
 import org.koin.android.ext.koin.androidApplication
 import org.koin.android.ext.koin.androidContext
@@ -86,6 +87,7 @@ private val domainModule = module {
     factoryOf(::GetCityListUseCase)
     factoryOf(::GetCityCostUseCase)
     factoryOf(::GetCountryCostUseCase)
+    factoryOf(::GetFavoriteCitiesUseCase)
 }
 
 private const val API_KEY_NAMED = "apiKey"

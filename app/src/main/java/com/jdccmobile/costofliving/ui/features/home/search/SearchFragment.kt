@@ -52,25 +52,25 @@ class SearchFragment : Fragment() {
         return binding.root
     }
 
-    private fun updateUI(state: SearchViewModel.UiState) {
-        val searchByCountry = getString(R.string.cities_in) + " " + state.countryName
+    private fun updateUI(uiState: SearchViewModel.UiState) {
+        val searchByCountry = getString(R.string.cities_in) + " " + uiState.countryName
         binding.tvSubtitle.text = searchByCountry
-        isSearchByCity = state.isSearchByCity
+        isSearchByCity = uiState.isSearchByCity
 
-        state.navigateTo?.let { navigateToDetails(it) }
-        state.errorMsg?.let { showErrorMsg(it) }
+        uiState.navigateTo?.let { navigateToDetails(it) }
+        uiState.errorMsg?.let { showErrorMsg(it) }
 
-        if (state.apiCallCompleted) {
-            if (state.apiErrorMsg == null) {
-                citiesAutoComplete = state.citiesAutoComplete
-                countriesAutoComplete = state.countriesAutoComplete
-                createAdapters(state.citiesInUserCountry)
+        if (uiState.apiCallCompleted) {
+            if (uiState.apiErrorMsg == null) {
+                citiesAutoComplete = uiState.citiesAutoComplete
+                countriesAutoComplete = uiState.countriesAutoComplete
+                createAdapters(uiState.citiesInUserCountry)
                 selectAutoCompleteAdapter()
                 binding.rvSearchCities.adapter = citiesInUserCountryAdapter
                 binding.rvSearchCities.visibility = View.VISIBLE
                 binding.pbSearchCities.visibility = View.GONE
             } else {
-                handleErrorConnection(state.apiErrorMsg)
+                handleErrorConnection(uiState.apiErrorMsg)
             }
         }
     }

@@ -30,7 +30,7 @@ object BorderDimens {
 
 object IconDimens {
     val small = 20.dp
-    val medium = 24.dp
+    val standard = 24.dp
     val large = 40.dp
     val extraLarge = 48.dp
 }
@@ -44,4 +44,3 @@ object ElevationDimens {
     val fab = 6.dp
     val dialog = 6.dp
 }
-

@@ -46,21 +46,21 @@ class DetailsFragment : Fragment() {
         return binding.root
     }
 
-    private fun updateUI(state: DetailsViewModel.UiState) {
-        binding.tvCityName.text = state.cityName ?: state.countryName
-        binding.tvCountryName.text = state.countryName
-        Log.i("JD Details Fragment error", state.apiErrorMsg.toString())
-        if (state.apiCallCompleted) {
-            if (state.apiErrorMsg == null) {
+    private fun updateUI(uiState: DetailsViewModel.UiState) {
+        binding.tvCityName.text = uiState.cityName ?: uiState.countryName
+        binding.tvCountryName.text = uiState.countryName
+        Log.i("JD Details Fragment error", uiState.apiErrorMsg.toString())
+        if (uiState.apiCallCompleted) {
+            if (uiState.apiErrorMsg == null) {
                 binding.pbCostInfo.visibility = View.GONE
                 binding.rvCostItems.visibility = View.VISIBLE
                 costInfoAdapter = CostInfoAdapter(
-                    name = state.cityName ?: state.countryName,
-                    costInfo = state.itemCostInfoList,
+                    name = uiState.cityName ?: uiState.countryName,
+                    costInfo = uiState.itemCostInfoList,
                 )
                 binding.rvCostItems.adapter = costInfoAdapter
             } else {
-                handleErrorConnection(state.apiErrorMsg)
+                handleErrorConnection(uiState.apiErrorMsg)
             }
         }
     }

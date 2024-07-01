@@ -7,7 +7,7 @@ import com.jdccmobile.costofliving.R
 import com.jdccmobile.costofliving.common.ResourceProvider
 import com.jdccmobile.costofliving.ui.models.AutoCompleteSearchUi
 import com.jdccmobile.costofliving.ui.models.PlaceUi
-import com.jdccmobile.domain.model.Place
+import com.jdccmobile.costofliving.ui.models.toUi
 import com.jdccmobile.domain.usecase.GetCityListUseCase
 import com.jdccmobile.domain.usecase.GetUserCountryPrefsUseCase
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -148,11 +148,4 @@ class SearchViewModel(
     fun onApiErrorMsgShown() {
         _state.value = _state.value.copy(apiErrorMsg = null)
     }
-}
-
-fun List<Place.City>.toUi() = map {
-    PlaceUi.City(
-        cityName = it.cityName,
-        countryName = it.countryName,
-    )
 }

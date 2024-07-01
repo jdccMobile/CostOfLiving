@@ -1,6 +1,7 @@
 package com.jdccmobile.costofliving.ui.models
 
 import android.os.Parcelable
+import com.jdccmobile.domain.model.Place
 import kotlinx.parcelize.Parcelize
 
 @Parcelize
@@ -30,4 +31,11 @@ fun PlaceUi.toDomain() = when (this) {
             countryName = countryName,
         )
     }
+}
+
+fun List<Place.City>.toUi() = map {
+    PlaceUi.City(
+        cityName = it.cityName,
+        countryName = it.countryName,
+    )
 }
