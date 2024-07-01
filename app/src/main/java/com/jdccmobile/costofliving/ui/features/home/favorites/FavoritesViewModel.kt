@@ -8,7 +8,7 @@ import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
 
-class FavoritesViewModel() : ViewModel() {
+class FavoritesViewModel : ViewModel() {
     data class UiState(
         val cityList: List<PlaceUi.City> = emptyList(),
     )

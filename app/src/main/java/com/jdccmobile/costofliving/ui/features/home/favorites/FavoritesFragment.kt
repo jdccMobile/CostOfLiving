@@ -1,5 +1,6 @@
 package com.jdccmobile.costofliving.ui.features.home.favorites
 
+import android.annotation.SuppressLint
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -19,9 +20,8 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.fragment.app.Fragment
-import com.example.compose.primary
 import com.jdccmobile.costofliving.R
-import com.jdccmobile.costofliving.common.debugBorder
+import com.jdccmobile.costofliving.compose.theme.primary
 import org.koin.androidx.viewmodel.ext.android.viewModel
 
 class FavoritesFragment : Fragment() {
@@ -44,6 +44,7 @@ class FavoritesFragment : Fragment() {
 
     // TODO supress magic number de los colores
 
+    @SuppressLint("NotConstructor")
     @Composable
     private fun FavoritesFragment(viewModel: FavoritesViewModel) {
 //        val cityList by viewModel.state.value.cityList.collectWithLifecycle()
@@ -67,9 +68,9 @@ class FavoritesFragment : Fragment() {
                 ),
                 modifier = Modifier
                     .padding(start = 32.dp, top = 32.dp)
-                    .debugBorder(),
             )
         }
+
 
         // TODO add lazy column with favorite items
     }
