@@ -46,13 +46,11 @@ import org.koin.core.logger.Level
 import org.koin.core.module.dsl.factoryOf
 import org.koin.core.module.dsl.singleOf
 import org.koin.core.qualifier.named
-import org.koin.core.scope.get
 import org.koin.dsl.bind
 import org.koin.dsl.module
 
-const val PREFERENCES = "preferences"
+private const val PREFERENCES = "preferences"
 val Context.dataStore: DataStore<Preferences> by preferencesDataStore(name = PREFERENCES)
-
 fun Application.initDi() { // si tenemos application no necesitamos pasarselo por argumentos
     startKoin {
         androidLogger(Level.ERROR)
