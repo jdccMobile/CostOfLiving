@@ -67,7 +67,8 @@ class DetailsFragment : Fragment() {
 
     private fun onFavClick() {
         binding.ivFavorite.setOnClickListener {
-            viewModel.changeFavStatus()
+            viewModel.addCityToFavorites()
+            binding.ivFavorite.setImageResource(R.drawable.ic_favorite)
         }
     }
 

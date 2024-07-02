@@ -7,9 +7,11 @@ import com.jdccmobile.costofliving.R
 import com.jdccmobile.costofliving.common.ResourceProvider
 import com.jdccmobile.costofliving.ui.models.ItemPriceUi
 import com.jdccmobile.costofliving.ui.models.PlaceUi
+import com.jdccmobile.costofliving.ui.models.toDomain
 import com.jdccmobile.domain.model.ItemPrice
 import com.jdccmobile.domain.usecase.GetCityCostUseCase
 import com.jdccmobile.domain.usecase.GetCountryCostUseCase
+import com.jdccmobile.domain.usecase.InsertFavoriteCityUseCase
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
@@ -20,6 +22,7 @@ class DetailsViewModel(
     private val getCityCostUseCase: GetCityCostUseCase,
     private val getCountryCostUseCase: GetCountryCostUseCase,
     private val resourceProvider: ResourceProvider,
+    private val insertFavoriteCityUseCase: InsertFavoriteCityUseCase,
 ) : ViewModel() {
     data class UiState(
         val cityName: String? = null,
@@ -108,8 +111,13 @@ class DetailsViewModel(
         }
     }
 
-    fun changeFavStatus() {
-        // TODO
+    fun addCityToFavorites() {
+        // todo jdc cambiar nombre porque tambien sera el de borrar, para borrar añadir un dialog
+        viewModelScope.launch {
+            if (place is PlaceUi.City) {
+                insertFavoriteCityUseCase(place.toDomain())
+            }
+        }
     }
 }
 

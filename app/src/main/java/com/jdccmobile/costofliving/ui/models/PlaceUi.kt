@@ -20,14 +20,14 @@ sealed class PlaceUi : Parcelable {
 
 fun PlaceUi.toDomain() = when (this) {
     is PlaceUi.City -> {
-        com.jdccmobile.domain.model.Place.City(
+        Place.City(
             cityName = cityName,
             countryName = countryName,
         )
     }
 
     is PlaceUi.Country -> {
-        com.jdccmobile.domain.model.Place.Country(
+        Place.Country(
             countryName = countryName,
         )
     }
@@ -39,3 +39,9 @@ fun List<Place.City>.toUi() = map {
         countryName = it.countryName,
     )
 }
+
+fun PlaceUi.City.toDomain() =
+    Place.City(
+        cityName = cityName,
+        countryName = countryName,
+    )

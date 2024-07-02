@@ -10,6 +10,15 @@ class PlaceRepositoryImpl(
     private val localDataSource: PlaceLocalDataSource,
     private val remoteDataSource: PlaceRemoteDataSource,
 ) : PlaceRepository {
+    override suspend fun insertFavoriteCity(city: Place.City) =
+        localDataSource.insertFavoriteCity(city)
+
+    override suspend fun getFavoriteCitiesList(): List<Place.City> {
+        return listOf(Place.City("Moscow", "Russia"))
+    }
+
+    override suspend fun deleteFavoriteCity(city: Place.City) {}
+
     override suspend fun getCitiesListRemote(): List<Place.City> = remoteDataSource.getCitiesList()
 
     override suspend fun getCityCostRemote(cityName: String, countryName: String): List<ItemPrice> =
