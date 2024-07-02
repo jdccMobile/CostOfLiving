@@ -29,6 +29,7 @@ import com.jdccmobile.data.repositories.PrefsRepositoryImpl
 import com.jdccmobile.data.repositories.RegionRepository
 import com.jdccmobile.domain.repository.PlaceRepository
 import com.jdccmobile.domain.repository.PrefsRepository
+import com.jdccmobile.domain.usecase.DeleteFavoriteCityUseCase
 import com.jdccmobile.domain.usecase.GetCityCostUseCase
 import com.jdccmobile.domain.usecase.GetCityListUseCase
 import com.jdccmobile.domain.usecase.GetCountryCostUseCase
@@ -106,6 +107,7 @@ private val domainModule = module {
     factoryOf(::GetCountryCostUseCase)
     factoryOf(::GetFavoriteCitiesUseCase)
     factoryOf(::InsertFavoriteCityUseCase)
+    factoryOf(::DeleteFavoriteCityUseCase)
 }
 
 private const val API_KEY_NAMED = "apiKey"

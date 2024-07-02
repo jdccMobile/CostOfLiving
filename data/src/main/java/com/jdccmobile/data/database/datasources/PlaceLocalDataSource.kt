@@ -9,11 +9,11 @@ class PlaceLocalDataSource(private val favoriteCityDao: FavoriteCityDao) {
     suspend fun insertFavoriteCity(city: Place.City) =
         favoriteCityDao.insertFavoriteCity(city.toDb())
 
-//    suspend fun getFavoriteCitiesList(): Flow<List<Place.City>> =
-//        favoriteCityDao.getFavoriteCitiesList().toDomain()
+    suspend fun getFavoriteCitiesList(): List<Place.City> =
+        favoriteCityDao.getFavoriteCitiesList().toDomain()
 
-//    suspend fun deleteFavoriteCity(city: Place.City) =
-//        favoriteCityDao.deleteFavoriteCity(null)
+    suspend fun deleteFavoriteCity(cityName: String, countryName: String) =
+        favoriteCityDao.deleteFavoriteCity(cityName, countryName)
 }
 
 // TODO jdc donde usar el mapper en el repositorio o en el data source

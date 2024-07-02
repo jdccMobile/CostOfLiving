@@ -1,11 +1,9 @@
 package com.jdccmobile.domain.usecase
 
 import com.jdccmobile.domain.model.Place
+import com.jdccmobile.domain.repository.PlaceRepository
 
-class GetFavoriteCitiesUseCase() {
-    suspend operator fun invoke(): List<Place.City> = // TODO get data from room
-        listOf(
-            Place.City("Russia", "Moscow"),
-            Place.City("Spain", "Madrid"),
-        )
+class GetFavoriteCitiesUseCase(private val placeRepository: PlaceRepository) {
+    suspend operator fun invoke(): List<Place.City> =
+        placeRepository.getFavoriteCitiesList()
 }

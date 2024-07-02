@@ -13,6 +13,8 @@ interface FavoriteCityDao {
     @Query("SELECT * FROM favorite_cities")
     suspend fun getFavoriteCitiesList(): List<FavoriteCityDb>
 
-    @Query("DELETE FROM favorite_cities WHERE id = :id")
-    suspend fun deleteFavoriteCity(id: Int)
+    @Query(
+        "DELETE FROM favorite_cities WHERE city_name = :cityName AND country_name = :countryName"
+    )
+    suspend fun deleteFavoriteCity(cityName: String, countryName: String)
 }

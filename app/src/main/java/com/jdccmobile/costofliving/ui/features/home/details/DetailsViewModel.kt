@@ -9,6 +9,7 @@ import com.jdccmobile.costofliving.ui.models.ItemPriceUi
 import com.jdccmobile.costofliving.ui.models.PlaceUi
 import com.jdccmobile.costofliving.ui.models.toDomain
 import com.jdccmobile.domain.model.ItemPrice
+import com.jdccmobile.domain.usecase.DeleteFavoriteCityUseCase
 import com.jdccmobile.domain.usecase.GetCityCostUseCase
 import com.jdccmobile.domain.usecase.GetCountryCostUseCase
 import com.jdccmobile.domain.usecase.InsertFavoriteCityUseCase
@@ -23,6 +24,8 @@ class DetailsViewModel(
     private val getCountryCostUseCase: GetCountryCostUseCase,
     private val resourceProvider: ResourceProvider,
     private val insertFavoriteCityUseCase: InsertFavoriteCityUseCase,
+    private val deleteFavoriteCityUseCase: DeleteFavoriteCityUseCase,
+
 ) : ViewModel() {
     data class UiState(
         val cityName: String? = null,
@@ -54,6 +57,8 @@ class DetailsViewModel(
 
     init {
         refresh()
+        // TODO hacer peticion a la db buscando si esta la ciudad
+//        if place isfavorite = null -> peticion a la bbdd si no es que viene desde favotiyos
     }
 
     private fun refresh() {
@@ -111,11 +116,20 @@ class DetailsViewModel(
         }
     }
 
-    fun addCityToFavorites() {
+    fun onAddCityToFavoritesClicked() {
         // todo jdc cambiar nombre porque tambien sera el de borrar, para borrar añadir un dialog
         viewModelScope.launch {
             if (place is PlaceUi.City) {
                 insertFavoriteCityUseCase(place.toDomain())
+            }
+        }
+    }
+
+    fun onDeleteCityFromFavoritesClicked() {
+        // todo jdc cambiar nombre porque tambien sera el de borrar, para borrar añadir un dialog
+        viewModelScope.launch {
+            if (place is PlaceUi.City) {
+                deleteFavoriteCityUseCase(place.toDomain())
             }
         }
     }

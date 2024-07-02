@@ -7,6 +7,6 @@ import androidx.room.PrimaryKey
 @Entity(tableName = "favorite_cities")
 data class FavoriteCityDb(
     @PrimaryKey(autoGenerate = true) val id: Int?,
-    @ColumnInfo(name = "name") val cityName: String,
+    @ColumnInfo(name = "city_name") val cityName: String,
     @ColumnInfo(name = "country_name") val countryName: String,
 )
