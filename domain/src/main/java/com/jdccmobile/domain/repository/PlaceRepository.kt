@@ -4,12 +4,16 @@ import com.jdccmobile.domain.model.ItemPrice
 import com.jdccmobile.domain.model.Place
 
 interface PlaceRepository {
+    // Local
     suspend fun insertFavoriteCity(city: Place.City)
 
     suspend fun getFavoriteCitiesList(): List<Place.City>
 
     suspend fun deleteFavoriteCity(city: Place.City)
 
+    suspend fun checkIsFavoriteCity(city: Place.City): Boolean
+
+    // Remote
     suspend fun getCitiesListRemote(): List<Place.City>
 
     suspend fun getCityCostRemote(cityName: String, countryName: String): List<ItemPrice>

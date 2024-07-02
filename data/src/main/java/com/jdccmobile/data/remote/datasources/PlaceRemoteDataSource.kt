@@ -22,6 +22,7 @@ private fun CitiesListResponseResult.toDomain(): List<Place.City> = this.cities.
     Place.City(
         cityName = city.cityName,
         countryName = city.countryName,
+        isFavorite = null,
     )
 }
 

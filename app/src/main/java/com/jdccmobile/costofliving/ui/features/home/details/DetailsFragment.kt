@@ -6,12 +6,6 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
-import androidx.compose.material3.AlertDialog
-import androidx.compose.material3.ExperimentalMaterial3Api
-import androidx.compose.material3.Text
-import androidx.compose.material3.TextButton
-import androidx.compose.runtime.Composable
-import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.lifecycleScope
@@ -47,7 +41,7 @@ class DetailsFragment : Fragment() {
             }
         }
 
-        onFavClick()
+        binding.ivFavorite.setOnClickListener {viewModel.onFavoriteClick(this.activity)}
 
         return binding.root
     }
@@ -68,25 +62,11 @@ class DetailsFragment : Fragment() {
             } else {
                 handleErrorConnection(uiState.apiErrorMsg)
             }
-        }
-    }
 
-    var isFavorite = false // sacar al vm
-    private fun onFavClick() {
-        binding.ivFavorite.setOnClickListener {
-            binding.ivFavorite.isEnabled = false // todo y gestionar desde el vm
-            if (isFavorite) {
-                viewModel.onDeleteCityFromFavoritesClicked()
-                binding.ivFavorite.setImageResource(R.drawable.ic_favorite_border)
-                isFavorite = false
-                Toast.makeText(this.activity, "Favorito borrado", Toast.LENGTH_SHORT).show()
-                binding.ivFavorite.isEnabled = true
-            } else {
-                viewModel.onAddCityToFavoritesClicked()
+            if (uiState.isFavorite == true) {
                 binding.ivFavorite.setImageResource(R.drawable.ic_favorite)
-                isFavorite = true
-                Toast.makeText(this.activity, "Favorito añadido", Toast.LENGTH_SHORT).show()
-                binding.ivFavorite.isEnabled = true
+            } else {
+                binding.ivFavorite.setImageResource(R.drawable.ic_favorite_border)
             }
         }
     }

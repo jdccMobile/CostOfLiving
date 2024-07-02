@@ -11,6 +11,7 @@ sealed class PlaceUi : Parcelable {
     data class City(
         override val countryName: String,
         val cityName: String,
+        val isFavorite: Boolean? = null,
     ) : PlaceUi()
 
     data class Country(
@@ -23,6 +24,7 @@ fun PlaceUi.toDomain() = when (this) {
         Place.City(
             cityName = cityName,
             countryName = countryName,
+            isFavorite = isFavorite,
         )
     }
 
@@ -37,6 +39,7 @@ fun List<Place.City>.toUi() = map {
     PlaceUi.City(
         cityName = it.cityName,
         countryName = it.countryName,
+        isFavorite = it.isFavorite,
     )
 }
 
@@ -44,4 +47,5 @@ fun PlaceUi.City.toDomain() =
     Place.City(
         cityName = cityName,
         countryName = countryName,
+        isFavorite = isFavorite,
     )

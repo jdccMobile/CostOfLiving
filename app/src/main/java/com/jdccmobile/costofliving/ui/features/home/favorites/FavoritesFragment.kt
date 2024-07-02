@@ -124,6 +124,7 @@ private fun FavoritesContent(
                             PlaceUi.City(
                                 countryName = city.countryName,
                                 cityName = city.cityName,
+                                isFavorite = true,
                             ),
                         )
                     },

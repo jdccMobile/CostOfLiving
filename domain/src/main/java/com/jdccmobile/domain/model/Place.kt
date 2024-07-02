@@ -6,6 +6,7 @@ sealed class Place {
     data class City(
         override val countryName: String,
         val cityName: String,
+        val isFavorite: Boolean? = null,
     ) : Place()
 
     data class Country(
