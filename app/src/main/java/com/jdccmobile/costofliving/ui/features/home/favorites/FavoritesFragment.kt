@@ -2,6 +2,7 @@ package com.jdccmobile.costofliving.ui.features.home.favorites
 
 import android.annotation.SuppressLint
 import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -38,7 +39,6 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.fragment.app.Fragment
-import androidx.navigation.Navigation.findNavController
 import androidx.navigation.fragment.findNavController
 import coil.compose.rememberAsyncImagePainter
 import com.jdccmobile.costofliving.R
@@ -82,8 +82,8 @@ private fun FavoritesFragment(viewModel: FavoritesViewModel, navigateToDetails: 
     uiState.navigateTo?.let { navigateToDetails(it) }
 
     FavoritesContent(
-        cityList = uiState.cityList,
-        onCityClicked = {
+        placeList = uiState.placeList,
+        onPlaceClicked = {
             viewModel.onCityClicked(it)
         },
     )
@@ -91,8 +91,8 @@ private fun FavoritesFragment(viewModel: FavoritesViewModel, navigateToDetails: 
 
 @Composable
 private fun FavoritesContent(
-    cityList: List<PlaceUi.City>,
-    onCityClicked: (PlaceUi.City) -> Unit,
+    placeList: List<PlaceUi>,
+    onPlaceClicked: (PlaceUi) -> Unit,
 ) {
     Column {
         Text(
@@ -114,18 +114,25 @@ private fun FavoritesContent(
                 .padding(top = PaddingDimens.extraLarge)
                 .weight(1f),
         ) {
-            items(cityList) { city ->
-                val countryCode = getCountryCode(city.countryName)
-                CityCard(
+            items(placeList) { city ->
+                PlaceCard(
                     cityName = city.cityName,
-                    countryCode = countryCode,
+                    countryName = city.countryName,
+                    countryCode = getCountryCode(city.countryName),
                     onClick = {
-                        onCityClicked(
-                            PlaceUi.City(
-                                countryName = city.countryName,
-                                cityName = city.cityName,
-                                isFavorite = true,
-                            ),
+                        onPlaceClicked(
+                            if (city.cityName.isNotEmpty()) {
+                                PlaceUi.City(
+                                    countryName = city.countryName,
+                                    cityName = city.cityName,
+                                    isFavorite = true,
+                                )
+                            } else {
+                                PlaceUi.Country(
+                                    countryName = city.countryName,
+                                    isFavorite = true,
+                                )
+                            },
                         )
                     },
                 )
@@ -135,11 +142,13 @@ private fun FavoritesContent(
 }
 
 @Composable
-fun CityCard(
+fun PlaceCard(
     cityName: String,
+    countryName: String,
     countryCode: String?,
     onClick: () -> Unit,
 ) {
+    Log.i("jdc", "city: $cityName, country: $countryName")
     Card(
         modifier = Modifier
             .fillMaxWidth()
@@ -168,7 +177,7 @@ fun CityCard(
             )
 
             Text(
-                text = cityName,
+                text = cityName.ifEmpty { countryName },
                 fontSize = 24.sp,
                 fontWeight = FontWeight.Bold,
                 color = primary,
@@ -190,9 +199,10 @@ fun CityCard(
 @Preview
 @Composable
 fun CountryCardPreview() {
-    CityCard(
+    PlaceCard(
         cityName = "Santander",
-        countryCode = "Spain",
+        countryName = "Spain",
+        countryCode = "SP",
         onClick = {},
     )
 }

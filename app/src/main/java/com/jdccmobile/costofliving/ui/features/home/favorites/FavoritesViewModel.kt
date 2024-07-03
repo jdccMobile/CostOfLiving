@@ -4,17 +4,17 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.jdccmobile.costofliving.ui.models.PlaceUi
 import com.jdccmobile.costofliving.ui.models.toUi
-import com.jdccmobile.domain.usecase.GetFavoriteCitiesUseCase
+import com.jdccmobile.domain.usecase.GetFavoritePlacesUseCase
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
 
 class FavoritesViewModel(
-    private val getFavoriteCitiesUseCase: GetFavoriteCitiesUseCase,
+    private val getFavoritePlacesUseCase: GetFavoritePlacesUseCase,
 ) : ViewModel() {
     data class UiState(
-        val cityList: List<PlaceUi.City> = emptyList(),
+        val placeList: List<PlaceUi> = emptyList(),
         val navigateTo: PlaceUi? = null,
     )
 
@@ -32,7 +32,7 @@ class FavoritesViewModel(
     }
 
     private suspend fun createCityList() {
-        _state.value = _state.value.copy(cityList = getFavoriteCitiesUseCase().toUi())
+        _state.value = _state.value.copy(placeList = getFavoritePlacesUseCase().toUi())
     }
 
     fun onCityClicked(place: PlaceUi) {

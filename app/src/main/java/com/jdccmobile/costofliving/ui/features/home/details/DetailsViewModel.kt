@@ -1,6 +1,5 @@
 package com.jdccmobile.costofliving.ui.features.home.details
 
-import android.content.Context
 import android.util.Log
 import android.widget.Toast
 import androidx.fragment.app.FragmentActivity
@@ -10,6 +9,7 @@ import com.jdccmobile.costofliving.R
 import com.jdccmobile.costofliving.common.ResourceProvider
 import com.jdccmobile.costofliving.ui.models.ItemPriceUi
 import com.jdccmobile.costofliving.ui.models.PlaceUi
+import com.jdccmobile.costofliving.ui.models.toCityDomain
 import com.jdccmobile.costofliving.ui.models.toDomain
 import com.jdccmobile.domain.model.ItemPrice
 import com.jdccmobile.domain.usecase.CheckIsFavoriteCityUseCase
@@ -71,16 +71,12 @@ class DetailsViewModel(
                         PlaceUi.City(
                             countryName = _state.value.countryName,
                             cityName = _state.value.cityName ?: "", // TODO revisar
-                        ).toDomain(),
+                        ).toCityDomain(),
                     ),
                 )
             }
         }
-        Log.i("asd", "init2" + _state.value.isFavorite)
         refresh()
-
-        // TODO hacer peticion a la db buscando si esta la ciudad
-//        if place isfavorite = null -> peticion a la bbdd si no es que viene desde favotiyos
     }
 
     private fun refresh() {
@@ -140,34 +136,26 @@ class DetailsViewModel(
 
     fun onFavoriteClick(activity: FragmentActivity?) {
         if (_state.value.isFavorite == true) {
-            onAddCityToFavoritesClicked()
-//            binding.ivFavorite.setImageResource(R.drawable.ic_favorite_border)
+            onDeleteCityFromFavoritesClicked()
             Toast.makeText(activity, "Favorito borrado", Toast.LENGTH_SHORT).show()
         } else {
-            onDeleteCityFromFavoritesClicked()
-//            binding.ivFavorite.setImageResource(R.drawable.ic_favorite)
+            onAddCityToFavoritesClicked()
             Toast.makeText(activity, "Favorito añadido", Toast.LENGTH_SHORT).show()
         }
     }
 
 
-    fun onAddCityToFavoritesClicked() {
-        // todo jdc cambiar nombre porque tambien sera el de borrar, para borrar añadir un dialog
-        _state.value = _state.value.copy(isFavorite = true)
+    private fun onAddCityToFavoritesClicked() {
         viewModelScope.launch {
-            if (place is PlaceUi.City) {
-                insertFavoriteCityUseCase(place.toDomain())
-            }
+            insertFavoriteCityUseCase(place.toDomain()) // TODO renombrar
+            _state.value = _state.value.copy(isFavorite = true)
         }
     }
 
-    fun onDeleteCityFromFavoritesClicked() {
-        _state.value = _state.value.copy(isFavorite = false)
-        // todo jdc cambiar nombre porque tambien sera el de borrar, para borrar añadir un dialog
+    private fun onDeleteCityFromFavoritesClicked() {
         viewModelScope.launch {
-            if (place is PlaceUi.City) {
-                deleteFavoriteCityUseCase(place.toDomain())
-            }
+            deleteFavoriteCityUseCase(place.toDomain()) // todo renombrar
+            _state.value = _state.value.copy(isFavorite = false)
         }
     }
 }

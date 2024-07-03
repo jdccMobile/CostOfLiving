@@ -1,36 +1,39 @@
 package com.jdccmobile.data.database.datasources
 
-import com.jdccmobile.data.database.FavoriteCityDao
-import com.jdccmobile.data.database.FavoriteCityDb
+import com.jdccmobile.data.database.FavoritePlaceDao
+import com.jdccmobile.data.utils.toCityDomain
+import com.jdccmobile.data.utils.toCountryDomain
+import com.jdccmobile.data.utils.toDb
+import com.jdccmobile.data.utils.toPlaceDomain
 import com.jdccmobile.domain.model.Place
-import kotlinx.coroutines.flow.map
 
-class PlaceLocalDataSource(private val favoriteCityDao: FavoriteCityDao) {
-    suspend fun insertFavoriteCity(city: Place.City): Unit =
-        favoriteCityDao.insertFavoriteCity(city.toDb())
+class PlaceLocalDataSource(private val favoritePlaceDao: FavoritePlaceDao) {
+    suspend fun getFavoritePlacesList(): List<Place> =
+        favoritePlaceDao.getFavoritePlacesList().toPlaceDomain()
+
+
+    suspend fun insertFavoriteCity(city: Place): Unit =
+        favoritePlaceDao.insertFavoriteCity(city.toDb())
 
     suspend fun getFavoriteCitiesList(): List<Place.City> =
-        favoriteCityDao.getFavoriteCitiesList().toDomain()
+        favoritePlaceDao.getFavoriteCitiesList().toCityDomain()
 
     suspend fun deleteFavoriteCity(cityName: String, countryName: String): Unit =
-        favoriteCityDao.deleteFavoriteCity(cityName, countryName)
+        favoritePlaceDao.deleteFavoriteCity(cityName, countryName)
 
     suspend fun checkIsFavoriteCity(cityName: String, countryName: String): Boolean =
-        favoriteCityDao.countFavoriteCity(cityName, countryName) > 0
-}
+        favoritePlaceDao.countFavoriteCity(cityName, countryName) > 0
 
-// TODO jdc donde usar el mapper en el repositorio o en el data source
-fun Place.City.toDb() = FavoriteCityDb(
-    id = null,
-    cityName = cityName,
-    countryName = countryName,
-    isFavorite = true
-)
 
-fun List<FavoriteCityDb>.toDomain(): List<Place.City> = map {
-    Place.City(
-        cityName = it.cityName,
-        countryName = it.countryName,
-        isFavorite = it.isFavorite,
-    )
+    suspend fun insertFavoriteCountry(country: Place.Country): Unit =
+        favoritePlaceDao.insertFavoriteCountry(country.toDb())
+
+    suspend fun getFavoriteCountriesList(): List<Place.Country> =
+        favoritePlaceDao.getFavoriteCountriesList().toCountryDomain()
+
+    suspend fun deleteFavoriteCountry(countryName: String): Unit =
+        favoritePlaceDao.deleteFavoriteCountry(countryName)
+
+    suspend fun checkIsFavoriteCountry(countryName: String): Boolean =
+        favoritePlaceDao.countFavoriteCountry(countryName) > 0
 }

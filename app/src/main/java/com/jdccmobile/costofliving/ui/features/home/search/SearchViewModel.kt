@@ -7,7 +7,7 @@ import com.jdccmobile.costofliving.R
 import com.jdccmobile.costofliving.common.ResourceProvider
 import com.jdccmobile.costofliving.ui.models.AutoCompleteSearchUi
 import com.jdccmobile.costofliving.ui.models.PlaceUi
-import com.jdccmobile.costofliving.ui.models.toUi
+import com.jdccmobile.costofliving.ui.models.toCityUi
 import com.jdccmobile.domain.usecase.GetCityListUseCase
 import com.jdccmobile.domain.usecase.GetUserCountryPrefsUseCase
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -56,7 +56,7 @@ class SearchViewModel(
                 val citiesList = getCityListUseCase()
                 val citiesInUserCountry = citiesList.filter {
                     it.countryName == userCountryName
-                }.sortedBy { it.cityName }.toUi()
+                }.sortedBy { it.cityName }.toCityUi()
                 _state.value = _state.value.copy(citiesInUserCountry = citiesInUserCountry)
 
                 val citiesAutoComplete =

@@ -16,7 +16,7 @@ import com.jdccmobile.costofliving.ui.features.home.search.SearchViewModel
 import com.jdccmobile.costofliving.ui.features.intro.IntroSlidesProvider
 import com.jdccmobile.costofliving.ui.features.intro.IntroViewModel
 import com.jdccmobile.costofliving.ui.features.main.MainViewModel
-import com.jdccmobile.data.database.FavoriteCitiesDatabase
+import com.jdccmobile.data.database.FavoritePlacesDatabase
 import com.jdccmobile.data.database.datasources.PlaceLocalDataSource
 import com.jdccmobile.data.location.LocationDataSource
 import com.jdccmobile.data.location.PermissionChecker
@@ -30,13 +30,18 @@ import com.jdccmobile.data.repositories.RegionRepository
 import com.jdccmobile.domain.repository.PlaceRepository
 import com.jdccmobile.domain.repository.PrefsRepository
 import com.jdccmobile.domain.usecase.CheckIsFavoriteCityUseCase
+import com.jdccmobile.domain.usecase.CheckIsFavoriteCountryUseCase
 import com.jdccmobile.domain.usecase.DeleteFavoriteCityUseCase
+import com.jdccmobile.domain.usecase.DeleteFavoriteCountryUseCase
 import com.jdccmobile.domain.usecase.GetCityCostUseCase
 import com.jdccmobile.domain.usecase.GetCityListUseCase
 import com.jdccmobile.domain.usecase.GetCountryCostUseCase
 import com.jdccmobile.domain.usecase.GetFavoriteCitiesUseCase
+import com.jdccmobile.domain.usecase.GetFavoriteCountriesUseCase
+import com.jdccmobile.domain.usecase.GetFavoritePlacesUseCase
 import com.jdccmobile.domain.usecase.GetUserCountryPrefsUseCase
 import com.jdccmobile.domain.usecase.InsertFavoriteCityUseCase
+import com.jdccmobile.domain.usecase.InsertFavoriteCountryUseCase
 import org.koin.android.ext.koin.androidApplication
 import org.koin.android.ext.koin.androidContext
 import org.koin.android.ext.koin.androidLogger
@@ -77,7 +82,6 @@ private val appModule = module {
     viewModelOf(::FavoritesViewModel)
 }
 
-// TODO add room
 private val dataModule = module {
     factoryOf(::RegionRepository)
 
@@ -92,11 +96,11 @@ private val dataModule = module {
     single {
         Room.databaseBuilder(
             androidContext(),
-            FavoriteCitiesDatabase::class.java,
+            FavoritePlacesDatabase::class.java,
             DATABASE_NAME,
         ).build()
     }
-    single { get<FavoriteCitiesDatabase>().getFavoriteCityDao() }
+    single { get<FavoritePlacesDatabase>().getFavoriteCityDao() }
 }
 
 private val domainModule = module {
@@ -108,6 +112,11 @@ private val domainModule = module {
     factoryOf(::InsertFavoriteCityUseCase)
     factoryOf(::DeleteFavoriteCityUseCase)
     factoryOf(::CheckIsFavoriteCityUseCase)
+    factoryOf(::GetFavoriteCountriesUseCase)
+    factoryOf(::InsertFavoriteCountryUseCase)
+    factoryOf(::DeleteFavoriteCountryUseCase)
+    factoryOf(::CheckIsFavoriteCountryUseCase)
+    factoryOf(::GetFavoritePlacesUseCase)
 }
 
 private const val API_KEY_NAMED = "apiKey"
