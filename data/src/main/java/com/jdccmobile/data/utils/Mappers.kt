@@ -21,7 +21,7 @@ fun Place.toDb() = when (this) {
     }
 }
 
-fun List<FavoritePlaceDb>.toPlaceDomain(): List<Place> = map { favoritePlace ->
+fun List<FavoritePlaceDb>.toDomain(): List<Place> = map { favoritePlace ->
     if (favoritePlace.cityName != null) {
         Place.City(
             cityName = favoritePlace.cityName,
@@ -34,19 +34,4 @@ fun List<FavoritePlaceDb>.toPlaceDomain(): List<Place> = map { favoritePlace ->
             isFavorite = favoritePlace.isFavorite,
         )
     }
-}
-
-fun List<FavoritePlaceDb>.toCityDomain(): List<Place.City> = map {
-    Place.City(
-        cityName = it.cityName ?: "",
-        countryName = it.countryName,
-        isFavorite = it.isFavorite,
-    )
-}
-
-fun List<FavoritePlaceDb>.toCountryDomain(): List<Place.Country> = map {
-    Place.Country(
-        countryName = it.countryName,
-        isFavorite = it.isFavorite,
-    )
 }

@@ -41,7 +41,7 @@ class DetailsFragment : Fragment() {
             }
         }
 
-        binding.ivFavorite.setOnClickListener {viewModel.onFavoriteClick(this.activity)}
+        binding.ivFavorite.setOnClickListener { viewModel.onFavoriteClick(this.activity) }
 
         return binding.root
     }

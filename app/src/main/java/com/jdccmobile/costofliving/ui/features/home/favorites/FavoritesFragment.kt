@@ -120,6 +120,7 @@ private fun FavoritesContent(
                     countryName = city.countryName,
                     countryCode = getCountryCode(city.countryName),
                     onClick = {
+                        Log.i("asd", "cit " + city.cityName.toString())
                         onPlaceClicked(
                             if (city.cityName.isNotEmpty()) {
                                 PlaceUi.City(

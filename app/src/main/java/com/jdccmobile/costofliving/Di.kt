@@ -29,19 +29,14 @@ import com.jdccmobile.data.repositories.PrefsRepositoryImpl
 import com.jdccmobile.data.repositories.RegionRepository
 import com.jdccmobile.domain.repository.PlaceRepository
 import com.jdccmobile.domain.repository.PrefsRepository
-import com.jdccmobile.domain.usecase.CheckIsFavoriteCityUseCase
-import com.jdccmobile.domain.usecase.CheckIsFavoriteCountryUseCase
-import com.jdccmobile.domain.usecase.DeleteFavoriteCityUseCase
-import com.jdccmobile.domain.usecase.DeleteFavoriteCountryUseCase
+import com.jdccmobile.domain.usecase.CheckIsFavoritePlaceUseCase
+import com.jdccmobile.domain.usecase.DeleteFavoritePlaceUseCase
 import com.jdccmobile.domain.usecase.GetCityCostUseCase
 import com.jdccmobile.domain.usecase.GetCityListUseCase
 import com.jdccmobile.domain.usecase.GetCountryCostUseCase
-import com.jdccmobile.domain.usecase.GetFavoriteCitiesUseCase
-import com.jdccmobile.domain.usecase.GetFavoriteCountriesUseCase
 import com.jdccmobile.domain.usecase.GetFavoritePlacesUseCase
 import com.jdccmobile.domain.usecase.GetUserCountryPrefsUseCase
-import com.jdccmobile.domain.usecase.InsertFavoriteCityUseCase
-import com.jdccmobile.domain.usecase.InsertFavoriteCountryUseCase
+import com.jdccmobile.domain.usecase.InsertFavoritePlaceUseCase
 import org.koin.android.ext.koin.androidApplication
 import org.koin.android.ext.koin.androidContext
 import org.koin.android.ext.koin.androidLogger
@@ -56,6 +51,7 @@ import org.koin.dsl.module
 
 private const val PREFERENCES = "preferences"
 val Context.dataStore: DataStore<Preferences> by preferencesDataStore(name = PREFERENCES)
+
 fun Application.initDi() { // si tenemos application no necesitamos pasarselo por argumentos
     startKoin {
         androidLogger(Level.ERROR)
@@ -96,11 +92,11 @@ private val dataModule = module {
     single {
         Room.databaseBuilder(
             androidContext(),
-            FavoritePlacesDatabase::class.java,
+            com.jdccmobile.data.database.FavoritePlacesDatabase::class.java,
             DATABASE_NAME,
         ).build()
     }
-    single { get<FavoritePlacesDatabase>().getFavoriteCityDao() }
+    single { get<com.jdccmobile.data.database.FavoritePlacesDatabase>().getFavoriteCityDao() }
 }
 
 private val domainModule = module {
@@ -108,14 +104,9 @@ private val domainModule = module {
     factoryOf(::GetCityListUseCase)
     factoryOf(::GetCityCostUseCase)
     factoryOf(::GetCountryCostUseCase)
-    factoryOf(::GetFavoriteCitiesUseCase)
-    factoryOf(::InsertFavoriteCityUseCase)
-    factoryOf(::DeleteFavoriteCityUseCase)
-    factoryOf(::CheckIsFavoriteCityUseCase)
-    factoryOf(::GetFavoriteCountriesUseCase)
-    factoryOf(::InsertFavoriteCountryUseCase)
-    factoryOf(::DeleteFavoriteCountryUseCase)
-    factoryOf(::CheckIsFavoriteCountryUseCase)
+    factoryOf(::InsertFavoritePlaceUseCase)
+    factoryOf(::DeleteFavoritePlaceUseCase)
+    factoryOf(::CheckIsFavoritePlaceUseCase)
     factoryOf(::GetFavoritePlacesUseCase)
 }
 

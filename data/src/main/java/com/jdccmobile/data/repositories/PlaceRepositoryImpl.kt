@@ -7,68 +7,26 @@ import com.jdccmobile.domain.model.Place
 import com.jdccmobile.domain.repository.PlaceRepository
 
 class PlaceRepositoryImpl(
-    private val localDataSource: PlaceLocalDataSource,
+    private val localDataSource: com.jdccmobile.data.database.datasources.PlaceLocalDataSource,
     private val remoteDataSource: PlaceRemoteDataSource,
 ) : PlaceRepository {
     // Local
     override suspend fun getFavoritePlacesList(): List<Place> =
         localDataSource.getFavoritePlacesList()
 
+    override suspend fun insertFavoritePlace(place: Place): Unit =
+        localDataSource.insertFavoritePlace(place)
 
-    override suspend fun insertFavoriteCity(city: Place): Unit =
-        when(city){
-            is Place.City -> {
-                localDataSource.insertFavoriteCity(city)
-            }
-            is Place.Country -> {
-                localDataSource.insertFavoriteCountry(city)
-            }
-        }
-//        localDataSource.insertFavoriteCity(city)
+    override suspend fun deleteFavoritePlace(place: Place) =
+        localDataSource.deleteFavoritePlace(place)
 
-    override suspend fun getFavoriteCitiesList(): List<Place.City> =
-        localDataSource.getFavoriteCitiesList()
-
-    override suspend fun deleteFavoriteCity(city: Place) = when(city){
-        is Place.City -> {
-            localDataSource.deleteFavoriteCity(
-                cityName = city.cityName,
-                countryName = city.countryName
-            )
-        }
-        is Place.Country -> {
-            localDataSource.deleteFavoriteCountry(
-                countryName = city.countryName
-            )
-        }
-    }
-//        localDataSource.deleteFavoriteCity(
-//            cityName = city.cityName,
-//            countryName = city.countryName
-//        )
-
-    override suspend fun checkIsFavoriteCity(city: Place.City): Boolean =
-        localDataSource.checkIsFavoriteCity(
-            cityName = city.cityName,
-            countryName = city.countryName,
-        )
-
-
-    override suspend fun insertFavoriteCountry(city: Place.Country) =
-        localDataSource.insertFavoriteCountry(city)
-
-    override suspend fun getFavoriteCountriesList(): List<Place.Country> =
-        localDataSource.getFavoriteCountriesList()
-
-    override suspend fun deleteFavoriteCountry(city: Place.Country): Unit =
-        localDataSource.deleteFavoriteCountry(countryName = city.countryName)
-
-    override suspend fun checkIsFavoriteCountry(city: Place.Country): Boolean =
-        localDataSource.checkIsFavoriteCountry(countryName = city.countryName)
+    override suspend fun checkIsFavoritePlace(place: Place): Boolean =
+        localDataSource.checkIsFavoritePlace(place)
 
     // Remote
     override suspend fun getCitiesListRemote(): List<Place.City> = remoteDataSource.getCitiesList()
 
+    // Todo asd unificar los dos ultimos
     override suspend fun getCityCostRemote(cityName: String, countryName: String): List<ItemPrice> =
         remoteDataSource.getCityCost(cityName, countryName)
 

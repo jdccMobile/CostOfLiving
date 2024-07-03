@@ -12,11 +12,11 @@ import com.jdccmobile.costofliving.ui.models.PlaceUi
 import com.jdccmobile.costofliving.ui.models.toCityDomain
 import com.jdccmobile.costofliving.ui.models.toDomain
 import com.jdccmobile.domain.model.ItemPrice
-import com.jdccmobile.domain.usecase.CheckIsFavoriteCityUseCase
-import com.jdccmobile.domain.usecase.DeleteFavoriteCityUseCase
+import com.jdccmobile.domain.usecase.CheckIsFavoritePlaceUseCase
+import com.jdccmobile.domain.usecase.DeleteFavoritePlaceUseCase
 import com.jdccmobile.domain.usecase.GetCityCostUseCase
 import com.jdccmobile.domain.usecase.GetCountryCostUseCase
-import com.jdccmobile.domain.usecase.InsertFavoriteCityUseCase
+import com.jdccmobile.domain.usecase.InsertFavoritePlaceUseCase
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
@@ -27,11 +27,10 @@ class DetailsViewModel(
     private val getCityCostUseCase: GetCityCostUseCase,
     private val getCountryCostUseCase: GetCountryCostUseCase,
     private val resourceProvider: ResourceProvider,
-    private val insertFavoriteCityUseCase: InsertFavoriteCityUseCase,
-    private val deleteFavoriteCityUseCase: DeleteFavoriteCityUseCase,
-    private val checkFavoriteCityUseCase: CheckIsFavoriteCityUseCase,
-
-    ) : ViewModel() {
+    private val insertFavoritePlaceUseCase: InsertFavoritePlaceUseCase,
+    private val deleteFavoritePlaceUseCase: DeleteFavoritePlaceUseCase,
+    private val checkFavoritePlaceUseCase: CheckIsFavoritePlaceUseCase,
+) : ViewModel() {
     data class UiState(
         val cityName: String? = null,
         val countryName: String,
@@ -55,7 +54,7 @@ class DetailsViewModel(
                 UiState(
                     cityName = null,
                     countryName = place.countryName.replaceFirstChar { it.uppercase() },
-                    isFavorite = null, // TODO cambiar cuando se añada paises favoritos
+                    isFavorite = place.isFavorite,
                 )
             }
         },
@@ -67,10 +66,11 @@ class DetailsViewModel(
         if (_state.value.isFavorite == null) {
             viewModelScope.launch {
                 _state.value = _state.value.copy(
-                    isFavorite = checkFavoriteCityUseCase(
+                    isFavorite = checkFavoritePlaceUseCase(
                         PlaceUi.City(
                             countryName = _state.value.countryName,
-                            cityName = _state.value.cityName ?: "", // TODO revisar
+                            // TODO revisar
+                            cityName = _state.value.cityName ?: "",
                         ).toCityDomain(),
                     ),
                 )
@@ -110,9 +110,9 @@ class DetailsViewModel(
                 }
             }.filter { // TODO improve this code
                 it.name.contains("in City Center") || it.name.contains("Gasoline") ||
-                        it.name.contains("Dress") || it.name.contains("Fitness") ||
-                        it.name.contains("Gasoline") || it.name.contains("McMeal") ||
-                        it.name.contains("Coca-Cola")
+                    it.name.contains("Dress") || it.name.contains("Fitness") ||
+                    it.name.contains("Gasoline") || it.name.contains("McMeal") ||
+                    it.name.contains("Coca-Cola")
             }.toUi()
             _state.value = _state.value.copy(
                 apiCallCompleted = true,
@@ -144,17 +144,16 @@ class DetailsViewModel(
         }
     }
 
-
     private fun onAddCityToFavoritesClicked() {
         viewModelScope.launch {
-            insertFavoriteCityUseCase(place.toDomain()) // TODO renombrar
+            insertFavoritePlaceUseCase(place.toDomain()) // TODO renombrar
             _state.value = _state.value.copy(isFavorite = true)
         }
     }
 
     private fun onDeleteCityFromFavoritesClicked() {
         viewModelScope.launch {
-            deleteFavoriteCityUseCase(place.toDomain()) // todo renombrar
+            deleteFavoritePlaceUseCase(place.toDomain()) // todo renombrar
             _state.value = _state.value.copy(isFavorite = false)
         }
     }

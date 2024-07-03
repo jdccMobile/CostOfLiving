@@ -41,7 +41,7 @@ fun PlaceUi.toDomain() = when (this) {
 }
 
 fun List<Place>.toUi() = map { place ->
-    when(place){
+    when (place) {
         is Place.City -> {
             PlaceUi.City(
                 cityName = place.cityName,
@@ -56,7 +56,6 @@ fun List<Place>.toUi() = map { place ->
             )
         }
     }
-
 }
 
 fun List<Place.City>.toCityUi() = map {

@@ -135,7 +135,10 @@ complexity:
     constructorThreshold: 7
     ignoreDefaultParameters: false
     ignoreDataClasses: true
-    ignoreAnnotatedParameter: []
+    ignoreAnnotatedParameter:
+      - '@Composable'
+    excludes:
+      - '**/*ViewModel*.kt'
   MethodOverloading:
     active: false
     threshold: 6
