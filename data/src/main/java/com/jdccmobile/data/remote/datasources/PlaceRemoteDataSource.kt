@@ -1,14 +1,12 @@
 package com.jdccmobile.data.remote.datasources
 
-import com.jdccmobile.data.remote.RetrofitServiceFactory
+import com.jdccmobile.data.remote.RetrofitService
 import com.jdccmobile.data.remote.models.city.CitiesListResponseResult
 import com.jdccmobile.data.remote.models.cost.PriceResponse
 import com.jdccmobile.domain.model.ItemPrice
 import com.jdccmobile.domain.model.Place
 
-class PlaceRemoteDataSource(private val apiKey: String) {
-    private val service = RetrofitServiceFactory.makeRetrofitService()
-
+class PlaceRemoteDataSource(private val apiKey: String, private val service: RetrofitService) {
     suspend fun getCitiesList(): List<Place.City> = service.getCities(
         apiKey,
     ).toDomain()
@@ -24,6 +22,7 @@ private fun CitiesListResponseResult.toDomain(): List<Place.City> = this.cities.
     Place.City(
         cityName = city.cityName,
         countryName = city.countryName,
+        isFavorite = null,
     )
 }
 

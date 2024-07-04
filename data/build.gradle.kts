@@ -1,7 +1,7 @@
 plugins {
     id("java-library")
-    id("org.jetbrains.kotlin.kapt")
     id("org.jetbrains.kotlin.jvm")
+    id("com.google.devtools.ksp")
 }
 
 java {
@@ -14,10 +14,9 @@ dependencies {
     // Coroutines
     implementation("org.jetbrains.kotlinx:kotlinx-coroutines-core:1.7.1")
     // Room
-//    implementation("androidx.room:room-common:2.6.1")
-//    implementation("androidx.room:room-runtime:2.6.1")
-//    implementation("androidx.room:room-ktx:2.6.1")
-//    kapt("androidx.room:room-compiler:2.6.1")
+    implementation("androidx.room:room-common:2.7.0-alpha04")
+    implementation("androidx.room:room-runtime:2.7.0-alpha04")
+    ksp("androidx.room:room-compiler:2.7.0-alpha04")
     // Data store preferences
     implementation("androidx.datastore:datastore-preferences:1.1.1")
     // Retrofit

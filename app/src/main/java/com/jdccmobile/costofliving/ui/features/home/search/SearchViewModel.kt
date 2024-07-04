@@ -7,7 +7,7 @@ import com.jdccmobile.costofliving.R
 import com.jdccmobile.costofliving.common.ResourceProvider
 import com.jdccmobile.costofliving.ui.models.AutoCompleteSearchUi
 import com.jdccmobile.costofliving.ui.models.PlaceUi
-import com.jdccmobile.domain.model.Place
+import com.jdccmobile.costofliving.ui.models.toCityUi
 import com.jdccmobile.domain.usecase.GetCityListUseCase
 import com.jdccmobile.domain.usecase.GetUserCountryPrefsUseCase
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -49,6 +49,7 @@ class SearchViewModel(
         }
     }
 
+    @Suppress("TooGenericExceptionCaught")
     private suspend fun createLists(userCountryName: String) {
         if (!_state.value.apiCallCompleted) {
             try {
@@ -56,7 +57,7 @@ class SearchViewModel(
                 val citiesList = getCityListUseCase()
                 val citiesInUserCountry = citiesList.filter {
                     it.countryName == userCountryName
-                }.sortedBy { it.cityName }.toUi()
+                }.sortedBy { it.cityName }.toCityUi()
                 _state.value = _state.value.copy(citiesInUserCountry = citiesInUserCountry)
 
                 val citiesAutoComplete =
@@ -149,27 +150,3 @@ class SearchViewModel(
         _state.value = _state.value.copy(apiErrorMsg = null)
     }
 }
-
-fun List<Place.City>.toUi() = map {
-    PlaceUi.City(
-        cityName = it.cityName,
-        countryName = it.countryName,
-    )
-}
-
-// @Suppress("UNCHECKED_CAST")
-// class SearchViewModelFactory(
-//    private val fragment: FragmentActivity,
-//    private val getUserCountryPrefsUseCase:
-//        com.jdccmobile.domain.usecase.GetUserCountryPrefsUseCase,
-//    private val getCityListUseCase: com.jdccmobile.domain.usecase.GetCityListUseCase,
-// ) :
-//    ViewModelProvider.Factory {
-//    override fun <T : ViewModel> create(modelClass: Class<T>): T {
-//        return SearchViewModel(
-//            fragment,
-//            getUserCountryPrefsUseCase,
-//            getCityListUseCase,
-//        ) as T
-//    }
-// }

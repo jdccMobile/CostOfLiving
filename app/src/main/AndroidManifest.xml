@@ -19,7 +19,7 @@
         <activity
             android:name=".ui.features.home.HomeActivity"
             android:exported="false"
-            android:windowSoftInputMode="stateHidden" />
+            android:windowSoftInputMode="adjustPan" />
         <activity
             android:name=".ui.features.intro.IntroActivity"
             android:exported="false" />
