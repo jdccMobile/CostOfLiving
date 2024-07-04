@@ -49,6 +49,7 @@ class SearchViewModel(
         }
     }
 
+    @Suppress("TooGenericExceptionCaught")
     private suspend fun createLists(userCountryName: String) {
         if (!_state.value.apiCallCompleted) {
             try {

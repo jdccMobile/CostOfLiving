@@ -85,6 +85,7 @@ class DetailsViewModel(
         }
     }
 
+    @Suppress("TooGenericExceptionCaught")
     private suspend fun createCostInfoList() {
         if (!_state.value.apiCallCompleted) {
             val pricesList: List<ItemPriceUi> = when (place) {
