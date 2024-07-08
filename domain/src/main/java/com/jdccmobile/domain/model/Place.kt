@@ -1,26 +1,18 @@
 package com.jdccmobile.domain.model
 
-sealed class Place {
-    abstract val countryName: String
-    abstract val cityName: String?
-    abstract val isFavorite: Boolean
-    abstract val placeType: PlaceType
+data class City(
+    val cityId: Int,
+    val countryName: String,
+    val cityName: String,
+    val isFavorite: Boolean = false,
+    val placeType: PlaceType = PlaceType.City,
+)
 
-    data class City(
-        val cityId: Int,
-        override val countryName: String,
-        override val cityName: String,
-        override val isFavorite: Boolean = false,
-        override val placeType: PlaceType = PlaceType.City,
-    ) : Place()
-
-    data class Country(
-        val countryId: String,
-        override val countryName: String,
-        override val cityName: String? = null,
-        override val isFavorite: Boolean = false,
-        override val placeType: PlaceType = PlaceType.Country,
-    ) : Place()
-}
+data class Country(
+    val countryId: String,
+    val countryName: String,
+    val isFavorite: Boolean = false,
+    val placeType: PlaceType = PlaceType.Country,
+)
 
 enum class PlaceType { City, Country }

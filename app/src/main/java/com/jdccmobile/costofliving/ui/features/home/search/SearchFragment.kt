@@ -15,7 +15,8 @@ import androidx.navigation.fragment.findNavController
 import com.jdccmobile.costofliving.R
 import com.jdccmobile.costofliving.databinding.FragmentSearchBinding
 import com.jdccmobile.costofliving.ui.models.AutoCompleteSearchUi
-import com.jdccmobile.costofliving.ui.models.PlaceUi
+import com.jdccmobile.costofliving.ui.models.CityUi
+import com.jdccmobile.domain.model.City
 import kotlinx.coroutines.launch
 import org.koin.androidx.viewmodel.ext.android.viewModel
 
@@ -75,14 +76,14 @@ class SearchFragment : Fragment() {
         }
     }
 
-    private fun createAdapters(citiesInUserCountry: List<PlaceUi.City>) {
+    private fun createAdapters(citiesInUserCountry: List<City>) {
         citiesInUserCountryAdapter = CitiesUserCountryAdapter(citiesInUserCountry) {
             viewModel.onCityClicked(it)
         }
         citiesAutoCompleteSearchAdapter =
             AutoCompleteSearchAdapter(requireContext(), citiesAutoComplete) {
                 viewModel.onCityClicked(
-                    PlaceUi.City(
+                    City(
                         cityId = 1, //  todo asd
                         countryName = it.country,
                         cityName = it.searchedText,
@@ -91,7 +92,13 @@ class SearchFragment : Fragment() {
             }
         countriesAutoCompleteSearchAdapter =
             AutoCompleteSearchAdapter(requireContext(), countriesAutoComplete) {
-                viewModel.onCityClicked(PlaceUi.Country(countryId = "sad", countryName = it.searchedText)) // todo asd
+                viewModel.onCityClicked(
+                    City(
+                        cityId = 1, //  todo asd
+                        countryName = it.country,
+                        cityName = it.searchedText,
+                    ),
+                ) // todo asd
             }
     }
 
@@ -119,10 +126,14 @@ class SearchFragment : Fragment() {
         }
     }
 
-    private fun navigateToDetails(place: PlaceUi) {
+    private fun navigateToDetails(place: City) {
         binding.atSearch.setText("")
         hideKeyboard()
-        val navAction = SearchFragmentDirections.actionSearchToDetails(place)
+        val navAction = SearchFragmentDirections.actionSearchToDetails(CityUi( // todo mapper
+            cityId = place.cityId,
+            countryName = place.countryName,
+            cityName = place.cityName,
+        ))
         findNavController().navigate(navAction)
         viewModel.onNavigationDone()
     }

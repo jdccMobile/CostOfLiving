@@ -30,15 +30,14 @@ import com.jdccmobile.data.repositories.PrefsRepositoryImpl
 import com.jdccmobile.data.repositories.RegionRepository
 import com.jdccmobile.domain.repository.PlaceRepository
 import com.jdccmobile.domain.repository.PrefsRepository
-import com.jdccmobile.domain.usecase.CheckIsFavoritePlaceUseCase
-import com.jdccmobile.domain.usecase.UpdateCityUseCase
-import com.jdccmobile.domain.usecase.GetCityCostUseCase
 import com.jdccmobile.domain.usecase.GetCitiesRemote
+import com.jdccmobile.domain.usecase.GetCityCostUseCase
 import com.jdccmobile.domain.usecase.GetCountryCostUseCase
 import com.jdccmobile.domain.usecase.GetFavoriteCitiesUseCase
 import com.jdccmobile.domain.usecase.GetUserCountryPrefsUseCase
-import com.jdccmobile.domain.usecase.InsertCityUseCase
 import com.jdccmobile.domain.usecase.InsertCitiesFromUserCountryUseCase
+import com.jdccmobile.domain.usecase.InsertCityUseCase
+import com.jdccmobile.domain.usecase.UpdateCityUseCase
 import org.koin.android.ext.koin.androidApplication
 import org.koin.android.ext.koin.androidContext
 import org.koin.android.ext.koin.androidLogger
@@ -87,7 +86,6 @@ private val dataModule = module {
     factoryOf(::PrefsRepositoryImpl) bind PrefsRepository::class
     factoryOf(::CityDbDataSource)
     factoryOf(::CountryDbDataSource)
-
     single<RetrofitService> { RetrofitServiceFactory.makeRetrofitService() }
     factory<PlaceRemoteDataSource> { PlaceRemoteDataSource(get(named("apiKey")), get()) }
     factoryOf(::PlaceRepositoryImpl) bind PlaceRepository::class
@@ -110,7 +108,6 @@ private val domainModule = module {
     factoryOf(::GetCountryCostUseCase)
     factoryOf(::InsertCityUseCase)
     factoryOf(::UpdateCityUseCase)
-    factoryOf(::CheckIsFavoritePlaceUseCase)
     factoryOf(::GetFavoriteCitiesUseCase)
     factoryOf(::InsertCitiesFromUserCountryUseCase)
 }

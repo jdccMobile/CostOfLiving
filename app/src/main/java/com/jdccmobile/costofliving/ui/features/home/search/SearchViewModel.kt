@@ -6,9 +6,7 @@ import androidx.lifecycle.viewModelScope
 import com.jdccmobile.costofliving.R
 import com.jdccmobile.costofliving.common.ResourceProvider
 import com.jdccmobile.costofliving.ui.models.AutoCompleteSearchUi
-import com.jdccmobile.costofliving.ui.models.PlaceUi
-import com.jdccmobile.costofliving.ui.models.toCityUi
-import com.jdccmobile.domain.model.Place
+import com.jdccmobile.domain.model.City
 import com.jdccmobile.domain.usecase.GetCitiesRemote
 import com.jdccmobile.domain.usecase.GetUserCountryPrefsUseCase
 import com.jdccmobile.domain.usecase.InsertCitiesFromUserCountryUseCase
@@ -27,12 +25,12 @@ class SearchViewModel(
         val apiCallCompleted: Boolean = false,
         val countryName: String? = null,
         val isSearchByCity: Boolean = true,
-        val citiesInUserCountry: List<PlaceUi.City> = emptyList(),
+        val citiesInUserCountry: List<City> = emptyList(),
         val citiesAutoComplete: List<AutoCompleteSearchUi> =
             emptyList(),
         val countriesAutoComplete: List<AutoCompleteSearchUi> =
             emptyList(),
-        val navigateTo: PlaceUi? = null,
+        val navigateTo: City? = null,
         val errorMsg: String? = null,
         val apiErrorMsg: String? = null,
     )
@@ -64,7 +62,7 @@ class SearchViewModel(
                 }.sortedBy { it.cityName }
 
                 _state.value = _state.value.copy(
-                    citiesInUserCountry = citiesInUserCountry.toCityUi(),
+                    citiesInUserCountry = citiesInUserCountry,
                 )
                 insertCitiesFromUserCountryUseCase(citiesInUserCountry)
 
@@ -108,8 +106,8 @@ class SearchViewModel(
         _state.value = _state.value.copy(isSearchByCity = isSearchByCity)
     }
 
-    fun onCityClicked(place: PlaceUi) {
-        _state.value = _state.value.copy(navigateTo = place)
+    fun onCityClicked(city: City) {
+        _state.value = _state.value.copy(navigateTo = city)
     }
 
     fun validateSearch(nameSearch: String) {
@@ -121,12 +119,18 @@ class SearchViewModel(
                 val countryName = _state.value.citiesAutoComplete.find {
                     it.searchedText.equals(nameSearch, ignoreCase = true)
                 }?.country ?: ""
-                _state.value = _state.value.copy(navigateTo = PlaceUi.City(nameSearch, countryName, cityId = 1)) // todo asd
+                _state.value = _state.value.copy(
+                    navigateTo = City(
+                        cityId = 1,
+                        countryName = nameSearch,
+                        cityName = countryName,
+                    ),
+                ) // todo asd
             } else {
                 _state.value =
                     _state.value.copy(
                         errorMsg =
-                        "$nameSearch ${resourceProvider.getString(R.string.does_not_exist)}",
+                            "$nameSearch ${resourceProvider.getString(R.string.does_not_exist)}",
                     )
             }
         } else {
@@ -134,13 +138,13 @@ class SearchViewModel(
                     it.searchedText.equals(nameSearch, ignoreCase = true)
                 }
             ) {
-                _state.value =
-                    _state.value.copy(navigateTo = PlaceUi.Country(countryName = nameSearch, countryId = "")) // todo asd
+//                _state.value =
+//                    _state.value.copy(navigateTo = Country(countryName = nameSearch, countryId = "")) // todo asd
             } else {
                 _state.value =
                     _state.value.copy(
                         errorMsg =
-                        "$nameSearch ${resourceProvider.getString(R.string.does_not_exist)}",
+                            "$nameSearch ${resourceProvider.getString(R.string.does_not_exist)}",
                     )
             }
         }

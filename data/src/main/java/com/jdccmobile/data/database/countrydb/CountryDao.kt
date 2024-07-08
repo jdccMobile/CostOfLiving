@@ -18,5 +18,4 @@ interface CountryDao {
 
     @Update
     suspend fun updateFavoriteCountry(country: CountryDb)
-
 }

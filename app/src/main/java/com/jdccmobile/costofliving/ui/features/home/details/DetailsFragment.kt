@@ -23,7 +23,7 @@ class DetailsFragment : Fragment() {
 
     private val safeArgs: DetailsFragmentArgs by navArgs()
     private val viewModel: DetailsViewModel by viewModel {
-        parametersOf(safeArgs.placeUi)
+        parametersOf(safeArgs.city)
     }
 
     private lateinit var costInfoAdapter: CostInfoAdapter

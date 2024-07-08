@@ -1,23 +1,23 @@
 package com.jdccmobile.data.database.datasources
 
 import com.jdccmobile.data.database.citydb.CityDao
-import com.jdccmobile.data.utils.toDb
-import com.jdccmobile.data.utils.toCityDomain
-import com.jdccmobile.domain.model.Place
+import com.jdccmobile.data.database.citydb.toDb
+import com.jdccmobile.data.database.citydb.toDomain
+import com.jdccmobile.domain.model.City
 
 class CityDbDataSource(private val cityDao: CityDao) {
-    suspend fun insertCity(city: Place.City): Unit =
+    suspend fun insertCity(city: City): Unit =
         cityDao.insertCity(city.toDb())
 
-    suspend fun insertCitiesFromUserCountry(cities: List<Place.City>): Unit =
+    suspend fun insertCitiesFromUserCountry(cities: List<City>): Unit =
         cityDao.insertCitiesFromUserCountry(cities.toDb())
 
-    suspend fun getCitiesFromUserCountry(countryName: String): List<Place.City> =
-        cityDao.getCitiesFromUserCountry(countryName).toCityDomain()
+    suspend fun getCitiesFromUserCountry(countryName: String): List<City> =
+        cityDao.getCitiesFromUserCountry(countryName).toDomain()
 
-    suspend fun getFavoriteCities(): List<Place.City> =
-        cityDao.getCityList().toCityDomain()
+    suspend fun getFavoriteCities(): List<City> =
+        cityDao.getCityList().toDomain()
 
-    suspend fun updateCity(city: Place.City): Unit =
+    suspend fun updateCity(city: City): Unit =
         cityDao.updateCity(city.toDb())
 }

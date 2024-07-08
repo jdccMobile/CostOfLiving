@@ -3,11 +3,11 @@ package com.jdccmobile.data.remote.datasources
 import com.jdccmobile.data.remote.RetrofitService
 import com.jdccmobile.data.remote.models.city.CitiesListResponseResult
 import com.jdccmobile.data.remote.models.cost.PriceResponse
+import com.jdccmobile.domain.model.City
 import com.jdccmobile.domain.model.ItemPrice
-import com.jdccmobile.domain.model.Place
 
 class PlaceRemoteDataSource(private val apiKey: String, private val service: RetrofitService) {
-    suspend fun getCitiesList(): List<Place.City> = service.getCities(
+    suspend fun getCitiesList(): List<City> = service.getCities(
         apiKey,
     ).toDomain()
 
@@ -18,8 +18,8 @@ class PlaceRemoteDataSource(private val apiKey: String, private val service: Ret
         service.getCountryCost(apiKey, countryName).prices.toDomain()
 }
 
-private fun CitiesListResponseResult.toDomain(): List<Place.City> = this.cities.map { city ->
-    Place.City(
+private fun CitiesListResponseResult.toDomain(): List<City> = this.cities.map { city ->
+    City(
         cityId = city.cityId,
         cityName = city.cityName,
         countryName = city.countryName,

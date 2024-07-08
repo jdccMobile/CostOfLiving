@@ -2,8 +2,9 @@ package com.jdccmobile.costofliving.ui.features.home.favorites
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.jdccmobile.costofliving.ui.models.PlaceUi
-import com.jdccmobile.costofliving.ui.models.toUi
+import com.jdccmobile.costofliving.ui.models.CityUi
+import com.jdccmobile.costofliving.ui.utils.toCityUi
+import com.jdccmobile.domain.model.City
 import com.jdccmobile.domain.usecase.GetFavoriteCitiesUseCase
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
@@ -14,8 +15,8 @@ class FavoritesViewModel(
     private val getFavoriteCitiesUseCase: GetFavoriteCitiesUseCase,
 ) : ViewModel() {
     data class UiState(
-        val placeList: List<PlaceUi> = emptyList(),
-        val navigateTo: PlaceUi? = null,
+        val favoriteCities: List<CityUi> = emptyList(),
+        val navigateTo: City? = null,
     )
 
     private val _state = MutableStateFlow(UiState())
@@ -32,11 +33,11 @@ class FavoritesViewModel(
     }
 
     private suspend fun createCityList() {
-        _state.value = _state.value.copy(placeList = getFavoriteCitiesUseCase().toUi())
+        _state.value = _state.value.copy(favoriteCities = getFavoriteCitiesUseCase().toCityUi())
     }
 
-    fun onCityClicked(place: PlaceUi) {
-        _state.value = _state.value.copy(navigateTo = place)
+    fun onCityClicked(city: City) {
+        _state.value = _state.value.copy(navigateTo = city)
     }
 
     fun onNavigationDone() {

@@ -46,7 +46,8 @@ import com.jdccmobile.costofliving.common.getCountryCode
 import com.jdccmobile.costofliving.compose.theme.PaddingDimens
 import com.jdccmobile.costofliving.compose.theme.primary
 import com.jdccmobile.costofliving.compose.theme.white
-import com.jdccmobile.costofliving.ui.models.PlaceUi
+import com.jdccmobile.costofliving.ui.models.CityUi
+import com.jdccmobile.domain.model.City
 import org.koin.androidx.viewmodel.ext.android.viewModel
 
 class FavoritesFragment : Fragment() {
@@ -67,8 +68,12 @@ class FavoritesFragment : Fragment() {
         }
     }
 
-    private fun navigateToDetails(place: PlaceUi) {
-        val navAction = FavoritesFragmentDirections.actionFavoritesToDetails(place)
+    private fun navigateToDetails(city: City) {
+        val navAction = FavoritesFragmentDirections.actionFavoritesToDetails(CityUi( // todo mapear
+            cityId = city.cityId,
+            cityName = city.cityName,
+            countryName = city.countryName,
+        ))
         findNavController().navigate(navAction)
         viewModel.onNavigationDone()
     }
@@ -76,13 +81,13 @@ class FavoritesFragment : Fragment() {
 
 @SuppressLint("NotConstructor")
 @Composable
-private fun FavoritesFragment(viewModel: FavoritesViewModel, navigateToDetails: (PlaceUi) -> Unit) {
+private fun FavoritesFragment(viewModel: FavoritesViewModel, navigateToDetails: (City) -> Unit) {
     val uiState by viewModel.state.collectAsState()
 
     uiState.navigateTo?.let { navigateToDetails(it) }
 
     FavoritesContent(
-        placeList = uiState.placeList,
+        placeList = uiState.favoriteCities,
         onPlaceClicked = {
             viewModel.onCityClicked(it)
         },
@@ -91,8 +96,8 @@ private fun FavoritesFragment(viewModel: FavoritesViewModel, navigateToDetails: 
 
 @Composable
 private fun FavoritesContent(
-    placeList: List<PlaceUi>,
-    onPlaceClicked: (PlaceUi) -> Unit,
+    placeList: List<CityUi>,
+    onPlaceClicked: (City) -> Unit,
 ) {
     Column {
         Text(
@@ -121,20 +126,21 @@ private fun FavoritesContent(
                     countryCode = getCountryCode(city.countryName),
                     onClick = {
                         onPlaceClicked(
-                            if (city is PlaceUi.City) {
-                                PlaceUi.City(
+//                            if (city.placeType == PlaceType.City) {
+                                City(
                                     cityId = city.cityId,
                                     countryName = city.countryName,
                                     cityName = city.cityName,
                                     isFavorite = true,
                                 )
-                            } else {
-                                PlaceUi.Country(
-                                    countryId = "",
-                                    countryName = city.countryName,
-                                    isFavorite = true,
-                                )
-                            },
+//                            }
+//                            else {
+//                                Country(
+//                                    countryId = "",
+//                                    countryName = city.countryName,
+//                                    isFavorite = true,
+//                                )
+//                            },
                         )
                     },
                 )

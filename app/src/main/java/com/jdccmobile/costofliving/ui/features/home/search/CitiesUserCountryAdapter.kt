@@ -7,12 +7,12 @@ import androidx.recyclerview.widget.RecyclerView
 import com.jdccmobile.costofliving.R
 import com.jdccmobile.costofliving.common.getCountryCode
 import com.jdccmobile.costofliving.databinding.ViewCityItemBinding
-import com.jdccmobile.costofliving.ui.models.PlaceUi
+import com.jdccmobile.domain.model.City
 import com.squareup.picasso.Picasso
 
 class CitiesUserCountryAdapter(
-    private val cities: List<PlaceUi.City>,
-    private val onItemClick: (PlaceUi.City) -> Unit,
+    private val cities: List<City>,
+    private val onItemClick: (City) -> Unit,
 ) :
     RecyclerView.Adapter<CitiesUserCountryAdapter.CitiesViewHolder>() {
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): CitiesViewHolder {
@@ -35,7 +35,7 @@ class CitiesUserCountryAdapter(
     inner class CitiesViewHolder(view: View) : RecyclerView.ViewHolder(view) {
         private val binding = ViewCityItemBinding.bind(view)
 
-        fun bind(city: PlaceUi.City) {
+        fun bind(city: City) {
             binding.tvCountryNameItem.text = city.cityName // todo jdc rename text view
             val countryCode = getCountryCode(city.countryName)
             Picasso.get()

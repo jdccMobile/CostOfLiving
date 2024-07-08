@@ -27,5 +27,4 @@ interface CityDao {
 
     @Update
     suspend fun updateCity(city: CityDb)
-
 }
