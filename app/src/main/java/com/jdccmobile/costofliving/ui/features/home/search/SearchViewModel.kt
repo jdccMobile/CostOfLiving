@@ -8,8 +8,10 @@ import com.jdccmobile.costofliving.common.ResourceProvider
 import com.jdccmobile.costofliving.ui.models.AutoCompleteSearchUi
 import com.jdccmobile.costofliving.ui.models.PlaceUi
 import com.jdccmobile.costofliving.ui.models.toCityUi
-import com.jdccmobile.domain.usecase.GetCityListUseCase
+import com.jdccmobile.domain.model.Place
+import com.jdccmobile.domain.usecase.GetCitiesRemote
 import com.jdccmobile.domain.usecase.GetUserCountryPrefsUseCase
+import com.jdccmobile.domain.usecase.InsertCitiesFromUserCountryUseCase
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
@@ -17,8 +19,9 @@ import kotlinx.coroutines.launch
 
 class SearchViewModel(
     private val getUserCountryPrefsUseCase: GetUserCountryPrefsUseCase,
-    private val getCityListUseCase: GetCityListUseCase,
+    private val getCitiesRemote: GetCitiesRemote,
     private val resourceProvider: ResourceProvider,
+    private val insertCitiesFromUserCountryUseCase: InsertCitiesFromUserCountryUseCase,
 ) : ViewModel() {
     data class UiState(
         val apiCallCompleted: Boolean = false,
@@ -53,12 +56,17 @@ class SearchViewModel(
     private suspend fun createLists(userCountryName: String) {
         if (!_state.value.apiCallCompleted) {
             try {
+                // todo asd acceder a room y mirar si tengo todas las ciudades del pais, comprobar que viene lo mismo que de api
                 Log.i("JD Search VM", "API call: requestCitiesList")
-                val citiesList = getCityListUseCase()
+                val citiesList = getCitiesRemote()
                 val citiesInUserCountry = citiesList.filter {
                     it.countryName == userCountryName
-                }.sortedBy { it.cityName }.toCityUi()
-                _state.value = _state.value.copy(citiesInUserCountry = citiesInUserCountry)
+                }.sortedBy { it.cityName }
+
+                _state.value = _state.value.copy(
+                    citiesInUserCountry = citiesInUserCountry.toCityUi(),
+                )
+                insertCitiesFromUserCountryUseCase(citiesInUserCountry)
 
                 val citiesAutoComplete =
                     citiesList.map {
@@ -113,12 +121,12 @@ class SearchViewModel(
                 val countryName = _state.value.citiesAutoComplete.find {
                     it.searchedText.equals(nameSearch, ignoreCase = true)
                 }?.country ?: ""
-                _state.value = _state.value.copy(navigateTo = PlaceUi.City(nameSearch, countryName))
+                _state.value = _state.value.copy(navigateTo = PlaceUi.City(nameSearch, countryName, cityId = 1)) // todo asd
             } else {
                 _state.value =
                     _state.value.copy(
                         errorMsg =
-                            "$nameSearch ${resourceProvider.getString(R.string.does_not_exist)}",
+                        "$nameSearch ${resourceProvider.getString(R.string.does_not_exist)}",
                     )
             }
         } else {
@@ -127,12 +135,12 @@ class SearchViewModel(
                 }
             ) {
                 _state.value =
-                    _state.value.copy(navigateTo = PlaceUi.Country(countryName = nameSearch))
+                    _state.value.copy(navigateTo = PlaceUi.Country(countryName = nameSearch, countryId = "")) // todo asd
             } else {
                 _state.value =
                     _state.value.copy(
                         errorMsg =
-                            "$nameSearch ${resourceProvider.getString(R.string.does_not_exist)}",
+                        "$nameSearch ${resourceProvider.getString(R.string.does_not_exist)}",
                     )
             }
         }

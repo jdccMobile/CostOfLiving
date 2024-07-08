@@ -13,10 +13,10 @@ import com.jdccmobile.costofliving.ui.models.toCityDomain
 import com.jdccmobile.costofliving.ui.models.toDomain
 import com.jdccmobile.domain.model.ItemPrice
 import com.jdccmobile.domain.usecase.CheckIsFavoritePlaceUseCase
-import com.jdccmobile.domain.usecase.DeleteFavoritePlaceUseCase
+import com.jdccmobile.domain.usecase.UpdateCityUseCase
 import com.jdccmobile.domain.usecase.GetCityCostUseCase
 import com.jdccmobile.domain.usecase.GetCountryCostUseCase
-import com.jdccmobile.domain.usecase.InsertFavoritePlaceUseCase
+import com.jdccmobile.domain.usecase.InsertCityUseCase
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
@@ -27,8 +27,8 @@ class DetailsViewModel(
     private val getCityCostUseCase: GetCityCostUseCase,
     private val getCountryCostUseCase: GetCountryCostUseCase,
     private val resourceProvider: ResourceProvider,
-    private val insertFavoritePlaceUseCase: InsertFavoritePlaceUseCase,
-    private val deleteFavoritePlaceUseCase: DeleteFavoritePlaceUseCase,
+    private val insertCityUseCase: InsertCityUseCase,
+    private val updateCityUseCase: UpdateCityUseCase,
     private val checkFavoritePlaceUseCase: CheckIsFavoritePlaceUseCase,
 ) : ViewModel() {
     data class UiState(
@@ -68,6 +68,7 @@ class DetailsViewModel(
                 _state.value = _state.value.copy(
                     isFavorite = checkFavoritePlaceUseCase(
                         PlaceUi.City(
+                            cityId = 1,
                             countryName = _state.value.countryName,
                             // TODO revisar
                             cityName = _state.value.cityName ?: "",
@@ -111,9 +112,9 @@ class DetailsViewModel(
                 }
             }.filter { // TODO improve this code
                 it.name.contains("in City Center") || it.name.contains("Gasoline") ||
-                    it.name.contains("Dress") || it.name.contains("Fitness") ||
-                    it.name.contains("Gasoline") || it.name.contains("McMeal") ||
-                    it.name.contains("Coca-Cola")
+                        it.name.contains("Dress") || it.name.contains("Fitness") ||
+                        it.name.contains("Gasoline") || it.name.contains("McMeal") ||
+                        it.name.contains("Coca-Cola")
             }.toUi()
             _state.value = _state.value.copy(
                 apiCallCompleted = true,
@@ -147,15 +148,26 @@ class DetailsViewModel(
 
     private fun onAddCityToFavoritesClicked() {
         viewModelScope.launch {
-            insertFavoritePlaceUseCase(place.toDomain()) // TODO renombrar
-            _state.value = _state.value.copy(isFavorite = true)
+            when (place) {
+                is PlaceUi.City -> insertCityUseCase(
+                    place.copy(isFavorite = !place.isFavorite).toCityDomain(),
+                ) // TODO revisar
+                is PlaceUi.Country -> {
+                }
+            }
+//            _state.value = _state.value.copy(isFavorite = true)
         }
     }
 
     private fun onDeleteCityFromFavoritesClicked() {
         viewModelScope.launch {
-            deleteFavoritePlaceUseCase(place.toDomain()) // todo renombrar
-            _state.value = _state.value.copy(isFavorite = false)
+            when (place) {
+                is PlaceUi.City -> updateCityUseCase(
+                    place.copy(isFavorite = !place.isFavorite).toCityDomain(),
+                ) // todo revisar
+                is PlaceUi.Country -> {}
+            }
+//            _state.value = _state.value.copy(isFavorite = false)
         }
     }
 }

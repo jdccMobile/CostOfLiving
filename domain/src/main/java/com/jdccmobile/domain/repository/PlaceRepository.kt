@@ -5,23 +5,25 @@ import com.jdccmobile.domain.model.Place
 
 interface PlaceRepository {
     // Local
+    suspend fun insertCity(city: Place.City)
 
-    suspend fun insertFavoritePlace(place: Place)
+    suspend fun insertCitiesFromUserCountry(cities: List<Place.City>)
 
-    suspend fun getFavoritePlacesList(): List<Place>
+    suspend fun getCitiesFromUserCountry(countryName: String): List<Place.City>
 
-    suspend fun deleteFavoritePlace(place: Place)
+    suspend fun getCities(): List<Place.City>
 
-    suspend fun checkIsFavoritePlace(place: Place): Boolean
+    suspend fun getFavoriteCities(): List<Place.City>
 
-//
-//    suspend fun insertFavoriteCountry(city: Place.Country)
-//
-//    suspend fun getFavoriteCountriesList(): List<Place.Country>
-//
-//    suspend fun deleteFavoriteCountry(city: Place.Country)
-//
-//    suspend fun checkIsFavoriteCountry(city: Place.Country): Boolean
+    suspend fun updateCity(city: Place.City)
+
+
+    suspend fun insertCountry(country: Place.Country)
+
+    suspend fun getFavoriteCountries(): List<Place.Country>
+
+    suspend fun updateCountry(country: Place.Country)
+
 
     // Remote
     suspend fun getCitiesListRemote(): List<Place.City>

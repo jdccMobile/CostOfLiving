@@ -1,37 +1,61 @@
 package com.jdccmobile.data.utils
 
-import com.jdccmobile.data.database.FavoritePlaceDb
+import com.jdccmobile.data.database.citydb.CityDb
+import com.jdccmobile.data.database.countrydb.CountryDb
 import com.jdccmobile.domain.model.Place
 
-fun Place.toDb() = when (this) {
-    is Place.City -> {
-        FavoritePlaceDb(
-            cityName = cityName,
-            countryName = countryName,
-            isFavorite = true,
-        )
-    }
+fun Place.City.toDb() =
+    CityDb(
+        cityId = cityId,
+        cityName = cityName,
+        countryName = countryName,
+        isFavorite = isFavorite,
+        placeType = placeType,
+    )
 
-    is Place.Country -> {
-        FavoritePlaceDb(
-            cityName = null,
-            countryName = countryName,
-            isFavorite = true,
-        )
-    }
+
+fun Place.Country.toDb() =
+    CountryDb(
+        countryId = countryId,
+        countryName = countryName,
+        isFavorite = isFavorite,
+        placeType = placeType,
+    )
+
+fun List<Place.City>.toDb() = this.map { city ->
+    CityDb(
+        cityId = city.cityId,
+        cityName = city.cityName,
+        countryName = city.countryName,
+        isFavorite = city.isFavorite,
+        placeType = city.placeType,
+    )
 }
 
-fun List<FavoritePlaceDb>.toDomain(): List<Place> = map { favoritePlace ->
-    if (favoritePlace.cityName != null) {
+fun List<Place.Country>.toDb(citiesInCountry: Int) = this.map { country ->
+    CountryDb(
+        countryId = country.countryId,
+        countryName = country.countryName,
+        isFavorite = country.isFavorite,
+        citiesInCountry = citiesInCountry,
+        placeType = country.placeType,
+    )
+}
+
+fun List<CityDb>.toCityDomain(): List<Place.City> = map { city ->
         Place.City(
-            cityName = favoritePlace.cityName,
-            countryName = favoritePlace.countryName,
-            isFavorite = favoritePlace.isFavorite,
+            cityId = city.cityId,
+            cityName = city.cityName,
+            countryName = city.countryName,
+            isFavorite = city.isFavorite,
         )
-    } else {
+}
+
+fun List<CountryDb>.toCountryDomain(): List<Place.Country> = map { country ->
         Place.Country(
-            countryName = favoritePlace.countryName,
-            isFavorite = favoritePlace.isFavorite,
+            countryId = country.countryId,
+            countryName = country.countryName,
+            isFavorite = country.isFavorite,
         )
     }
-}
+

@@ -83,6 +83,7 @@ class SearchFragment : Fragment() {
             AutoCompleteSearchAdapter(requireContext(), citiesAutoComplete) {
                 viewModel.onCityClicked(
                     PlaceUi.City(
+                        cityId = 1, //  todo asd
                         countryName = it.country,
                         cityName = it.searchedText,
                     ),
@@ -90,7 +91,7 @@ class SearchFragment : Fragment() {
             }
         countriesAutoCompleteSearchAdapter =
             AutoCompleteSearchAdapter(requireContext(), countriesAutoComplete) {
-                viewModel.onCityClicked(PlaceUi.Country(countryName = it.searchedText))
+                viewModel.onCityClicked(PlaceUi.Country(countryId = "sad", countryName = it.searchedText)) // todo asd
             }
     }
 

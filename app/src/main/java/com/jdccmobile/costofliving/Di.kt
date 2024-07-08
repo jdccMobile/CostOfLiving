@@ -16,8 +16,9 @@ import com.jdccmobile.costofliving.ui.features.home.search.SearchViewModel
 import com.jdccmobile.costofliving.ui.features.intro.IntroSlidesProvider
 import com.jdccmobile.costofliving.ui.features.intro.IntroViewModel
 import com.jdccmobile.costofliving.ui.features.main.MainViewModel
-import com.jdccmobile.data.database.FavoritePlacesDatabase
-import com.jdccmobile.data.database.datasources.PlaceLocalDataSource
+import com.jdccmobile.data.database.PlaceDatabase
+import com.jdccmobile.data.database.datasources.CityDbDataSource
+import com.jdccmobile.data.database.datasources.CountryDbDataSource
 import com.jdccmobile.data.location.LocationDataSource
 import com.jdccmobile.data.location.PermissionChecker
 import com.jdccmobile.data.preferences.PreferencesDataSource
@@ -30,13 +31,14 @@ import com.jdccmobile.data.repositories.RegionRepository
 import com.jdccmobile.domain.repository.PlaceRepository
 import com.jdccmobile.domain.repository.PrefsRepository
 import com.jdccmobile.domain.usecase.CheckIsFavoritePlaceUseCase
-import com.jdccmobile.domain.usecase.DeleteFavoritePlaceUseCase
+import com.jdccmobile.domain.usecase.UpdateCityUseCase
 import com.jdccmobile.domain.usecase.GetCityCostUseCase
-import com.jdccmobile.domain.usecase.GetCityListUseCase
+import com.jdccmobile.domain.usecase.GetCitiesRemote
 import com.jdccmobile.domain.usecase.GetCountryCostUseCase
-import com.jdccmobile.domain.usecase.GetFavoritePlacesUseCase
+import com.jdccmobile.domain.usecase.GetFavoriteCitiesUseCase
 import com.jdccmobile.domain.usecase.GetUserCountryPrefsUseCase
-import com.jdccmobile.domain.usecase.InsertFavoritePlaceUseCase
+import com.jdccmobile.domain.usecase.InsertCityUseCase
+import com.jdccmobile.domain.usecase.InsertCitiesFromUserCountryUseCase
 import org.koin.android.ext.koin.androidApplication
 import org.koin.android.ext.koin.androidContext
 import org.koin.android.ext.koin.androidLogger
@@ -83,7 +85,8 @@ private val dataModule = module {
 
     factoryOf(::PreferencesDataSource)
     factoryOf(::PrefsRepositoryImpl) bind PrefsRepository::class
-    factoryOf(::PlaceLocalDataSource)
+    factoryOf(::CityDbDataSource)
+    factoryOf(::CountryDbDataSource)
 
     single<RetrofitService> { RetrofitServiceFactory.makeRetrofitService() }
     factory<PlaceRemoteDataSource> { PlaceRemoteDataSource(get(named("apiKey")), get()) }
@@ -92,22 +95,24 @@ private val dataModule = module {
     single {
         Room.databaseBuilder(
             androidContext(),
-            com.jdccmobile.data.database.FavoritePlacesDatabase::class.java,
+            PlaceDatabase::class.java,
             DATABASE_NAME,
         ).build()
     }
-    single { get<com.jdccmobile.data.database.FavoritePlacesDatabase>().getFavoriteCityDao() }
+    single { get<PlaceDatabase>().getCityDao() }
+    single { get<PlaceDatabase>().getCountryDao() }
 }
 
 private val domainModule = module {
     factoryOf(::GetUserCountryPrefsUseCase)
-    factoryOf(::GetCityListUseCase)
+    factoryOf(::GetCitiesRemote)
     factoryOf(::GetCityCostUseCase)
     factoryOf(::GetCountryCostUseCase)
-    factoryOf(::InsertFavoritePlaceUseCase)
-    factoryOf(::DeleteFavoritePlaceUseCase)
+    factoryOf(::InsertCityUseCase)
+    factoryOf(::UpdateCityUseCase)
     factoryOf(::CheckIsFavoritePlaceUseCase)
-    factoryOf(::GetFavoritePlacesUseCase)
+    factoryOf(::GetFavoriteCitiesUseCase)
+    factoryOf(::InsertCitiesFromUserCountryUseCase)
 }
 
 private const val API_KEY_NAMED = "apiKey"

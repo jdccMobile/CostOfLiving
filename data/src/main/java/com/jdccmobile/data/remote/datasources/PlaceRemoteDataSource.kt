@@ -20,9 +20,9 @@ class PlaceRemoteDataSource(private val apiKey: String, private val service: Ret
 
 private fun CitiesListResponseResult.toDomain(): List<Place.City> = this.cities.map { city ->
     Place.City(
+        cityId = city.cityId,
         cityName = city.cityName,
         countryName = city.countryName,
-        isFavorite = null,
     )
 }
 
