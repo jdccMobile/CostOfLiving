@@ -7,11 +7,12 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.jdccmobile.costofliving.R
 import com.jdccmobile.costofliving.common.ResourceProvider
-import com.jdccmobile.costofliving.ui.models.CityUi
 import com.jdccmobile.costofliving.ui.models.ItemPriceUi
 import com.jdccmobile.costofliving.ui.utils.toDomain
+import com.jdccmobile.domain.model.City
 import com.jdccmobile.domain.model.ItemPrice
 import com.jdccmobile.domain.usecase.GetCityCostUseCase
+import com.jdccmobile.domain.usecase.GetCityDatabaseUseCase
 import com.jdccmobile.domain.usecase.GetCountryCostUseCase
 import com.jdccmobile.domain.usecase.InsertCityUseCase
 import com.jdccmobile.domain.usecase.UpdateCityUseCase
@@ -21,59 +22,36 @@ import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
 
 class DetailsViewModel(
-    private val city: CityUi,
+    private val cityId: Int,
     private val getCityCostUseCase: GetCityCostUseCase,
     private val getCountryCostUseCase: GetCountryCostUseCase,
     private val resourceProvider: ResourceProvider,
     private val insertCityUseCase: InsertCityUseCase,
     private val updateCityUseCase: UpdateCityUseCase,
+    private val getCityDatabaseUseCase: GetCityDatabaseUseCase,
 ) : ViewModel() {
     data class UiState(
-        val cityName: String? = null,
-        val countryName: String,
+        val cityId: Int,
+        val cityName: String = "",
+        val countryName: String = "",
         val apiCallCompleted: Boolean = false,
         val itemCostInfoList: List<ItemPriceUi> = emptyList(),
-        val isFavorite: Boolean?,
+        val isFavorite: Boolean = false,
         val apiErrorMsg: String? = null,
     )
 
-    private val _state = MutableStateFlow(
-//        when (place) {
-//            is PlaceUi.City -> {
-        UiState(
-            cityName = city.cityName.replaceFirstChar { it.uppercase() },
-            countryName = city.countryName.replaceFirstChar { it.uppercase() },
-            isFavorite = city.isFavorite,
-        ),
-//            }
-//
-//            is PlaceUi.Country -> {
-//                UiState(
-//                    cityName = null,
-//                    countryName = place.countryName.replaceFirstChar { it.uppercase() },
-//                    isFavorite = place.isFavorite,
-//                )
-//            }
-//        },
-    )
+    private val _state = MutableStateFlow(UiState(cityId = cityId))
     val state: StateFlow<UiState> = _state.asStateFlow()
 
     init {
-//        Log.i("asd", "init" + _state.value.isFavorite)
-//        if (_state.value.isFavorite == null) {
-//            viewModelScope.launch {
-//                _state.value = _state.value.copy(
-//                    isFavorite = checkFavoritePlaceUseCase(
-//                        City(
-//                            cityId = 1,// todo asd
-//                            countryName = _state.value.countryName,
-//                            // TODO revisar
-//                            cityName = _state.value.cityName ?: "",
-//                        ).toDomain(),
-//                    ),
-//                )
-//            }
-//        }
+        viewModelScope.launch {
+            val city = getCityDatabaseUseCase(cityId)
+            _state.value = _state.value.copy(
+                cityName = city.cityName.replaceFirstChar { it.uppercase() },
+                countryName = city.countryName.replaceFirstChar { it.uppercase() },
+                isFavorite = city.isFavorite,
+            )
+        }
         refresh()
     }
 
@@ -85,12 +63,12 @@ class DetailsViewModel(
 
     @Suppress("TooGenericExceptionCaught")
     private suspend fun createCostInfoList() {
-        if (!_state.value.apiCallCompleted) {
+        if (!_state.value.apiCallCompleted && _state.value.cityName.isNotEmpty() && _state.value.countryName.isNotEmpty()) {
             val pricesList: List<ItemPriceUi> =
                 try {
                     getCityCostUseCase(
-                        cityName = city.cityName,
-                        countryName = city.countryName,
+                        cityName = _state.value.cityName,
+                        countryName = _state.value.countryName,
                     )
                 } catch (e: Exception) {
                     handleApiErrorMsg(e)
@@ -98,9 +76,9 @@ class DetailsViewModel(
                 }
                     .filter { // TODO improve this code
                         it.name.contains("in City Center") || it.name.contains("Gasoline") ||
-                            it.name.contains("Dress") || it.name.contains("Fitness") ||
-                            it.name.contains("Gasoline") || it.name.contains("McMeal") ||
-                            it.name.contains("Coca-Cola")
+                                it.name.contains("Dress") || it.name.contains("Fitness") ||
+                                it.name.contains("Gasoline") || it.name.contains("McMeal") ||
+                                it.name.contains("Coca-Cola")
                     }.toUi()
             _state.value = _state.value.copy(
                 apiCallCompleted = true,
@@ -123,29 +101,36 @@ class DetailsViewModel(
     }
 
     fun onFavoriteClick(activity: FragmentActivity?) {
-        if (_state.value.isFavorite == true) {
-            onDeleteCityFromFavoritesClicked()
+        if (_state.value.isFavorite) {
+            onFavoriteClicked()
             Toast.makeText(activity, "Favorito borrado", Toast.LENGTH_SHORT).show()
         } else {
-            onAddCityToFavoritesClicked()
+            onFavoriteClicked()
             Toast.makeText(activity, "Favorito añadido", Toast.LENGTH_SHORT).show()
         }
     }
 
-    private fun onAddCityToFavoritesClicked() {
-        viewModelScope.launch {
-            insertCityUseCase(
-                city.copy(isFavorite = !city.isFavorite).toDomain(),
-            ) // TODO revisar
+//    private fun onAddCityToFavoritesClicked() {
+//        viewModelScope.launch {
+//            insertCityUseCase(
+//                city.copy(isFavorite = !city.isFavorite).toDomain(),
+//            ) // TODO revisar
 //                is PlaceUi.Country -> {
 //                }
-        }
+//        }
 //            _state.value = _state.value.copy(isFavorite = true)
-    }
+//    }
 
-    private fun onDeleteCityFromFavoritesClicked() {
+    private fun onFavoriteClicked() {
         viewModelScope.launch {
-            updateCityUseCase(city.copy(isFavorite = !city.isFavorite).toDomain())
+            updateCityUseCase(
+                City(
+                    cityId = _state.value.cityId,
+                    countryName = _state.value.cityName,
+                    cityName = _state.value.countryName,
+                    isFavorite = !_state.value.isFavorite,
+                ),
+            )
         }
     }
 }

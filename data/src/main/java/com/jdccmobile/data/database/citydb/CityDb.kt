@@ -44,3 +44,12 @@ fun City.toDb() =
         isFavorite = isFavorite,
         placeType = placeType,
     )
+
+fun CityDb.toDomain() =
+    City(
+        cityId = cityId,
+        cityName = cityName,
+        countryName = countryName,
+        isFavorite = isFavorite,
+        placeType = placeType,
+    )

@@ -23,7 +23,7 @@ class DetailsFragment : Fragment() {
 
     private val safeArgs: DetailsFragmentArgs by navArgs()
     private val viewModel: DetailsViewModel by viewModel {
-        parametersOf(safeArgs.city)
+        parametersOf(safeArgs.cityId)
     }
 
     private lateinit var costInfoAdapter: CostInfoAdapter
@@ -63,7 +63,7 @@ class DetailsFragment : Fragment() {
                 handleErrorConnection(uiState.apiErrorMsg)
             }
 
-            if (uiState.isFavorite == true) {
+            if (uiState.isFavorite) {
                 binding.ivFavorite.setImageResource(R.drawable.ic_favorite)
             } else {
                 binding.ivFavorite.setImageResource(R.drawable.ic_favorite_border)

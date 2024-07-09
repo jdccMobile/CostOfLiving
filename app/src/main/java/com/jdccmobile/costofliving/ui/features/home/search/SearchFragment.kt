@@ -129,11 +129,7 @@ class SearchFragment : Fragment() {
     private fun navigateToDetails(place: City) {
         binding.atSearch.setText("")
         hideKeyboard()
-        val navAction = SearchFragmentDirections.actionSearchToDetails(CityUi( // todo mapper
-            cityId = place.cityId,
-            countryName = place.countryName,
-            cityName = place.cityName,
-        ))
+        val navAction = SearchFragmentDirections.actionSearchToDetails(place.cityId)
         findNavController().navigate(navAction)
         viewModel.onNavigationDone()
     }

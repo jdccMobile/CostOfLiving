@@ -19,11 +19,11 @@ interface CityDao {
     @Query("SELECT * FROM cities_table WHERE country_name = :countryName ORDER BY city_name ASC")
     suspend fun getCitiesFromUserCountry(countryName: String): List<CityDb>
 
-    @Query("SELECT * FROM cities_table ORDER BY city_name ASC")
-    suspend fun getCityList(): List<CityDb>
+    @Query("SELECT * FROM cities_table WHERE cityId = :cityId ORDER BY city_name ASC")
+    suspend fun getCity(cityId: Int): CityDb
 
     @Query("SELECT * FROM cities_table WHERE is_favorite = true ORDER BY city_name ASC")
-    suspend fun getFavoriteCitiesList(): List<CityDb>
+    suspend fun getFavoriteCities(): List<CityDb>
 
     @Update
     suspend fun updateCity(city: CityDb)

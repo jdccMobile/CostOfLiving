@@ -1,5 +1,6 @@
 package com.jdccmobile.costofliving.ui.features.home.favorites
 
+import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.jdccmobile.costofliving.ui.models.CityUi
@@ -16,7 +17,7 @@ class FavoritesViewModel(
 ) : ViewModel() {
     data class UiState(
         val favoriteCities: List<CityUi> = emptyList(),
-        val navigateTo: City? = null,
+        val navigateTo: Int? = null,
     )
 
     private val _state = MutableStateFlow(UiState())
@@ -28,16 +29,17 @@ class FavoritesViewModel(
 
     private fun refresh() {
         viewModelScope.launch {
-            createCityList()
+            getFavoriteCities()
         }
     }
 
-    private suspend fun createCityList() {
+    private suspend fun getFavoriteCities() {
         _state.value = _state.value.copy(favoriteCities = getFavoriteCitiesUseCase().toCityUi())
+        Log.i("asd", _state.value.toString())
     }
 
     fun onCityClicked(city: City) {
-        _state.value = _state.value.copy(navigateTo = city)
+        _state.value = _state.value.copy(navigateTo = city.cityId)
     }
 
     fun onNavigationDone() {

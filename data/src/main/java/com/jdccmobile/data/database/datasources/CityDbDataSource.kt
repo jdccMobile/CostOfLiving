@@ -15,8 +15,11 @@ class CityDbDataSource(private val cityDao: CityDao) {
     suspend fun getCitiesFromUserCountry(countryName: String): List<City> =
         cityDao.getCitiesFromUserCountry(countryName).toDomain()
 
+    suspend fun getCity(cityId: Int): City =
+        cityDao.getCity(cityId).toDomain()
+
     suspend fun getFavoriteCities(): List<City> =
-        cityDao.getCityList().toDomain()
+        cityDao.getFavoriteCities().toDomain()
 
     suspend fun updateCity(city: City): Unit =
         cityDao.updateCity(city.toDb())

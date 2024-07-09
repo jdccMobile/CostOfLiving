@@ -12,7 +12,7 @@ interface PlaceRepository {
 
     suspend fun getCitiesFromUserCountry(countryName: String): List<City>
 
-    suspend fun getCities(): List<City>
+    suspend fun getCity(cityId: Int): City
 
     suspend fun getFavoriteCities(): List<City>
 

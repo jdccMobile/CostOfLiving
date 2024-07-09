@@ -68,12 +68,8 @@ class FavoritesFragment : Fragment() {
         }
     }
 
-    private fun navigateToDetails(city: City) {
-        val navAction = FavoritesFragmentDirections.actionFavoritesToDetails(CityUi( // todo mapear
-            cityId = city.cityId,
-            cityName = city.cityName,
-            countryName = city.countryName,
-        ))
+    private fun navigateToDetails(cityId: Int) {
+        val navAction = FavoritesFragmentDirections.actionFavoritesToDetails(cityId)
         findNavController().navigate(navAction)
         viewModel.onNavigationDone()
     }
@@ -81,9 +77,9 @@ class FavoritesFragment : Fragment() {
 
 @SuppressLint("NotConstructor")
 @Composable
-private fun FavoritesFragment(viewModel: FavoritesViewModel, navigateToDetails: (City) -> Unit) {
+private fun FavoritesFragment(viewModel: FavoritesViewModel, navigateToDetails: (Int) -> Unit) {
     val uiState by viewModel.state.collectAsState()
-
+    Log.i("asd", "uiState: $uiState")
     uiState.navigateTo?.let { navigateToDetails(it) }
 
     FavoritesContent(
@@ -119,28 +115,21 @@ private fun FavoritesContent(
                 .padding(top = PaddingDimens.extraLarge)
                 .weight(1f),
         ) {
+            Log.i("asd", "placeList: $placeList")
             items(placeList) { city ->
+                Log.i("asd", "city: $city")
                 PlaceCard(
                     cityName = city.cityName,
                     countryName = city.countryName,
                     countryCode = getCountryCode(city.countryName),
                     onClick = {
                         onPlaceClicked(
-//                            if (city.placeType == PlaceType.City) {
-                                City(
-                                    cityId = city.cityId,
-                                    countryName = city.countryName,
-                                    cityName = city.cityName,
-                                    isFavorite = true,
-                                )
-//                            }
-//                            else {
-//                                Country(
-//                                    countryId = "",
-//                                    countryName = city.countryName,
-//                                    isFavorite = true,
-//                                )
-//                            },
+                            City(
+                                cityId = city.cityId,
+                                countryName = city.countryName,
+                                cityName = city.cityName,
+                                isFavorite = true,
+                            ),
                         )
                     },
                 )

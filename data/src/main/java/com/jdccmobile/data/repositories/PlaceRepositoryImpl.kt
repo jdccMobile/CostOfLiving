@@ -14,6 +14,7 @@ class PlaceRepositoryImpl(
     private val remoteDataSource: PlaceRemoteDataSource,
 ) : PlaceRepository {
     // Local
+    // City
     override suspend fun insertCity(city: City) {
         cityDbDataSource.insertCity(city)
     }
@@ -25,9 +26,8 @@ class PlaceRepositoryImpl(
     override suspend fun getCitiesFromUserCountry(countryName: String): List<City> =
         cityDbDataSource.getCitiesFromUserCountry(countryName)
 
-    // todo creo que no se usa
-    override suspend fun getCities(): List<City> {
-        return cityDbDataSource.getFavoriteCities()
+    override suspend fun getCity(cityId: Int): City {
+        return cityDbDataSource.getCity(cityId)
     }
 
     override suspend fun getFavoriteCities(): List<City> =
@@ -37,6 +37,7 @@ class PlaceRepositoryImpl(
         cityDbDataSource.updateCity(city)
     }
 
+    // Country
     override suspend fun insertCountry(country: Country) {
         countryDbDataSource.insertCountry(country)
     }

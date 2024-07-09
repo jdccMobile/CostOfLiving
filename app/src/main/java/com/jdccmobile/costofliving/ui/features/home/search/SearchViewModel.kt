@@ -7,7 +7,7 @@ import com.jdccmobile.costofliving.R
 import com.jdccmobile.costofliving.common.ResourceProvider
 import com.jdccmobile.costofliving.ui.models.AutoCompleteSearchUi
 import com.jdccmobile.domain.model.City
-import com.jdccmobile.domain.usecase.GetCitiesRemote
+import com.jdccmobile.domain.usecase.GetCitiesRemoteUseCase
 import com.jdccmobile.domain.usecase.GetUserCountryPrefsUseCase
 import com.jdccmobile.domain.usecase.InsertCitiesFromUserCountryUseCase
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -17,7 +17,7 @@ import kotlinx.coroutines.launch
 
 class SearchViewModel(
     private val getUserCountryPrefsUseCase: GetUserCountryPrefsUseCase,
-    private val getCitiesRemote: GetCitiesRemote,
+    private val getCitiesRemoteUseCase: GetCitiesRemoteUseCase,
     private val resourceProvider: ResourceProvider,
     private val insertCitiesFromUserCountryUseCase: InsertCitiesFromUserCountryUseCase,
 ) : ViewModel() {
@@ -56,7 +56,7 @@ class SearchViewModel(
             try {
                 // todo asd acceder a room y mirar si tengo todas las ciudades del pais, comprobar que viene lo mismo que de api
                 Log.i("JD Search VM", "API call: requestCitiesList")
-                val citiesList = getCitiesRemote()
+                val citiesList = getCitiesRemoteUseCase()
                 val citiesInUserCountry = citiesList.filter {
                     it.countryName == userCountryName
                 }.sortedBy { it.cityName }
