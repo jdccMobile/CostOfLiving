@@ -109,12 +109,11 @@ class SearchViewModel(
             viewModelScope.launch {
                 try {
                     val allCities = getCitiesRemoteUseCase()
-                    Log.i("jdc", "allCities: $allCities")
                     if (allCities.any {
                             it.cityName.equals(nameSearch, ignoreCase = true)
                         }
                     ) {
-                        val citySearched = _state.value.citiesInUserCountry.find {
+                        val citySearched = allCities.find {
                             it.cityName.equals(nameSearch, ignoreCase = true)
                         }
                         if (citySearched != null) {
