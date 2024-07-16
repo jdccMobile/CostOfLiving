@@ -7,6 +7,7 @@ import com.jdccmobile.costofliving.R
 import com.jdccmobile.costofliving.common.ResourceProvider
 import com.jdccmobile.costofliving.ui.models.AutoCompleteSearchUi
 import com.jdccmobile.domain.model.City
+import com.jdccmobile.domain.usecase.GetCitiesFromUserCountryUseCase
 import com.jdccmobile.domain.usecase.GetCitiesRemoteUseCase
 import com.jdccmobile.domain.usecase.GetUserCountryPrefsUseCase
 import com.jdccmobile.domain.usecase.InsertCitiesFromUserCountryUseCase
@@ -20,6 +21,7 @@ class SearchViewModel(
     private val getCitiesRemoteUseCase: GetCitiesRemoteUseCase,
     private val resourceProvider: ResourceProvider,
     private val insertCitiesFromUserCountryUseCase: InsertCitiesFromUserCountryUseCase,
+    private val getCitiesFromUserCountryUseCase: GetCitiesFromUserCountryUseCase,
 ) : ViewModel() {
     data class UiState(
         val apiCallCompleted: Boolean = false,
@@ -46,61 +48,101 @@ class SearchViewModel(
         viewModelScope.launch {
             val countryName = getUserCountryPrefsUseCase()
             _state.value = UiState(countryName = countryName)
-            createLists(countryName)
+            getCitiesInCountry(countryName)
         }
     }
 
-    @Suppress("TooGenericExceptionCaught")
-    private suspend fun createLists(userCountryName: String) {
-        if (!_state.value.apiCallCompleted) {
-            try {
-                // todo asd acceder a room y mirar si tengo todas las ciudades del pais, comprobar que viene lo mismo que de api
-                Log.i("JD Search VM", "API call: requestCitiesList")
-                val citiesList = getCitiesRemoteUseCase()
-                val citiesInUserCountry = citiesList.filter {
-                    it.countryName == userCountryName
-                }.sortedBy { it.cityName }
-
-                _state.value = _state.value.copy(
-                    citiesInUserCountry = citiesInUserCountry,
-                )
-                insertCitiesFromUserCountryUseCase(citiesInUserCountry)
-
-                val citiesAutoComplete =
-                    citiesList.map {
-                        AutoCompleteSearchUi(
-                            it.cityName,
-                            it.countryName,
-                        )
-                    }
-                _state.value = _state.value.copy(citiesAutoComplete = citiesAutoComplete)
-
-                val countriesAutoComplete =
-                    citiesList.distinctBy { it.countryName }
-                        .map {
-                            AutoCompleteSearchUi(
-                                it.countryName,
-                                it.countryName,
+    private fun getCitiesInCountry(userCountryName: String) {
+        viewModelScope.launch {
+            var citiesInUserCountry: List<City> = getCitiesFromUserCountryUseCase(userCountryName)
+            if (
+                citiesInUserCountry.isEmpty() ||
+                citiesInUserCountry.size != citiesInUserCountry[0].citiesInCountry
+            ) {
+                try {
+                    citiesInUserCountry = getCitiesRemoteUseCase().filter {
+                        it.countryName == userCountryName
+                    }.sortedBy { it.cityName }
+                    insertCitiesFromUserCountryUseCase(citiesInUserCountry)
+                } catch (e: Exception) {
+                    if (e.message?.contains("429") == true) {
+                        _state.value =
+                            _state.value.copy(
+                                apiErrorMsg = resourceProvider.getString(R.string.http_429),
                             )
-                        }
-                _state.value = _state.value.copy(countriesAutoComplete = countriesAutoComplete)
-            } catch (e: Exception) {
-                if (e.message?.contains("429") == true) {
-                    _state.value =
-                        _state.value.copy(
-                            apiErrorMsg = resourceProvider.getString(R.string.http_429),
-                        )
-                } else {
-                    _state.value =
-                        _state.value.copy(
-                            apiErrorMsg = resourceProvider.getString(R.string.connection_error),
-                        )
+                    } else {
+                        _state.value =
+                            _state.value.copy(
+                                apiErrorMsg = resourceProvider.getString(R.string.connection_error),
+                            )
+                    }
                 }
-                Log.e("JD Search VM", "API call requestCitiesList error: $e")
             }
             _state.value = _state.value.copy(apiCallCompleted = true)
+            _state.value = _state.value.copy(citiesInUserCountry = citiesInUserCountry)
+            Log.i("jdc", citiesInUserCountry.size.toString())
+
         }
     }
+    // TODO all code with autocomplete
+//    @Suppress("TooGenericExceptionCaught")
+//    private suspend fun createLists(userCountryName: String) {
+//        var citiesInUserCountry = getCitiesFromUserCountryUseCase(userCountryName)
+//        if (!_state.value.apiCallCompleted) {
+//            try {
+//                Log.i("JD Search VM", "API call: requestCitiesList")
+//                val citiesList = getCitiesRemoteUseCase()
+//                if (
+//                    citiesInUserCountry.isEmpty() ||
+//                    citiesInUserCountry.size != citiesInUserCountry[0].citiesInCountry
+//                ) {
+//                    citiesInUserCountry =
+//                        citiesList.filter {
+//                            it.countryName == userCountryName
+//                        }.sortedBy { it.cityName }
+//                }
+//
+//                _state.value = _state.value.copy(
+//                    citiesInUserCountry = citiesInUserCountry,
+//                )
+//
+//                insertCitiesFromUserCountryUseCase(citiesInUserCountry)
+//
+//                val citiesAutoComplete =
+//                    citiesList.map {
+//                        AutoCompleteSearchUi(
+//                            it.cityName,
+//                            it.countryName,
+//                        )
+//                    }
+//                _state.value = _state.value.copy(citiesAutoComplete = citiesAutoComplete)
+//
+//                val countriesAutoComplete =
+//                    citiesList.distinctBy { it.countryName }
+//                        .map {
+//                            AutoCompleteSearchUi(
+//                                it.countryName,
+//                                it.countryName,
+//                            )
+//                        }
+//                _state.value = _state.value.copy(countriesAutoComplete = countriesAutoComplete)
+//            } catch (e: Exception) {
+//                if (e.message?.contains("429") == true) {
+//                    _state.value =
+//                        _state.value.copy(
+//                            apiErrorMsg = resourceProvider.getString(R.string.http_429),
+//                        )
+//                } else {
+//                    _state.value =
+//                        _state.value.copy(
+//                            apiErrorMsg = resourceProvider.getString(R.string.connection_error),
+//                        )
+//                }
+//                Log.e("JD Search VM", "API call requestCitiesList error: $e")
+//            }
+//            _state.value = _state.value.copy(apiCallCompleted = true)
+//        }
+//    }
 
     fun changeSearchByCity(isSearchByCity: Boolean) {
         _state.value = _state.value.copy(isSearchByCity = isSearchByCity)
@@ -130,7 +172,7 @@ class SearchViewModel(
                 _state.value =
                     _state.value.copy(
                         errorMsg =
-                            "$nameSearch ${resourceProvider.getString(R.string.does_not_exist)}",
+                        "$nameSearch ${resourceProvider.getString(R.string.does_not_exist)}",
                     )
             }
         } else {
@@ -144,7 +186,7 @@ class SearchViewModel(
                 _state.value =
                     _state.value.copy(
                         errorMsg =
-                            "$nameSearch ${resourceProvider.getString(R.string.does_not_exist)}",
+                        "$nameSearch ${resourceProvider.getString(R.string.does_not_exist)}",
                     )
             }
         }

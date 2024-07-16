@@ -14,7 +14,7 @@ interface CityDao {
     suspend fun insertCity(city: CityDb)
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
-    suspend fun insertCitiesFromUserCountry(city: List<CityDb>)
+    suspend fun insertCitiesFromUserCountry(cities: List<CityDb>)
 
     @Query("SELECT * FROM cities_table WHERE country_name = :countryName ORDER BY city_name ASC")
     suspend fun getCitiesFromUserCountry(countryName: String): List<CityDb>

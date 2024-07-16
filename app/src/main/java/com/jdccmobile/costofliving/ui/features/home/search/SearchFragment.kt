@@ -67,8 +67,8 @@ class SearchFragment : Fragment() {
                 countriesAutoComplete = uiState.countriesAutoComplete
                 createAdapters(uiState.citiesInUserCountry)
                 selectAutoCompleteAdapter()
-                binding.rvSearchCities.adapter = citiesInUserCountryAdapter
-                binding.rvSearchCities.visibility = View.VISIBLE
+                binding.rvCitiesInUserCountry.adapter = citiesInUserCountryAdapter
+                binding.rvCitiesInUserCountry.visibility = View.VISIBLE
                 binding.pbSearchCities.visibility = View.GONE
             } else {
                 handleErrorConnection(uiState.apiErrorMsg)

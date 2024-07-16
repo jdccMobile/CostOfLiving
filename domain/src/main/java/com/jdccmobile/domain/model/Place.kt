@@ -6,6 +6,7 @@ data class City(
     val cityName: String,
     val isFavorite: Boolean = false,
     val placeType: PlaceType = PlaceType.City,
+    val citiesInCountry: Int? = null,
 )
 
 data class Country(

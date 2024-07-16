@@ -13,6 +13,8 @@ data class CityDb(
     @ColumnInfo(name = "country_name") val countryName: String,
     @ColumnInfo(name = "is_favorite") val isFavorite: Boolean,
     @ColumnInfo(name = "place_type") val placeType: PlaceType,
+    @ColumnInfo(name = "cities_in_country") val citiesInCountry: Int? = null,
+
 )
 
 const val CITIES_TABLE = "cities_table"
@@ -23,6 +25,7 @@ fun List<CityDb>.toDomain(): List<City> = map { city ->
         cityName = city.cityName,
         countryName = city.countryName,
         isFavorite = city.isFavorite,
+        citiesInCountry = city.citiesInCountry,
     )
 }
 
@@ -33,6 +36,7 @@ fun List<City>.toDb() = this.map { city ->
         countryName = city.countryName,
         isFavorite = city.isFavorite,
         placeType = city.placeType,
+        citiesInCountry = this.size,
     )
 }
 
@@ -43,6 +47,7 @@ fun City.toDb() =
         countryName = countryName,
         isFavorite = isFavorite,
         placeType = placeType,
+        citiesInCountry = citiesInCountry,
     )
 
 fun CityDb.toDomain() =
@@ -52,4 +57,5 @@ fun CityDb.toDomain() =
         countryName = countryName,
         isFavorite = isFavorite,
         placeType = placeType,
+        citiesInCountry = citiesInCountry,
     )
