@@ -1,7 +1,7 @@
 package com.jdccmobile.domain.repository
 
 import com.jdccmobile.domain.model.City
-import com.jdccmobile.domain.model.Country
+import com.jdccmobile.domain.model.CityCost
 import com.jdccmobile.domain.model.ItemPrice
 
 interface PlaceRepository {
@@ -18,17 +18,21 @@ interface PlaceRepository {
 
     suspend fun updateCity(city: City)
 
-    suspend fun insertCountry(country: Country)
+//    suspend fun insertCountry(country: Country)
 
-    suspend fun getFavoriteCountries(): List<Country>
+    suspend fun getCityCostLocal(cityId: Int): CityCost?
 
-    suspend fun updateCountry(country: Country)
+    suspend fun insertCityCostLocal(cityCost: CityCost): Unit
 
+//    suspend fun updateCountry(country: Country)
+
+//    suspend fun getCityCostLocal(cityName: String, countryName: String): List<ItemPrice>
+
+//    suspend fun getCityCostLocal(cityName: String, countryName: String): CityCost
     // Remote
     suspend fun getCitiesListRemote(): List<City>
 
     // Todo asd utilizar un mismo metodo
-    suspend fun getCityCostRemote(cityName: String, countryName: String): List<ItemPrice>
+    suspend fun getCityCostRemote(cityName: String, countryName: String): CityCost
 
-    suspend fun getCountryCostRemote(countryName: String): List<ItemPrice>
 }

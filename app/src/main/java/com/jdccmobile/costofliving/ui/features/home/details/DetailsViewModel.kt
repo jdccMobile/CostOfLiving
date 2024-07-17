@@ -8,13 +8,12 @@ import androidx.lifecycle.viewModelScope
 import com.jdccmobile.costofliving.R
 import com.jdccmobile.costofliving.common.ResourceProvider
 import com.jdccmobile.costofliving.ui.models.ItemPriceUi
-import com.jdccmobile.costofliving.ui.utils.toDomain
 import com.jdccmobile.domain.model.City
-import com.jdccmobile.domain.model.ItemPrice
-import com.jdccmobile.domain.usecase.GetCityCostUseCase
+import com.jdccmobile.domain.model.CityCost
+import com.jdccmobile.domain.usecase.GetCityCostLocalUseCase
+import com.jdccmobile.domain.usecase.GetCityCostRemoteUseCase
 import com.jdccmobile.domain.usecase.GetCityDatabaseUseCase
-import com.jdccmobile.domain.usecase.GetCountryCostUseCase
-import com.jdccmobile.domain.usecase.InsertCityUseCase
+import com.jdccmobile.domain.usecase.InsertCityCostLocaleUseCase
 import com.jdccmobile.domain.usecase.UpdateCityUseCase
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
@@ -23,12 +22,14 @@ import kotlinx.coroutines.launch
 
 class DetailsViewModel(
     private val cityId: Int,
-    private val getCityCostUseCase: GetCityCostUseCase,
-    private val getCountryCostUseCase: GetCountryCostUseCase,
+    private val getCityCostRemoteUseCase: GetCityCostRemoteUseCase,
+//    private val getCountryCostUseCase: GetCountryCostUseCase,
     private val resourceProvider: ResourceProvider,
-    private val insertCityUseCase: InsertCityUseCase,
+//    private val insertCityUseCase: InsertCityUseCase,
     private val updateCityUseCase: UpdateCityUseCase,
     private val getCityDatabaseUseCase: GetCityDatabaseUseCase,
+    private val getCiyCostLocalUseCase: GetCityCostLocalUseCase,
+    private val insertCityCostLocaleUseCase: InsertCityCostLocaleUseCase,
 ) : ViewModel() {
     data class UiState(
         val cityId: Int,
@@ -43,46 +44,48 @@ class DetailsViewModel(
     private val _state = MutableStateFlow(UiState(cityId = cityId))
     val state: StateFlow<UiState> = _state.asStateFlow()
 
-    init {
+    init { initUi() }
+
+    private fun initUi() {
         viewModelScope.launch {
-            val city = getCityDatabaseUseCase(cityId)
-            _state.value = _state.value.copy(
-                cityName = city.cityName.replaceFirstChar { it.uppercase() },
-                countryName = city.countryName.replaceFirstChar { it.uppercase() },
-                isFavorite = city.isFavorite,
-            )
+            getCityInfo()
+            getCityCosts()
         }
-        refresh()
     }
 
-    private fun refresh() {
-        viewModelScope.launch {
-            createCostInfoList()
-        }
+    private suspend fun getCityInfo() {
+        val city = getCityDatabaseUseCase(cityId)
+        _state.value = _state.value.copy(
+            cityId = city.cityId,
+            cityName = city.cityName.replaceFirstChar { it.uppercase() },
+            countryName = city.countryName.replaceFirstChar { it.uppercase() },
+            isFavorite = city.isFavorite,
+        )
     }
 
     @Suppress("TooGenericExceptionCaught")
-    private suspend fun createCostInfoList() {
-        if (!_state.value.apiCallCompleted && _state.value.cityName.isNotEmpty() && _state.value.countryName.isNotEmpty()) {
-            val pricesList: List<ItemPriceUi> =
+    private suspend fun getCityCosts() {
+        val cityCostLocal = getCiyCostLocalUseCase(_state.value.cityId)
+        if (cityCostLocal != null) {
+            _state.value = _state.value.copy(
+                apiCallCompleted = true,
+                itemCostInfoList = cityCostLocal.toUi(),
+            )
+        } else {
+            val cityCostRemote: CityCost? =
                 try {
-                    getCityCostUseCase(
+                    getCityCostRemoteUseCase(
                         cityName = _state.value.cityName,
                         countryName = _state.value.countryName,
                     )
                 } catch (e: Exception) {
                     handleApiErrorMsg(e)
-                    emptyList()
+                    null
                 }
-                    .filter { // TODO improve this code
-                        it.name.contains("in City Center") || it.name.contains("Gasoline") ||
-                                it.name.contains("Dress") || it.name.contains("Fitness") ||
-                                it.name.contains("Gasoline") || it.name.contains("McMeal") ||
-                                it.name.contains("Coca-Cola")
-                    }.toUi()
+            cityCostRemote?.let { insertCityCostLocaleUseCase(it) }
             _state.value = _state.value.copy(
                 apiCallCompleted = true,
-                itemCostInfoList = pricesList,
+                itemCostInfoList = cityCostRemote.toUi(),
             )
         }
     }
@@ -110,16 +113,6 @@ class DetailsViewModel(
         }
     }
 
-//    private fun onAddCityToFavoritesClicked() {
-//        viewModelScope.launch {
-//            insertCityUseCase(
-//                city.copy(isFavorite = !city.isFavorite).toDomain(),
-//            ) // TODO revisar
-//                is PlaceUi.Country -> {
-//                }
-//        }
-//            _state.value = _state.value.copy(isFavorite = true)
-//    }
 
     private fun onFavoriteClicked() {
         viewModelScope.launch {
@@ -135,18 +128,69 @@ class DetailsViewModel(
     }
 }
 
-// TODO improve this code
-private fun List<ItemPrice>.toUi(): List<ItemPriceUi> = map {
-    ItemPriceUi(
-        name = it.name,
-        cost = it.cost,
-        imageId = when {
-            it.name.contains("in City Center") -> R.drawable.im_city_centre
-            it.name.contains("Gasoline") -> R.drawable.im_gasoline
-            it.name.contains("Dress") -> R.drawable.im_dress
-            it.name.contains("Fitness") -> R.drawable.im_fitness
-            it.name.contains("Coca-Cola") -> R.drawable.im_coca_cola
-            else -> R.drawable.im_mc_meal
-        },
+private fun CityCost?.toUi(): List<ItemPriceUi> = if (this != null) {
+    listOf(
+        ItemPriceUi(
+            name = "Price per square meter to Buy Apartment Outside of City Center",
+            cost = housePrice,
+            imageId = R.drawable.im_city_centre,
+        ),
+        ItemPriceUi(
+            name = "Gasoline, 1 liter",
+            cost = gasolinePrice,
+            imageId = R.drawable.im_gasoline,
+        ),
+        ItemPriceUi(
+            name = "Summer Dress in a Chain Store Like George, H&M, Zara, etc.",
+            cost = dressPrice,
+            imageId = R.drawable.im_dress,
+        ),
+        ItemPriceUi(
+            name = "Fitness Club, Monthly Fee for 1 Adult",
+            cost = gymPrice,
+            imageId = R.drawable.im_fitness,
+        ),
+        ItemPriceUi(
+            name = "Coca-Cola, 0.33 liter Bottle",
+            cost = cocaColaPrice,
+            imageId = R.drawable.im_coca_cola,
+        ),
+        ItemPriceUi(
+            name = "McMeal at McDonalds or Alternative Combo Meal",
+            cost = mcMealPrice,
+            imageId = R.drawable.im_mc_meal,
+        ),
     )
+} else {
+    emptyList()
 }
+
+//    ItemPriceUi(
+//        name = it.name,
+//        cost = it.cost,
+//        imageId = when {
+//            it.name.contains("in City Center") -> R.drawable.im_city_centre
+//            it.name.contains("Gasoline") -> R.drawable.im_gasoline
+//            it.name.contains("Dress") -> R.drawable.im_dress
+//            it.name.contains("Fitness") -> R.drawable.im_fitness
+//            it.name.contains("Coca-Cola") -> R.drawable.im_coca_cola
+//            else -> R.drawable.im_mc_meal
+//        },
+//    )
+
+
+//// TODO improve this code
+//private fun List<ItemPrice>.toUi(): List<ItemPriceUi> = map {
+//    ItemPriceUi(
+//        name = it.name,
+//        cost = it.cost,
+//        imageId = when {
+//            it.name.contains("in City Center") -> R.drawable.im_city_centre
+//            it.name.contains("Gasoline") -> R.drawable.im_gasoline
+//            it.name.contains("Dress") -> R.drawable.im_dress
+//            it.name.contains("Fitness") -> R.drawable.im_fitness
+//            it.name.contains("Coca-Cola") -> R.drawable.im_coca_cola
+//            else -> R.drawable.im_mc_meal
+//        },
+//    )
+//}

@@ -3,6 +3,7 @@ package com.jdccmobile.data.remote.models.cost
 import com.google.gson.annotations.SerializedName
 
 data class PriceResponse(
+    @SerializedName("city_id") val cityId: Int,
     @SerializedName("avg") val avg: Double,
     @SerializedName("category_id") val categoryId: Int,
     @SerializedName("category_name") val categoryName: String,

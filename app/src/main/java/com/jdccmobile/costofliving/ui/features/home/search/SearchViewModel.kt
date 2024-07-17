@@ -92,7 +92,7 @@ class SearchViewModel(
     }
 
     fun onCityClicked(city: City) {
-        _state.value = _state.value.copy(navigateTo = city)
+        _state.value = _state.value.copy(navigateTo = city) // Todo cambiar por city id
     }
 
     fun validateSearch(nameSearch: String) {

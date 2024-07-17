@@ -47,6 +47,7 @@ class DetailsFragment : Fragment() {
     }
 
     private fun updateUI(uiState: DetailsViewModel.UiState) {
+        Log.i("asd", "state" + uiState.toString())
         binding.tvCityName.text = uiState.cityName ?: uiState.countryName
         binding.tvCountryName.text = uiState.countryName
         Log.i("JD Details Fragment error", uiState.apiErrorMsg.toString())
@@ -54,6 +55,7 @@ class DetailsFragment : Fragment() {
             if (uiState.apiErrorMsg == null) {
                 binding.pbCostInfo.visibility = View.GONE
                 binding.rvCostItems.visibility = View.VISIBLE
+                Log.i("asd", uiState.itemCostInfoList.toString())
                 costInfoAdapter = CostInfoAdapter(
                     name = uiState.cityName ?: uiState.countryName,
                     costInfo = uiState.itemCostInfoList,

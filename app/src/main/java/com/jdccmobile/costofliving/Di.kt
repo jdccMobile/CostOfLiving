@@ -18,7 +18,7 @@ import com.jdccmobile.costofliving.ui.features.intro.IntroViewModel
 import com.jdccmobile.costofliving.ui.features.main.MainViewModel
 import com.jdccmobile.data.database.PlaceDatabase
 import com.jdccmobile.data.database.datasources.CityDbDataSource
-import com.jdccmobile.data.database.datasources.CountryDbDataSource
+import com.jdccmobile.data.database.datasources.CostLifeDbDataSource
 import com.jdccmobile.data.location.LocationDataSource
 import com.jdccmobile.data.location.PermissionChecker
 import com.jdccmobile.data.preferences.PreferencesDataSource
@@ -32,12 +32,13 @@ import com.jdccmobile.domain.repository.PlaceRepository
 import com.jdccmobile.domain.repository.PrefsRepository
 import com.jdccmobile.domain.usecase.GetCitiesFromUserCountryUseCase
 import com.jdccmobile.domain.usecase.GetCitiesRemoteUseCase
-import com.jdccmobile.domain.usecase.GetCityCostUseCase
+import com.jdccmobile.domain.usecase.GetCityCostLocalUseCase
+import com.jdccmobile.domain.usecase.GetCityCostRemoteUseCase
 import com.jdccmobile.domain.usecase.GetCityDatabaseUseCase
-import com.jdccmobile.domain.usecase.GetCountryCostUseCase
 import com.jdccmobile.domain.usecase.GetFavoriteCitiesUseCase
 import com.jdccmobile.domain.usecase.GetUserCountryPrefsUseCase
 import com.jdccmobile.domain.usecase.InsertCitiesFromUserCountryUseCase
+import com.jdccmobile.domain.usecase.InsertCityCostLocaleUseCase
 import com.jdccmobile.domain.usecase.InsertCityUseCase
 import com.jdccmobile.domain.usecase.UpdateCityUseCase
 import org.koin.android.ext.koin.androidApplication
@@ -87,7 +88,7 @@ private val dataModule = module {
     factoryOf(::PreferencesDataSource)
     factoryOf(::PrefsRepositoryImpl) bind PrefsRepository::class
     factoryOf(::CityDbDataSource)
-    factoryOf(::CountryDbDataSource)
+    factoryOf(::CostLifeDbDataSource)
     single<RetrofitService> { RetrofitServiceFactory.makeRetrofitService() }
     factory<PlaceRemoteDataSource> { PlaceRemoteDataSource(get(named("apiKey")), get()) }
     factoryOf(::PlaceRepositoryImpl) bind PlaceRepository::class
@@ -106,14 +107,15 @@ private val dataModule = module {
 private val domainModule = module {
     factoryOf(::GetUserCountryPrefsUseCase)
     factoryOf(::GetCitiesRemoteUseCase)
-    factoryOf(::GetCityCostUseCase)
-    factoryOf(::GetCountryCostUseCase)
+    factoryOf(::GetCityCostRemoteUseCase)
     factoryOf(::InsertCityUseCase)
     factoryOf(::UpdateCityUseCase)
     factoryOf(::GetFavoriteCitiesUseCase)
     factoryOf(::InsertCitiesFromUserCountryUseCase)
     factoryOf(::GetCityDatabaseUseCase)
     factoryOf(::GetCitiesFromUserCountryUseCase)
+    factoryOf(::GetCityCostLocalUseCase)
+    factoryOf(::InsertCityCostLocaleUseCase)
 }
 
 private const val API_KEY_NAMED = "apiKey"
