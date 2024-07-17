@@ -96,7 +96,7 @@ class SearchViewModel(
     }
 
     fun validateSearch(nameSearch: String) {
-        if (_state.value.citiesInUserCountry.any {
+        if (_state.value.citiesInUserCountry.any { // todo cambiar por un get de toda la base de datos
                 it.cityName.equals(nameSearch, ignoreCase = true)
             }
         ) {
