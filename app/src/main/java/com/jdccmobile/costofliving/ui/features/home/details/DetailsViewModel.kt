@@ -82,6 +82,7 @@ class DetailsViewModel(
                     handleApiErrorMsg(e)
                     null
                 }
+            Log.d("JD details VM", "API call getCityCostRemote: $cityCostRemote")
             cityCostRemote?.let { insertCityCostLocaleUseCase(it) }
             _state.value = _state.value.copy(
                 apiCallCompleted = true,
