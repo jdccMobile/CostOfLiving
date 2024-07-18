@@ -3,7 +3,7 @@ package com.jdccmobile.domain.repository
 import com.jdccmobile.domain.model.City
 import com.jdccmobile.domain.model.CityCost
 
-interface PlaceRepository {
+interface CityRepository {
     // Local
     suspend fun insertCity(city: City)
 

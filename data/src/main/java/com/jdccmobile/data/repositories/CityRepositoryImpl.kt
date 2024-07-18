@@ -5,13 +5,13 @@ import com.jdccmobile.data.database.datasources.CostLifeDbDataSource
 import com.jdccmobile.data.remote.datasources.PlaceRemoteDataSource
 import com.jdccmobile.domain.model.City
 import com.jdccmobile.domain.model.CityCost
-import com.jdccmobile.domain.repository.PlaceRepository
+import com.jdccmobile.domain.repository.CityRepository
 
-class PlaceRepositoryImpl(
+class CityRepositoryImpl(
     private val cityDbDataSource: CityDbDataSource,
     private val costLifeDbDataSource: CostLifeDbDataSource,
     private val remoteDataSource: PlaceRemoteDataSource,
-) : PlaceRepository {
+) : CityRepository {
     // Local
     // City
     override suspend fun insertCity(city: City) {

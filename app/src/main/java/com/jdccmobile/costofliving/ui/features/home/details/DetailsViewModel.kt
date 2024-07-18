@@ -12,8 +12,8 @@ import com.jdccmobile.domain.model.City
 import com.jdccmobile.domain.model.CityCost
 import com.jdccmobile.domain.usecase.GetCityCostLocalUseCase
 import com.jdccmobile.domain.usecase.GetCityCostRemoteUseCase
-import com.jdccmobile.domain.usecase.GetCityDatabaseUseCase
-import com.jdccmobile.domain.usecase.InsertCityCostLocaleUseCase
+import com.jdccmobile.domain.usecase.GetCityLocalUseCase
+import com.jdccmobile.domain.usecase.InsertCityCostLocalUseCase
 import com.jdccmobile.domain.usecase.UpdateCityUseCase
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
@@ -27,9 +27,9 @@ class DetailsViewModel(
     private val resourceProvider: ResourceProvider,
 //    private val insertCityUseCase: InsertCityUseCase,
     private val updateCityUseCase: UpdateCityUseCase,
-    private val getCityDatabaseUseCase: GetCityDatabaseUseCase,
+    private val getCityLocalUseCase: GetCityLocalUseCase,
     private val getCiyCostLocalUseCase: GetCityCostLocalUseCase,
-    private val insertCityCostLocaleUseCase: InsertCityCostLocaleUseCase,
+    private val insertCityCostLocalUseCase: InsertCityCostLocalUseCase,
 ) : ViewModel() {
     data class UiState(
         val cityId: Int,
@@ -56,7 +56,7 @@ class DetailsViewModel(
     }
 
     private suspend fun getCityInfo() {
-        val city = getCityDatabaseUseCase(cityId)
+        val city = getCityLocalUseCase(cityId)
         _state.value = _state.value.copy(
             cityId = city.cityId,
             cityName = city.cityName.replaceFirstChar { it.uppercase() },
@@ -85,7 +85,7 @@ class DetailsViewModel(
                     null
                 }
             Log.d("JD details VM", "API call getCityCostRemote: $cityCostRemote")
-            cityCostRemote?.let { insertCityCostLocaleUseCase(it) }
+            cityCostRemote?.let { insertCityCostLocalUseCase(it) }
             _state.value = _state.value.copy(
                 apiCallCompleted = true,
                 itemCostInfoList = cityCostRemote.toUi(),

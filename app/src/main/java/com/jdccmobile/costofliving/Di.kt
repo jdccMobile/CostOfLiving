@@ -25,20 +25,20 @@ import com.jdccmobile.data.preferences.PreferencesDataSource
 import com.jdccmobile.data.remote.RetrofitService
 import com.jdccmobile.data.remote.RetrofitServiceFactory
 import com.jdccmobile.data.remote.datasources.PlaceRemoteDataSource
-import com.jdccmobile.data.repositories.PlaceRepositoryImpl
+import com.jdccmobile.data.repositories.CityRepositoryImpl
 import com.jdccmobile.data.repositories.PrefsRepositoryImpl
 import com.jdccmobile.data.repositories.RegionRepository
-import com.jdccmobile.domain.repository.PlaceRepository
+import com.jdccmobile.domain.repository.CityRepository
 import com.jdccmobile.domain.repository.PrefsRepository
 import com.jdccmobile.domain.usecase.GetCitiesFromUserCountryUseCase
 import com.jdccmobile.domain.usecase.GetCitiesRemoteUseCase
 import com.jdccmobile.domain.usecase.GetCityCostLocalUseCase
 import com.jdccmobile.domain.usecase.GetCityCostRemoteUseCase
-import com.jdccmobile.domain.usecase.GetCityDatabaseUseCase
+import com.jdccmobile.domain.usecase.GetCityLocalUseCase
 import com.jdccmobile.domain.usecase.GetFavoriteCitiesUseCase
 import com.jdccmobile.domain.usecase.GetUserCountryPrefsUseCase
 import com.jdccmobile.domain.usecase.InsertCitiesFromUserCountryUseCase
-import com.jdccmobile.domain.usecase.InsertCityCostLocaleUseCase
+import com.jdccmobile.domain.usecase.InsertCityCostLocalUseCase
 import com.jdccmobile.domain.usecase.InsertCityUseCase
 import com.jdccmobile.domain.usecase.UpdateCityUseCase
 import org.koin.android.ext.koin.androidApplication
@@ -91,7 +91,7 @@ private val dataModule = module {
     factoryOf(::CostLifeDbDataSource)
     single<RetrofitService> { RetrofitServiceFactory.makeRetrofitService() }
     factory<PlaceRemoteDataSource> { PlaceRemoteDataSource(get(named("apiKey")), get()) }
-    factoryOf(::PlaceRepositoryImpl) bind PlaceRepository::class
+    factoryOf(::CityRepositoryImpl) bind CityRepository::class
 
     single {
         Room.databaseBuilder(
@@ -112,10 +112,10 @@ private val domainModule = module {
     factoryOf(::UpdateCityUseCase)
     factoryOf(::GetFavoriteCitiesUseCase)
     factoryOf(::InsertCitiesFromUserCountryUseCase)
-    factoryOf(::GetCityDatabaseUseCase)
+    factoryOf(::GetCityLocalUseCase)
     factoryOf(::GetCitiesFromUserCountryUseCase)
     factoryOf(::GetCityCostLocalUseCase)
-    factoryOf(::InsertCityCostLocaleUseCase)
+    factoryOf(::InsertCityCostLocalUseCase)
 }
 
 private const val API_KEY_NAMED = "apiKey"

@@ -1,9 +1,9 @@
 package com.jdccmobile.domain.usecase
 
 import com.jdccmobile.domain.model.City
-import com.jdccmobile.domain.repository.PlaceRepository
+import com.jdccmobile.domain.repository.CityRepository
 
-class InsertCityUseCase(private val placeRepository: PlaceRepository) {
+class InsertCityUseCase(private val cityRepository: CityRepository) {
     suspend operator fun invoke(city: City) =
-        placeRepository.insertCity(city)
+        cityRepository.insertCity(city)
 }
