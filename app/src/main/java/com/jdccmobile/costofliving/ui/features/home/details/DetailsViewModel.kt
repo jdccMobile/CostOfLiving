@@ -120,11 +120,12 @@ class DetailsViewModel(
             updateCityUseCase(
                 City(
                     cityId = _state.value.cityId,
-                    countryName = _state.value.cityName,
-                    cityName = _state.value.countryName,
+                    cityName = _state.value.cityName,
+                    countryName = _state.value.countryName,
                     isFavorite = !_state.value.isFavorite,
                 ),
             )
+            _state.value = _state.value.copy(isFavorite = !_state.value.isFavorite)
         }
     }
 }

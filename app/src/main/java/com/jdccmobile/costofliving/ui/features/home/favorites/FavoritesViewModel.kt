@@ -24,10 +24,10 @@ class FavoritesViewModel(
     val state: StateFlow<UiState> = _state.asStateFlow()
 
     init {
-        refresh()
+        initUi()
     }
 
-    private fun refresh() {
+    private fun initUi() {
         viewModelScope.launch {
             getFavoriteCities()
         }
@@ -35,7 +35,6 @@ class FavoritesViewModel(
 
     private suspend fun getFavoriteCities() {
         _state.value = _state.value.copy(favoriteCities = getFavoriteCitiesUseCase().toCityUi())
-        Log.i("asd", _state.value.toString())
     }
 
     fun onCityClicked(city: City) {

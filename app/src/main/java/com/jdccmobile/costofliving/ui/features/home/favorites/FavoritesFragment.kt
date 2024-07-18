@@ -10,10 +10,12 @@ import androidx.compose.foundation.Image
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -43,6 +45,7 @@ import androidx.navigation.fragment.findNavController
 import coil.compose.rememberAsyncImagePainter
 import com.jdccmobile.costofliving.R
 import com.jdccmobile.costofliving.common.getCountryCode
+import com.jdccmobile.costofliving.compose.theme.IconDimens
 import com.jdccmobile.costofliving.compose.theme.PaddingDimens
 import com.jdccmobile.costofliving.compose.theme.primary
 import com.jdccmobile.costofliving.compose.theme.white
@@ -79,7 +82,6 @@ class FavoritesFragment : Fragment() {
 @Composable
 private fun FavoritesFragment(viewModel: FavoritesViewModel, navigateToDetails: (Int) -> Unit) {
     val uiState by viewModel.state.collectAsState()
-    Log.i("asd", "uiState: $uiState")
     uiState.navigateTo?.let { navigateToDetails(it) }
 
     FavoritesContent(
@@ -145,7 +147,7 @@ fun PlaceCard(
     countryCode: String?,
     onClick: () -> Unit,
 ) {
-    Log.i("jdc", "city: $cityName, country: $countryName")
+    Log.i("asd", "*******city: $cityName, country: $countryName")
     Card(
         modifier = Modifier
             .fillMaxWidth()
@@ -170,23 +172,28 @@ fun PlaceCard(
                     "https://flagsapi.com/$countryCode/flat/64.png",
                 ),
                 contentDescription = stringResource(R.string.flag),
-                modifier = Modifier.padding(horizontal = PaddingDimens.extraLarge),
+                modifier = Modifier
+                    .padding(horizontal = PaddingDimens.extraLarge)
+                    .size(IconDimens.standard),
             )
 
             Text(
-                text = cityName.ifEmpty { countryName },
+                text = cityName,
                 fontSize = 24.sp,
                 fontWeight = FontWeight.Bold,
                 color = primary,
                 maxLines = 1,
                 overflow = TextOverflow.Ellipsis,
-                modifier = Modifier.weight(1f),
             )
+
+            Spacer(modifier = Modifier.weight(1f))
 
             Icon(
                 painter = painterResource(R.drawable.ic_navigate_next),
                 contentDescription = stringResource(R.string.navigate),
-                modifier = Modifier.padding(horizontal = PaddingDimens.extraLarge),
+                modifier = Modifier
+                    .padding(horizontal = PaddingDimens.extraLarge)
+                    .size(IconDimens.standard),
                 tint = primary,
             )
         }
