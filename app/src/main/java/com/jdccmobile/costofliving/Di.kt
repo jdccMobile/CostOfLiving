@@ -16,9 +16,9 @@ import com.jdccmobile.costofliving.ui.features.home.search.SearchViewModel
 import com.jdccmobile.costofliving.ui.features.intro.IntroSlidesProvider
 import com.jdccmobile.costofliving.ui.features.intro.IntroViewModel
 import com.jdccmobile.costofliving.ui.features.main.MainViewModel
-import com.jdccmobile.data.database.PlaceDatabase
-import com.jdccmobile.data.database.datasources.CityDbDataSource
-import com.jdccmobile.data.database.datasources.CostLifeDbDataSource
+import com.jdccmobile.data.database.CityDatabase
+import com.jdccmobile.data.database.datasources.CityLocalDataSource
+import com.jdccmobile.data.database.datasources.CostLifeLocalDataSource
 import com.jdccmobile.data.location.LocationDataSource
 import com.jdccmobile.data.location.PermissionChecker
 import com.jdccmobile.data.preferences.PreferencesDataSource
@@ -87,8 +87,8 @@ private val dataModule = module {
 
     factoryOf(::PreferencesDataSource)
     factoryOf(::PrefsRepositoryImpl) bind PrefsRepository::class
-    factoryOf(::CityDbDataSource)
-    factoryOf(::CostLifeDbDataSource)
+    factoryOf(::CityLocalDataSource)
+    factoryOf(::CostLifeLocalDataSource)
     single<RetrofitService> { RetrofitServiceFactory.makeRetrofitService() }
     factory<PlaceRemoteDataSource> { PlaceRemoteDataSource(get(named("apiKey")), get()) }
     factoryOf(::CityRepositoryImpl) bind CityRepository::class
@@ -96,12 +96,12 @@ private val dataModule = module {
     single {
         Room.databaseBuilder(
             androidContext(),
-            PlaceDatabase::class.java,
+            CityDatabase::class.java,
             DATABASE_NAME,
         ).build()
     }
-    single { get<PlaceDatabase>().getCityDao() }
-    single { get<PlaceDatabase>().getCountryDao() }
+    single { get<CityDatabase>().getCityDao() }
+    single { get<CityDatabase>().getCountryDao() }
 }
 
 private val domainModule = module {

@@ -12,7 +12,7 @@ import com.jdccmobile.data.database.costlifedb.CityCostDb
     version = 1,
     exportSchema = false,
 )
-abstract class PlaceDatabase : RoomDatabase() {
+abstract class CityDatabase : RoomDatabase() {
     abstract fun getCityDao(): CityDao
 
     abstract fun getCountryDao(): CityCostDao

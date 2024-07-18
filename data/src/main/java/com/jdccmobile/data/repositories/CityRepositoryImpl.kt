@@ -1,46 +1,46 @@
 package com.jdccmobile.data.repositories
 
-import com.jdccmobile.data.database.datasources.CityDbDataSource
-import com.jdccmobile.data.database.datasources.CostLifeDbDataSource
+import com.jdccmobile.data.database.datasources.CityLocalDataSource
+import com.jdccmobile.data.database.datasources.CostLifeLocalDataSource
 import com.jdccmobile.data.remote.datasources.PlaceRemoteDataSource
 import com.jdccmobile.domain.model.City
 import com.jdccmobile.domain.model.CityCost
 import com.jdccmobile.domain.repository.CityRepository
 
 class CityRepositoryImpl(
-    private val cityDbDataSource: CityDbDataSource,
-    private val costLifeDbDataSource: CostLifeDbDataSource,
+    private val cityLocalDataSource: CityLocalDataSource,
+    private val costLifeLocalDataSource: CostLifeLocalDataSource,
     private val remoteDataSource: PlaceRemoteDataSource,
 ) : CityRepository {
     // Local
     // City
     override suspend fun insertCity(city: City) {
-        cityDbDataSource.insertCity(city)
+        cityLocalDataSource.insertCity(city)
     }
 
     override suspend fun insertCitiesFromUserCountry(cities: List<City>) {
-        cityDbDataSource.insertCitiesFromUserCountry(cities)
+        cityLocalDataSource.insertCitiesFromUserCountry(cities)
     }
 
     override suspend fun getCitiesFromUserCountry(countryName: String): List<City> =
-        cityDbDataSource.getCitiesFromUserCountry(countryName)
+        cityLocalDataSource.getCitiesFromUserCountry(countryName)
 
     override suspend fun getCity(cityId: Int): City {
-        return cityDbDataSource.getCity(cityId)
+        return cityLocalDataSource.getCity(cityId)
     }
 
     override suspend fun getFavoriteCities(): List<City> =
-        cityDbDataSource.getFavoriteCities()
+        cityLocalDataSource.getFavoriteCities()
 
     override suspend fun updateCity(city: City) {
-        cityDbDataSource.updateCity(city)
+        cityLocalDataSource.updateCity(city)
     }
 
     override suspend fun getCityCostLocal(cityId: Int): CityCost? =
-        costLifeDbDataSource.getCityCostLocal(cityId)
+        costLifeLocalDataSource.getCityCostLocal(cityId)
 
     override suspend fun insertCityCostLocal(cityCost: CityCost) {
-        costLifeDbDataSource.insertCityCost(cityCost)
+        costLifeLocalDataSource.insertCityCost(cityCost)
     }
 
     // Remote

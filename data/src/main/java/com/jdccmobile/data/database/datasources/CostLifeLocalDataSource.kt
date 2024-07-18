@@ -5,7 +5,7 @@ import com.jdccmobile.data.database.costlifedb.toDb
 import com.jdccmobile.data.database.costlifedb.toDomain
 import com.jdccmobile.domain.model.CityCost
 
-class CostLifeDbDataSource(private val cityCostDao: CityCostDao) {
+class CostLifeLocalDataSource(private val cityCostDao: CityCostDao) {
     suspend fun insertCityCost(cityCost: CityCost): Unit =
         cityCostDao.insertCityCost(cityCost.toDb())
 
