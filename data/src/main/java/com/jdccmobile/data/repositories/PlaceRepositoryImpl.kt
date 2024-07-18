@@ -36,11 +36,6 @@ class PlaceRepositoryImpl(
         cityDbDataSource.updateCity(city)
     }
 
-    // Country
-//    override suspend fun insertCountry(country: Country) {
-//        costLifeDbDataSource.insertCountry(country)
-//    }
-
     override suspend fun getCityCostLocal(cityId: Int): CityCost? =
         costLifeDbDataSource.getCityCostLocal(cityId)
 
@@ -48,24 +43,9 @@ class PlaceRepositoryImpl(
         costLifeDbDataSource.insertCityCost(cityCost)
     }
 
-//    override suspend fun updateCountry(country: Country) {
-//        costLifeDbDataSource.updateFavoriteCountry(country)
-//    }
-//
-//    override suspend fun getCityCostLocal(cityName: String, countryName: String): List<ItemPrice> {
-//        costLifeDbDataSource.
-//    }
-
-//    override suspend fun checkIsFavoritePlace(place: Place): Boolean =
-//        localDataSource.checkIsFavoritePlace(place)
-
     // Remote
     override suspend fun getCitiesListRemote(): List<City> = remoteDataSource.getCitiesList()
 
-    // Todo asd unificar los dos ultimos
     override suspend fun getCityCostRemote(cityName: String, countryName: String): CityCost =
         remoteDataSource.getCityCost(cityName, countryName)
-
-//    override suspend fun getCountryCostRemote(countryName: String): CityCost =
-//        remoteDataSource.getCountryCost(countryName)
 }

@@ -1,6 +1,5 @@
 package com.jdccmobile.costofliving.ui.features.home.search
 
-import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.jdccmobile.costofliving.R
@@ -82,7 +81,6 @@ class SearchViewModel(
             }
             _state.value = _state.value.copy(apiCallCompleted = true)
             _state.value = _state.value.copy(citiesInUserCountry = citiesInUserCountry)
-            Log.i("jdc", citiesInUserCountry.size.toString())
         }
     }
 

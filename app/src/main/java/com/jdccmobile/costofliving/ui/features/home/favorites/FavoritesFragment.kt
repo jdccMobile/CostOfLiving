@@ -2,7 +2,6 @@ package com.jdccmobile.costofliving.ui.features.home.favorites
 
 import android.annotation.SuppressLint
 import android.os.Bundle
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -117,12 +116,9 @@ private fun FavoritesContent(
                 .padding(top = PaddingDimens.extraLarge)
                 .weight(1f),
         ) {
-            Log.i("asd", "placeList: $placeList")
             items(placeList) { city ->
-                Log.i("asd", "city: $city")
                 PlaceCard(
                     cityName = city.cityName,
-                    countryName = city.countryName,
                     countryCode = getCountryCode(city.countryName),
                     onClick = {
                         onPlaceClicked(
@@ -143,11 +139,9 @@ private fun FavoritesContent(
 @Composable
 fun PlaceCard(
     cityName: String,
-    countryName: String,
     countryCode: String?,
     onClick: () -> Unit,
 ) {
-    Log.i("asd", "*******city: $cityName, country: $countryName")
     Card(
         modifier = Modifier
             .fillMaxWidth()
@@ -205,7 +199,6 @@ fun PlaceCard(
 fun CountryCardPreview() {
     PlaceCard(
         cityName = "Santander",
-        countryName = "Spain",
         countryCode = "SP",
         onClick = {},
     )

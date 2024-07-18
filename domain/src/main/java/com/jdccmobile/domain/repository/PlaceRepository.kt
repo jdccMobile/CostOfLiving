@@ -17,20 +17,12 @@ interface PlaceRepository {
 
     suspend fun updateCity(city: City)
 
-//    suspend fun insertCountry(country: Country)
-
     suspend fun getCityCostLocal(cityId: Int): CityCost?
 
-    suspend fun insertCityCostLocal(cityCost: CityCost): Unit
+    suspend fun insertCityCostLocal(cityCost: CityCost)
 
-//    suspend fun updateCountry(country: Country)
-
-//    suspend fun getCityCostLocal(cityName: String, countryName: String): List<ItemPrice>
-
-//    suspend fun getCityCostLocal(cityName: String, countryName: String): CityCost
     // Remote
     suspend fun getCitiesListRemote(): List<City>
 
-    // Todo asd utilizar un mismo metodo
     suspend fun getCityCostRemote(cityName: String, countryName: String): CityCost
 }

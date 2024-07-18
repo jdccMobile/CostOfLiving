@@ -14,7 +14,4 @@ interface CityCostDao {
 
     @Query("SELECT * FROM cost_life_table WHERE cityId = :cityId")
     suspend fun getCityCostLocal(cityId: Int): CityCostDb?
-
-//    @Update
-//    suspend fun updateFavoriteCountry(country: CostLifeDb)
 }

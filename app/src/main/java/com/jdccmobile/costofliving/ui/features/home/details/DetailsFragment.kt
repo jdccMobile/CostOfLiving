@@ -1,7 +1,6 @@
 package com.jdccmobile.costofliving.ui.features.home.details
 
 import android.os.Bundle
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -51,15 +50,12 @@ class DetailsFragment : Fragment() {
     }
 
     private fun updateUI(uiState: DetailsViewModel.UiState) {
-        Log.i("asd", "state" + uiState.toString())
         binding.tvCityName.text = uiState.cityName
         binding.tvCountryName.text = uiState.countryName
-        Log.i("JD Details Fragment error", uiState.apiErrorMsg.toString())
         if (uiState.apiCallCompleted) {
             if (uiState.apiErrorMsg == null) {
                 binding.pbCostInfo.visibility = View.GONE
                 binding.rvCostItems.visibility = View.VISIBLE
-                Log.i("asd", uiState.itemCostInfoList.toString())
                 costInfoAdapter = CostInfoAdapter(
                     name = uiState.cityName,
                     costInfo = uiState.itemCostInfoList,

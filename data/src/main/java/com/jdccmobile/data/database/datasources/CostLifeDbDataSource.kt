@@ -11,7 +11,4 @@ class CostLifeDbDataSource(private val cityCostDao: CityCostDao) {
 
     suspend fun getCityCostLocal(cityId: Int): CityCost? =
         cityCostDao.getCityCostLocal(cityId)?.toDomain()
-
-//    suspend fun updateFavoriteCountry(country: Country): Unit =
-//        costLifeDao.updateFavoriteCountry(country.toDb())
 }
