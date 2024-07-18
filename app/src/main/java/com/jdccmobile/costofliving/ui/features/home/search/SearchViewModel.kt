@@ -1,7 +1,10 @@
 package com.jdccmobile.costofliving.ui.features.home.search
 
+import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import arrow.core.Either
+import arrow.core.right
 import com.jdccmobile.costofliving.R
 import com.jdccmobile.costofliving.common.ResourceProvider
 import com.jdccmobile.costofliving.ui.models.AutoCompleteSearchUi
@@ -60,22 +63,26 @@ class SearchViewModel(
                 citiesInUserCountry.isEmpty() ||
                 citiesInUserCountry.size != citiesInUserCountry[0].citiesInCountry
             ) {
-                try {
-                    citiesInUserCountry = getCitiesRemoteUseCase().filter {
-                        it.countryName == userCountryName
-                    }.sortedBy { it.cityName }
-                    insertCitiesFromUserCountryUseCase(citiesInUserCountry)
-                } catch (e: Exception) {
-                    if (e.message?.contains("429") == true) {
-                        _state.value =
-                            _state.value.copy(
-                                apiErrorMsg = resourceProvider.getString(R.string.http_429),
-                            )
-                    } else {
-                        _state.value =
-                            _state.value.copy(
-                                apiErrorMsg = resourceProvider.getString(R.string.connection_error),
-                            )
+                when (val citiesRemoteResult = getCitiesRemoteUseCase()) {
+                    is Either.Left -> {
+                        Log.i("TAG", "getCitiesInCountry: ${citiesRemoteResult.value.message}")
+                        if (citiesRemoteResult.value.message?.contains("429") == true) {
+                            _state.value =
+                                _state.value.copy(
+                                    apiErrorMsg = resourceProvider.getString(R.string.http_429),
+                                )
+                        } else {
+                            _state.value =
+                                _state.value.copy(
+                                    apiErrorMsg = resourceProvider.getString(R.string.connection_error),
+                                )
+                        }
+                    }
+                    is Either.Right -> {
+                        citiesInUserCountry = citiesRemoteResult.value.filter {
+                            it.countryName == userCountryName
+                        }.sortedBy { it.cityName }
+                        insertCitiesFromUserCountryUseCase(citiesInUserCountry)
                     }
                 }
             }
@@ -84,12 +91,8 @@ class SearchViewModel(
         }
     }
 
-    fun changeSearchByCity(isSearchByCity: Boolean) {
-        _state.value = _state.value.copy(isSearchByCity = isSearchByCity)
-    }
-
     fun onCityClicked(city: City) {
-        _state.value = _state.value.copy(navigateTo = city) // Todo cambiar por city id
+        _state.value = _state.value.copy(navigateTo = city)
     }
 
     fun validateSearch(nameSearch: String) {
@@ -104,38 +107,48 @@ class SearchViewModel(
             )
         } else {
             viewModelScope.launch {
-                try {
-                    val allCities = getCitiesRemoteUseCase()
-                    if (allCities.any {
-                            it.cityName.equals(nameSearch, ignoreCase = true)
+                when (val citiesRemoteResult = getCitiesRemoteUseCase()) {
+                    is Either.Left -> {
+                        if (citiesRemoteResult.value.message?.contains("429") == true) {
+                            _state.value =
+                                _state.value.copy(
+                                    apiErrorMsg = resourceProvider.getString(R.string.http_429),
+                                )
+                        } else {
+                            _state.value =
+                                _state.value.copy(
+                                    errorMsg = "$nameSearch ${
+                                        resourceProvider.getString(R.string.does_not_exist)
+                                    }",
+                                )
                         }
-                    ) {
-                        val citySearched = allCities.find {
-                            it.cityName.equals(nameSearch, ignoreCase = true)
-                        }
-                        if (citySearched != null) {
-                            insertCityUseCase(citySearched)
-                            _state.value = _state.value.copy(
-                                navigateTo = citySearched,
-                            )
-                        }
-                    } else {
-                        _state.value =
-                            _state.value.copy(
-                                errorMsg =
+
+                    }
+
+                    is Either.Right -> {
+                        if (citiesRemoteResult.value.any {
+                                it.cityName.equals(nameSearch, ignoreCase = true)
+                            }
+                        ) {
+                            val citySearched = citiesRemoteResult.value.find {
+                                it.cityName.equals(nameSearch, ignoreCase = true)
+                            }
+                            if (citySearched != null) {
+                                insertCityUseCase(citySearched)
+                                _state.value = _state.value.copy(
+                                    navigateTo = citySearched,
+                                )
+                            }
+                        } else {
+                            _state.value =
+                                _state.value.copy(
+                                    errorMsg =
                                     "$nameSearch ${
                                         resourceProvider.getString(R.string.does_not_exist)
                                     }",
-                            )
+                                )
+                        }
                     }
-                } catch (e: Exception) {
-                    // todo tener en cuenta error de servidor por muchas peticiones
-                    _state.value =
-                        _state.value.copy(
-                            errorMsg = "$nameSearch ${
-                                resourceProvider.getString(R.string.does_not_exist)
-                            }",
-                        )
                 }
             }
         }

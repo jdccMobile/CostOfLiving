@@ -8,3 +8,8 @@ java {
     sourceCompatibility = JavaVersion.VERSION_17
     targetCompatibility = JavaVersion.VERSION_17
 }
+
+dependencies {
+    // Either
+    implementation("io.arrow-kt:arrow-core:1.1.2")
+}

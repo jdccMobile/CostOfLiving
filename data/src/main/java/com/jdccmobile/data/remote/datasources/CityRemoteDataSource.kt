@@ -1,5 +1,8 @@
 package com.jdccmobile.data.remote.datasources
 
+import arrow.core.Either
+import arrow.core.Either.Companion.catch
+import arrow.core.handleError
 import com.jdccmobile.data.remote.RetrofitService
 import com.jdccmobile.data.remote.models.city.CitiesListResponseResult
 import com.jdccmobile.data.remote.models.cost.CityCostResponseResult
@@ -7,9 +10,8 @@ import com.jdccmobile.domain.model.City
 import com.jdccmobile.domain.model.CityCost
 
 class PlaceRemoteDataSource(private val apiKey: String, private val service: RetrofitService) {
-    suspend fun getCitiesList(): List<City> = service.getCities(
-        apiKey,
-    ).toDomain()
+    suspend fun getCitiesList(): Either<Throwable, List<City>> =
+        catch { service.getCities(apiKey).toDomain() }
 
     suspend fun getCityCost(cityName: String, countryName: String): CityCost =
         service.getCityCost(apiKey, cityName, countryName).toDomain()

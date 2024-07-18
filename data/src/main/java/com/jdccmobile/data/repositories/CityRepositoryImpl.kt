@@ -1,5 +1,6 @@
 package com.jdccmobile.data.repositories
 
+import arrow.core.Either
 import com.jdccmobile.data.database.datasources.CityLocalDataSource
 import com.jdccmobile.data.database.datasources.CostLifeLocalDataSource
 import com.jdccmobile.data.remote.datasources.PlaceRemoteDataSource
@@ -44,7 +45,8 @@ class CityRepositoryImpl(
     }
 
     // Remote
-    override suspend fun getCitiesListRemote(): List<City> = remoteDataSource.getCitiesList()
+    override suspend fun getCitiesListRemote(): Either<Throwable, List<City>> =
+        remoteDataSource.getCitiesList()
 
     override suspend fun getCityCostRemote(cityName: String, countryName: String): CityCost =
         remoteDataSource.getCityCost(cityName, countryName)
