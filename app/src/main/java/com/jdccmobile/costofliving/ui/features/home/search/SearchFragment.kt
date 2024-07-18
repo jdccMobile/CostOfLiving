@@ -15,7 +15,6 @@ import androidx.navigation.fragment.findNavController
 import com.jdccmobile.costofliving.R
 import com.jdccmobile.costofliving.databinding.FragmentSearchBinding
 import com.jdccmobile.costofliving.ui.models.AutoCompleteSearchUi
-import com.jdccmobile.costofliving.ui.models.CityUi
 import com.jdccmobile.domain.model.City
 import kotlinx.coroutines.launch
 import org.koin.androidx.viewmodel.ext.android.viewModel
@@ -30,9 +29,10 @@ class SearchFragment : Fragment() {
     private lateinit var citiesInUserCountryAdapter: CitiesUserCountryAdapter
     private lateinit var citiesAutoComplete: List<AutoCompleteSearchUi>
     private lateinit var citiesAutoCompleteSearchAdapter: AutoCompleteSearchAdapter
-    private lateinit var countriesAutoComplete:
-        List<AutoCompleteSearchUi>
+    private lateinit var countriesAutoComplete: List<AutoCompleteSearchUi>
     private lateinit var countriesAutoCompleteSearchAdapter: AutoCompleteSearchAdapter
+
+
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -57,6 +57,7 @@ class SearchFragment : Fragment() {
         val searchByCountry = getString(R.string.cities_in) + " " + uiState.countryName
         binding.tvSubtitle.text = searchByCountry
         isSearchByCity = uiState.isSearchByCity
+
 
         uiState.navigateTo?.let { navigateToDetails(it) }
         uiState.errorMsg?.let { showErrorMsg(it) }
@@ -127,7 +128,7 @@ class SearchFragment : Fragment() {
     }
 
     private fun navigateToDetails(place: City) {
-        binding.atSearch.setText("")
+        binding.atSearch.setText(getString(R.string.empty_string))
         hideKeyboard()
         val navAction = SearchFragmentDirections.actionSearchToDetails(place.cityId)
         findNavController().navigate(navAction)
@@ -135,7 +136,7 @@ class SearchFragment : Fragment() {
     }
 
     private fun showErrorMsg(msg: String) {
-        binding.atSearch.setText("")
+        binding.atSearch.setText(getString(R.string.empty_string))
         Toast.makeText(requireContext(), msg, Toast.LENGTH_SHORT).show()
         viewModel.onErrorMsgShown()
     }
@@ -154,4 +155,5 @@ class SearchFragment : Fragment() {
         Toast.makeText(requireActivity(), msg, Toast.LENGTH_SHORT).show()
         viewModel.onApiErrorMsgShown()
     }
+
 }

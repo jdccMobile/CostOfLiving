@@ -20,4 +20,5 @@
     <string name="connection_error">Connection error</string>
     <string name="does_not_exist">does not exist</string>
     <string name="http_429">HTTP 429: Too Many Requests</string>
+    <string name="empty_string" />
 </resources>
