@@ -56,20 +56,20 @@ class SearchFragment : Fragment() {
 
         if (uiState.apiCallCompleted) {
             if (uiState.apiErrorMsg == null) {
-                createAdapters(uiState.citiesInUserCountry)
-                binding.rvCitiesInUserCountry.adapter = citiesInUserCountryAdapter
-                binding.rvCitiesInUserCountry.visibility = View.VISIBLE
-                binding.pbSearchCities.visibility = View.GONE
+                createCitiesInUserCountryAdapter(uiState.citiesInUserCountry)
             } else {
                 handleErrorConnection(uiState.apiErrorMsg)
             }
         }
     }
 
-    private fun createAdapters(citiesInUserCountry: List<City>) {
+    private fun createCitiesInUserCountryAdapter(citiesInUserCountry: List<City>) {
         citiesInUserCountryAdapter = CitiesUserCountryAdapter(citiesInUserCountry) {
             viewModel.onCityClicked(it)
         }
+        binding.rvCitiesInUserCountry.adapter = citiesInUserCountryAdapter
+        binding.rvCitiesInUserCountry.visibility = View.VISIBLE
+        binding.pbSearchCities.visibility = View.GONE
     }
 
     private fun chooseCityCountry() {
