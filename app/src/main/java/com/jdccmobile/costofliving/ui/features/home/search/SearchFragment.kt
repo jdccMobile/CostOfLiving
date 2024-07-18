@@ -40,7 +40,6 @@ class SearchFragment : Fragment() {
             }
         }
 
-        chooseCityCountry()
         onSearchClick()
 
         return binding.root
@@ -70,15 +69,6 @@ class SearchFragment : Fragment() {
         binding.rvCitiesInUserCountry.adapter = citiesInUserCountryAdapter
         binding.rvCitiesInUserCountry.visibility = View.VISIBLE
         binding.pbSearchCities.visibility = View.GONE
-    }
-
-    private fun chooseCityCountry() {
-        binding.rgChooseCityCountry.setOnCheckedChangeListener { _, checkedId ->
-            when (checkedId) {
-                R.id.rbSearchCity -> viewModel.changeSearchByCity(true)
-                R.id.rbSearchCountry -> viewModel.changeSearchByCity(false)
-            }
-        }
     }
 
     private fun onSearchClick() {
