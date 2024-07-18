@@ -5,8 +5,6 @@ import com.jdccmobile.data.database.datasources.CostLifeDbDataSource
 import com.jdccmobile.data.remote.datasources.PlaceRemoteDataSource
 import com.jdccmobile.domain.model.City
 import com.jdccmobile.domain.model.CityCost
-import com.jdccmobile.domain.model.Country
-import com.jdccmobile.domain.model.ItemPrice
 import com.jdccmobile.domain.repository.PlaceRepository
 
 class PlaceRepositoryImpl(
@@ -49,7 +47,6 @@ class PlaceRepositoryImpl(
     override suspend fun insertCityCostLocal(cityCost: CityCost) {
         costLifeDbDataSource.insertCityCost(cityCost)
     }
-
 
 //    override suspend fun updateCountry(country: Country) {
 //        costLifeDbDataSource.updateFavoriteCountry(country)

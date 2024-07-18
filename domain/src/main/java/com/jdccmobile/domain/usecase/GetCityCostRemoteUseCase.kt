@@ -1,7 +1,6 @@
 package com.jdccmobile.domain.usecase
 
 import com.jdccmobile.domain.model.CityCost
-import com.jdccmobile.domain.model.ItemPrice
 import com.jdccmobile.domain.repository.PlaceRepository
 
 class GetCityCostRemoteUseCase(
@@ -11,5 +10,4 @@ class GetCityCostRemoteUseCase(
         placeRepository
         return placeRepository.getCityCostRemote(cityName, countryName)
     }
-
 }

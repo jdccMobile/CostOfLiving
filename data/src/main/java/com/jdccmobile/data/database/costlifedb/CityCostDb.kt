@@ -18,7 +18,7 @@ data class CityCostDb(
 
 const val COST_LIFE_TABLE = "cost_life_table"
 
-//fun List<Country>.toDb(citiesInCountry: Int) = this.map { country ->
+// fun List<Country>.toDb(citiesInCountry: Int) = this.map { country ->
 //    CostLifeDb(
 //        countryId = country.countryId,
 //        countryName = country.countryName,
@@ -26,7 +26,7 @@ const val COST_LIFE_TABLE = "cost_life_table"
 //        citiesInCountry = citiesInCountry,
 //        placeType = country.placeType,
 //    )
-//}
+// }
 //
 fun CityCostDb.toDomain(): CityCost =
     CityCost(
@@ -38,7 +38,6 @@ fun CityCostDb.toDomain(): CityCost =
         cocaColaPrice = cocaColaPrice,
         mcMealPrice = mcMealPrice,
     )
-
 
 fun CityCost.toDb() =
     CityCostDb(

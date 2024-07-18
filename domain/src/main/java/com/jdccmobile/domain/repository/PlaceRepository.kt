@@ -2,7 +2,6 @@ package com.jdccmobile.domain.repository
 
 import com.jdccmobile.domain.model.City
 import com.jdccmobile.domain.model.CityCost
-import com.jdccmobile.domain.model.ItemPrice
 
 interface PlaceRepository {
     // Local
@@ -34,5 +33,4 @@ interface PlaceRepository {
 
     // Todo asd utilizar un mismo metodo
     suspend fun getCityCostRemote(cityName: String, countryName: String): CityCost
-
 }

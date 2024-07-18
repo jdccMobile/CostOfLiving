@@ -44,7 +44,9 @@ class DetailsViewModel(
     private val _state = MutableStateFlow(UiState(cityId = cityId))
     val state: StateFlow<UiState> = _state.asStateFlow()
 
-    init { initUi() }
+    init {
+        initUi()
+    }
 
     private fun initUi() {
         viewModelScope.launch {
@@ -114,7 +116,6 @@ class DetailsViewModel(
         }
     }
 
-
     private fun onFavoriteClicked() {
         viewModelScope.launch {
             updateCityUseCase(
@@ -180,9 +181,8 @@ private fun CityCost?.toUi(): List<ItemPriceUi> = if (this != null) {
 //        },
 //    )
 
-
-//// TODO improve this code
-//private fun List<ItemPrice>.toUi(): List<ItemPriceUi> = map {
+// // TODO improve this code
+// private fun List<ItemPrice>.toUi(): List<ItemPriceUi> = map {
 //    ItemPriceUi(
 //        name = it.name,
 //        cost = it.cost,
@@ -195,4 +195,4 @@ private fun CityCost?.toUi(): List<ItemPriceUi> = if (this != null) {
 //            else -> R.drawable.im_mc_meal
 //        },
 //    )
-//}
+// }

@@ -83,7 +83,6 @@ class SearchViewModel(
             _state.value = _state.value.copy(apiCallCompleted = true)
             _state.value = _state.value.copy(citiesInUserCountry = citiesInUserCountry)
             Log.i("jdc", citiesInUserCountry.size.toString())
-
         }
     }
 
@@ -124,15 +123,24 @@ class SearchViewModel(
                         }
                     } else {
                         _state.value =
-                            _state.value.copy(errorMsg = "1 $nameSearch ${resourceProvider.getString(R.string.does_not_exist)}")
+                            _state.value.copy(
+                                errorMsg =
+                                    "$nameSearch ${
+                                        resourceProvider.getString(R.string.does_not_exist)
+                                    }",
+                            )
                     }
-                } catch (e: Exception) { // todo tener en cuenta error de servidor por muchas peticiones
+                } catch (e: Exception) {
+                    // todo tener en cuenta error de servidor por muchas peticiones
                     _state.value =
-                        _state.value.copy(errorMsg = "2 $nameSearch ${resourceProvider.getString(R.string.does_not_exist)}")
+                        _state.value.copy(
+                            errorMsg = "$nameSearch ${
+                                resourceProvider.getString(R.string.does_not_exist)
+                            }",
+                        )
                 }
             }
         }
-
     }
 
     fun onNavigationDone() {

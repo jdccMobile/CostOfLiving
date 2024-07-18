@@ -1,6 +1,5 @@
 package com.jdccmobile.costofliving.ui.features.home.favorites
 
-import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.jdccmobile.costofliving.ui.models.CityUi

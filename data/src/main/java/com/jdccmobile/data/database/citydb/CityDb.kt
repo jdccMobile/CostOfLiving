@@ -14,7 +14,6 @@ data class CityDb(
     @ColumnInfo(name = "is_favorite") val isFavorite: Boolean,
     @ColumnInfo(name = "place_type") val placeType: PlaceType,
     @ColumnInfo(name = "cities_in_country") val citiesInCountry: Int? = null,
-
 )
 
 const val CITIES_TABLE = "cities_table"
