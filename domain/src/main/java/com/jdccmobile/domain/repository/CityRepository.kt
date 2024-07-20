@@ -3,6 +3,7 @@ package com.jdccmobile.domain.repository
 import arrow.core.Either
 import com.jdccmobile.domain.model.City
 import com.jdccmobile.domain.model.CityCost
+import com.jdccmobile.domain.model.ErrorType
 
 interface CityRepository {
     // Local
@@ -10,7 +11,7 @@ interface CityRepository {
 
     suspend fun insertCitiesFromUserCountry(cities: List<City>)
 
-    suspend fun getCitiesFromUserCountry(countryName: String):  Either<Throwable, List<City>>
+    suspend fun getCitiesFromUserCountry(countryName: String): Either<Throwable, List<City>>
 
     suspend fun getCity(cityId: Int): City
 
@@ -18,12 +19,15 @@ interface CityRepository {
 
     suspend fun updateCity(city: City)
 
-    suspend fun getCityCostLocal(cityId: Int): CityCost?
+    suspend fun getCityCostLocal(cityId: Int): Either<Throwable, CityCost?>
 
     suspend fun insertCityCostLocal(cityCost: CityCost)
 
     // Remote
     suspend fun getCitiesListRemote(): Either<Throwable, List<City>>
 
-    suspend fun getCityCostRemote(cityName: String, countryName: String): CityCost
+    suspend fun getCityCostRemote(
+        cityName: String,
+        countryName: String,
+    ): Either<Throwable, CityCost>
 }

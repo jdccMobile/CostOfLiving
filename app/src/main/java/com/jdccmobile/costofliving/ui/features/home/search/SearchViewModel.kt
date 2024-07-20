@@ -138,6 +138,7 @@ class SearchViewModel(
                     val errorMessage = when (errorType) {
                         ErrorType.HTTP_429 -> resourceProvider.getString(R.string.http_429)
                         ErrorType.CONNECTION -> resourceProvider.getString(R.string.connection_error)
+                        ErrorType.NO_COINCIDENCES -> "" // TODO
                     }
                     _state.value = _state.value.copy(
                         apiCallCompleted = true,

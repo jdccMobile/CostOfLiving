@@ -32,8 +32,7 @@ import com.jdccmobile.domain.repository.CityRepository
 import com.jdccmobile.domain.repository.PrefsRepository
 import com.jdccmobile.domain.usecase.GetCitiesFromUserCountryUseCase
 import com.jdccmobile.domain.usecase.GetCitiesUseCase
-import com.jdccmobile.domain.usecase.GetCityCostLocalUseCase
-import com.jdccmobile.domain.usecase.GetCityCostRemoteUseCase
+import com.jdccmobile.domain.usecase.GetCityCostUseCase
 import com.jdccmobile.domain.usecase.GetCityLocalUseCase
 import com.jdccmobile.domain.usecase.GetFavoriteCitiesUseCase
 import com.jdccmobile.domain.usecase.GetUserCountryPrefsUseCase
@@ -107,14 +106,13 @@ private val dataModule = module {
 private val domainModule = module {
     factoryOf(::GetUserCountryPrefsUseCase)
     factoryOf(::GetCitiesUseCase)
-    factoryOf(::GetCityCostRemoteUseCase)
     factoryOf(::InsertCityUseCase)
     factoryOf(::UpdateCityUseCase)
     factoryOf(::GetFavoriteCitiesUseCase)
     factoryOf(::InsertCitiesFromUserCountryUseCase)
     factoryOf(::GetCityLocalUseCase)
     factoryOf(::GetCitiesFromUserCountryUseCase)
-    factoryOf(::GetCityCostLocalUseCase)
+    factoryOf(::GetCityCostUseCase)
     factoryOf(::InsertCityCostUseCase)
 }
 

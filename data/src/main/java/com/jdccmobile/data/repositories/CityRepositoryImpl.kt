@@ -23,7 +23,7 @@ class CityRepositoryImpl(
         cityLocalDataSource.insertCitiesFromUserCountry(cities)
     }
 
-    override suspend fun getCitiesFromUserCountry(countryName: String):  Either<Throwable, List<City>> =
+    override suspend fun getCitiesFromUserCountry(countryName: String): Either<Throwable, List<City>> =
         cityLocalDataSource.getCitiesFromUserCountry(countryName)
 
     override suspend fun getCity(cityId: Int): City {
@@ -37,7 +37,7 @@ class CityRepositoryImpl(
         cityLocalDataSource.updateCity(city)
     }
 
-    override suspend fun getCityCostLocal(cityId: Int): CityCost? =
+    override suspend fun getCityCostLocal(cityId: Int): Either<Throwable, CityCost?> =
         costLifeLocalDataSource.getCityCostLocal(cityId)
 
     override suspend fun insertCityCostLocal(cityCost: CityCost) {
@@ -48,6 +48,9 @@ class CityRepositoryImpl(
     override suspend fun getCitiesListRemote(): Either<Throwable, List<City>> =
         remoteDataSource.getCitiesList()
 
-    override suspend fun getCityCostRemote(cityName: String, countryName: String): CityCost =
+    override suspend fun getCityCostRemote(
+        cityName: String,
+        countryName: String,
+    ): Either<Throwable, CityCost> =
         remoteDataSource.getCityCost(cityName, countryName)
 }

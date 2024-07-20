@@ -13,8 +13,8 @@ class PlaceRemoteDataSource(private val apiKey: String, private val service: Ret
     suspend fun getCitiesList(): Either<Throwable, List<City>> =
         catch { service.getCities(apiKey).toDomain() }
 
-    suspend fun getCityCost(cityName: String, countryName: String): CityCost =
-        service.getCityCost(apiKey, cityName, countryName).toDomain()
+    suspend fun getCityCost(cityName: String, countryName: String): Either<Throwable, CityCost> =
+        catch { service.getCityCost(apiKey, cityName, countryName).toDomain() }
 }
 
 private fun CitiesListResponseResult.toDomain(): List<City> = this.cities.map { city ->

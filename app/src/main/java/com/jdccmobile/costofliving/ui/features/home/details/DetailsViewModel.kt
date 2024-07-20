@@ -1,6 +1,5 @@
 package com.jdccmobile.costofliving.ui.features.home.details
 
-import android.util.Log
 import android.widget.Toast
 import androidx.fragment.app.FragmentActivity
 import androidx.lifecycle.ViewModel
@@ -10,8 +9,8 @@ import com.jdccmobile.costofliving.common.ResourceProvider
 import com.jdccmobile.costofliving.ui.models.ItemPriceUi
 import com.jdccmobile.domain.model.City
 import com.jdccmobile.domain.model.CityCost
-import com.jdccmobile.domain.usecase.GetCityCostLocalUseCase
-import com.jdccmobile.domain.usecase.GetCityCostRemoteUseCase
+import com.jdccmobile.domain.model.ErrorType
+import com.jdccmobile.domain.usecase.GetCityCostUseCase
 import com.jdccmobile.domain.usecase.GetCityLocalUseCase
 import com.jdccmobile.domain.usecase.InsertCityCostUseCase
 import com.jdccmobile.domain.usecase.UpdateCityUseCase
@@ -22,13 +21,13 @@ import kotlinx.coroutines.launch
 
 class DetailsViewModel(
     private val cityId: Int,
-    private val getCityCostRemoteUseCase: GetCityCostRemoteUseCase,
+//    private val getCityCostRemoteUseCase: GetCityCostRemoteUseCase,
 //    private val getCountryCostUseCase: GetCountryCostUseCase,
     private val resourceProvider: ResourceProvider,
 //    private val insertCityUseCase: InsertCityUseCase,
     private val updateCityUseCase: UpdateCityUseCase,
     private val getCityLocalUseCase: GetCityLocalUseCase,
-    private val getCiyCostLocalUseCase: GetCityCostLocalUseCase,
+    private val getCiyCostLocalUseCase: GetCityCostUseCase,
     private val insertCityCostUseCase: InsertCityCostUseCase,
 ) : ViewModel() {
     data class UiState(
@@ -64,46 +63,32 @@ class DetailsViewModel(
             isFavorite = city.isFavorite,
         )
     }
-
+    // TODO renombrar usecase y eliminar el usacese remote
     @Suppress("TooGenericExceptionCaught")
     private suspend fun getCityCosts() {
-        val cityCostLocal = getCiyCostLocalUseCase(_state.value.cityId)
-        if (cityCostLocal != null) {
-            _state.value = _state.value.copy(
-                apiCallCompleted = true,
-                itemCostInfoList = cityCostLocal.toUi(),
-            )
-        } else {
-            val cityCostRemote: CityCost? =
-                try {
-                    getCityCostRemoteUseCase(
-                        cityName = _state.value.cityName,
-                        countryName = _state.value.countryName,
-                    )
-                } catch (e: Exception) {
-                    handleApiErrorMsg(e)
-                    null
+        getCiyCostLocalUseCase(
+            cityId = _state.value.cityId,
+            cityName = _state.value.cityName,
+            countryName = _state.value.countryName
+        ).fold(
+            { errorType ->
+                val errorMessage = when (errorType) {
+                    ErrorType.HTTP_429 -> resourceProvider.getString(R.string.http_429)
+                    ErrorType.CONNECTION -> resourceProvider.getString(R.string.connection_error)
+                    ErrorType.NO_COINCIDENCES -> "" // TODO sacar a funcion comun
                 }
-            Log.d("JD details VM", "API call getCityCostRemote: $cityCostRemote")
-            cityCostRemote?.let { insertCityCostUseCase(it) }
-            _state.value = _state.value.copy(
-                apiCallCompleted = true,
-                itemCostInfoList = cityCostRemote.toUi(),
-            )
-        }
-    }
-
-    private fun handleApiErrorMsg(e: Exception) {
-        Log.e("JD Search VM", "API call requestCitiesList error: $e")
-        if (e.message?.contains("429") == true) {
-            _state.value =
-                _state.value.copy(apiErrorMsg = resourceProvider.getString(R.string.http_429))
-        } else {
-            _state.value =
-                _state.value.copy(
-                    apiErrorMsg = resourceProvider.getString(R.string.connection_error),
+                _state.value = _state.value.copy(
+                    apiCallCompleted = true,
+                    apiErrorMsg = errorMessage,
                 )
-        }
+            },
+            { cityCost ->
+                _state.value = _state.value.copy(
+                    apiCallCompleted = true,
+                    itemCostInfoList = cityCost.toUi(),
+                )
+            },
+        )
     }
 
     fun onFavoriteClick(activity: FragmentActivity?) {
@@ -167,32 +152,3 @@ private fun CityCost?.toUi(): List<ItemPriceUi> = if (this != null) {
 } else {
     emptyList()
 }
-
-//    ItemPriceUi(
-//        name = it.name,
-//        cost = it.cost,
-//        imageId = when {
-//            it.name.contains("in City Center") -> R.drawable.im_city_centre
-//            it.name.contains("Gasoline") -> R.drawable.im_gasoline
-//            it.name.contains("Dress") -> R.drawable.im_dress
-//            it.name.contains("Fitness") -> R.drawable.im_fitness
-//            it.name.contains("Coca-Cola") -> R.drawable.im_coca_cola
-//            else -> R.drawable.im_mc_meal
-//        },
-//    )
-
-// // TODO improve this code
-// private fun List<ItemPrice>.toUi(): List<ItemPriceUi> = map {
-//    ItemPriceUi(
-//        name = it.name,
-//        cost = it.cost,
-//        imageId = when {
-//            it.name.contains("in City Center") -> R.drawable.im_city_centre
-//            it.name.contains("Gasoline") -> R.drawable.im_gasoline
-//            it.name.contains("Dress") -> R.drawable.im_dress
-//            it.name.contains("Fitness") -> R.drawable.im_fitness
-//            it.name.contains("Coca-Cola") -> R.drawable.im_coca_cola
-//            else -> R.drawable.im_mc_meal
-//        },
-//    )
-// }
