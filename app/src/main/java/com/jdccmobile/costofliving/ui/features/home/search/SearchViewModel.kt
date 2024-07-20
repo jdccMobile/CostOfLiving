@@ -1,6 +1,5 @@
 package com.jdccmobile.costofliving.ui.features.home.search
 
-import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import arrow.core.Either
@@ -62,10 +61,15 @@ class SearchViewModel(
                 citiesInUserCountry.isEmpty() ||
                 citiesInUserCountry.size != citiesInUserCountry[0].citiesInCountry
             ) {
-                when (val citiesRemoteResult = getCitiesUseCase()) {
+                when (val getCitiesResult = getCitiesUseCase()) {
+                    is Either.Right -> {
+                        citiesInUserCountry = getCitiesResult.value.filter {
+                            it.countryName == userCountryName
+                        }.sortedBy { it.cityName }
+                        insertCitiesFromUserCountryUseCase(citiesInUserCountry)
+                    }
                     is Either.Left -> {
-                        Log.i("TAG", "getCitiesInCountry: ${citiesRemoteResult.value.message}")
-                        if (citiesRemoteResult.value.message?.contains("429") == true) {
+                        if (getCitiesResult.value.message?.contains("429") == true) {
                             _state.value =
                                 _state.value.copy(
                                     apiErrorMsg = resourceProvider.getString(R.string.http_429),
@@ -76,12 +80,6 @@ class SearchViewModel(
                                     apiErrorMsg = resourceProvider.getString(R.string.connection_error),
                                 )
                         }
-                    }
-                    is Either.Right -> {
-                        citiesInUserCountry = citiesRemoteResult.value.filter {
-                            it.countryName == userCountryName
-                        }.sortedBy { it.cityName }
-                        insertCitiesFromUserCountryUseCase(citiesInUserCountry)
                     }
                 }
             }
