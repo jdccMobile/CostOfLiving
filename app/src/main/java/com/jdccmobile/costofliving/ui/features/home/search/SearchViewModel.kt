@@ -4,13 +4,12 @@ import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import arrow.core.Either
-import arrow.core.right
 import com.jdccmobile.costofliving.R
 import com.jdccmobile.costofliving.common.ResourceProvider
 import com.jdccmobile.costofliving.ui.models.AutoCompleteSearchUi
 import com.jdccmobile.domain.model.City
 import com.jdccmobile.domain.usecase.GetCitiesFromUserCountryUseCase
-import com.jdccmobile.domain.usecase.GetCitiesRemoteUseCase
+import com.jdccmobile.domain.usecase.GetCitiesUseCase
 import com.jdccmobile.domain.usecase.GetUserCountryPrefsUseCase
 import com.jdccmobile.domain.usecase.InsertCitiesFromUserCountryUseCase
 import com.jdccmobile.domain.usecase.InsertCityUseCase
@@ -21,7 +20,7 @@ import kotlinx.coroutines.launch
 
 class SearchViewModel(
     private val getUserCountryPrefsUseCase: GetUserCountryPrefsUseCase,
-    private val getCitiesRemoteUseCase: GetCitiesRemoteUseCase,
+    private val getCitiesUseCase: GetCitiesUseCase,
     private val resourceProvider: ResourceProvider,
     private val insertCitiesFromUserCountryUseCase: InsertCitiesFromUserCountryUseCase,
     private val getCitiesFromUserCountryUseCase: GetCitiesFromUserCountryUseCase,
@@ -63,7 +62,7 @@ class SearchViewModel(
                 citiesInUserCountry.isEmpty() ||
                 citiesInUserCountry.size != citiesInUserCountry[0].citiesInCountry
             ) {
-                when (val citiesRemoteResult = getCitiesRemoteUseCase()) {
+                when (val citiesRemoteResult = getCitiesUseCase()) {
                     is Either.Left -> {
                         Log.i("TAG", "getCitiesInCountry: ${citiesRemoteResult.value.message}")
                         if (citiesRemoteResult.value.message?.contains("429") == true) {
@@ -107,7 +106,7 @@ class SearchViewModel(
             )
         } else {
             viewModelScope.launch {
-                when (val citiesRemoteResult = getCitiesRemoteUseCase()) {
+                when (val citiesRemoteResult = getCitiesUseCase()) {
                     is Either.Left -> {
                         if (citiesRemoteResult.value.message?.contains("429") == true) {
                             _state.value =

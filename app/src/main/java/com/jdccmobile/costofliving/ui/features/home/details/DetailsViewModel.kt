@@ -13,7 +13,7 @@ import com.jdccmobile.domain.model.CityCost
 import com.jdccmobile.domain.usecase.GetCityCostLocalUseCase
 import com.jdccmobile.domain.usecase.GetCityCostRemoteUseCase
 import com.jdccmobile.domain.usecase.GetCityLocalUseCase
-import com.jdccmobile.domain.usecase.InsertCityCostLocalUseCase
+import com.jdccmobile.domain.usecase.InsertCityCostUseCase
 import com.jdccmobile.domain.usecase.UpdateCityUseCase
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
@@ -29,7 +29,7 @@ class DetailsViewModel(
     private val updateCityUseCase: UpdateCityUseCase,
     private val getCityLocalUseCase: GetCityLocalUseCase,
     private val getCiyCostLocalUseCase: GetCityCostLocalUseCase,
-    private val insertCityCostLocalUseCase: InsertCityCostLocalUseCase,
+    private val insertCityCostUseCase: InsertCityCostUseCase,
 ) : ViewModel() {
     data class UiState(
         val cityId: Int,
@@ -85,7 +85,7 @@ class DetailsViewModel(
                     null
                 }
             Log.d("JD details VM", "API call getCityCostRemote: $cityCostRemote")
-            cityCostRemote?.let { insertCityCostLocalUseCase(it) }
+            cityCostRemote?.let { insertCityCostUseCase(it) }
             _state.value = _state.value.copy(
                 apiCallCompleted = true,
                 itemCostInfoList = cityCostRemote.toUi(),
