@@ -1,16 +1,13 @@
 package com.jdccmobile.costofliving.ui.features.home.search
 
-import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import arrow.core.Either
-import arrow.core.continuations.either
-import arrow.core.getOrElse
-import arrow.core.merge
 import com.jdccmobile.costofliving.R
 import com.jdccmobile.costofliving.common.ResourceProvider
 import com.jdccmobile.costofliving.ui.models.AutoCompleteSearchUi
 import com.jdccmobile.domain.model.City
+import com.jdccmobile.domain.model.ErrorType
 import com.jdccmobile.domain.usecase.GetCitiesFromUserCountryUseCase
 import com.jdccmobile.domain.usecase.GetCitiesUseCase
 import com.jdccmobile.domain.usecase.GetUserCountryPrefsUseCase
@@ -100,6 +97,7 @@ class SearchViewModel(
                                 )
                         }
                     }
+
                     is Either.Left -> {
                         if (citiesRemoteResult.value.message?.contains("429") == true) {
                             _state.value =
@@ -135,46 +133,25 @@ class SearchViewModel(
 
     private fun getCitiesInUserCountry(userCountryName: String) {
         viewModelScope.launch {
-            val citiesInUserCountry: List<City> = getCitiesInUserCountryLocal(userCountryName)
-            _state.value = _state.value.copy(apiCallCompleted = true)
-            _state.value = _state.value.copy(citiesInUserCountry = citiesInUserCountry)
+            getCitiesFromUserCountryUseCase(userCountryName).fold(
+                { errorType ->
+                    val errorMessage = when (errorType) {
+                        ErrorType.HTTP_429 -> resourceProvider.getString(R.string.http_429)
+                        ErrorType.CONNECTION -> resourceProvider.getString(R.string.connection_error)
+                    }
+                    _state.value = _state.value.copy(
+                        apiCallCompleted = true,
+                        apiErrorMsg = errorMessage,
+                        citiesInUserCountry = emptyList(),
+                    )
+                },
+                { citiesInUserCountry ->
+                    _state.value = _state.value.copy(
+                        apiCallCompleted = true,
+                        citiesInUserCountry = citiesInUserCountry,
+                    )
+                },
+            )
         }
     }
-
-    private suspend fun getCitiesInUserCountryLocal(userCountryName: String): List<City> = either {
-        val citiesInUserCountry = getCitiesFromUserCountryUseCase(userCountryName).bind()
-        if (
-            citiesInUserCountry.isEmpty() ||
-            citiesInUserCountry.size != citiesInUserCountry[0].citiesInCountry
-        ) {
-            getCitiesInUserCountryRemote(userCountryName)
-        } else {
-            citiesInUserCountry
-        }
-    }.getOrElse {
-        _state.value = _state.value.copy(
-            errorMsg = resourceProvider.getString(R.string.error_obtaining_user_country_cities),
-        )
-        emptyList()
-    }
-
-    private suspend fun getCitiesInUserCountryRemote(userCountryName: String): List<City> =
-        either {
-            val cities = getCitiesUseCase().bind()
-            val citiesInUserCountry = cities.filter {
-                it.countryName == userCountryName
-            }.sortedBy { it.cityName }
-            insertCitiesFromUserCountryUseCase(citiesInUserCountry)
-            citiesInUserCountry
-        }.mapLeft { error ->
-            val errorMessage = when {
-                error.message?.contains("429") == true -> {
-                    resourceProvider.getString(R.string.http_429)
-                }
-                else -> resourceProvider.getString(R.string.connection_error)
-            }
-            _state.value = _state.value.copy(apiErrorMsg = errorMessage)
-            emptyList<City>()
-        }.merge()
 }
-
