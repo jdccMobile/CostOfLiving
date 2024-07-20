@@ -10,7 +10,7 @@ interface CityRepository {
 
     suspend fun insertCitiesFromUserCountry(cities: List<City>)
 
-    suspend fun getCitiesFromUserCountry(countryName: String): List<City>
+    suspend fun getCitiesFromUserCountry(countryName: String):  Either<Throwable, List<City>>
 
     suspend fun getCity(cityId: Int): City
 

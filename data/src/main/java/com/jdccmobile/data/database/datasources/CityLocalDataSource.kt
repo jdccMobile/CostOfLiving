@@ -1,5 +1,7 @@
 package com.jdccmobile.data.database.datasources
 
+import arrow.core.Either
+import arrow.core.Either.Companion.catch
 import com.jdccmobile.data.database.citydb.CityDao
 import com.jdccmobile.data.database.citydb.toDb
 import com.jdccmobile.data.database.citydb.toDomain
@@ -12,8 +14,8 @@ class CityLocalDataSource(private val cityDao: CityDao) {
     suspend fun insertCitiesFromUserCountry(cities: List<City>): Unit =
         cityDao.insertCitiesFromUserCountry(cities.toDb())
 
-    suspend fun getCitiesFromUserCountry(countryName: String): List<City> =
-        cityDao.getCitiesFromUserCountry(countryName).toDomain()
+    suspend fun getCitiesFromUserCountry(countryName: String): Either<Throwable, List<City>> =
+        catch { cityDao.getCitiesFromUserCountry(countryName).toDomain() }
 
     suspend fun getCity(cityId: Int): City =
         cityDao.getCity(cityId).toDomain()
