@@ -19,7 +19,7 @@ class GetCitiesFromUserCountryUseCase(
             val cities = getCitiesUseCase().bind()
             val filteredCitiesByCountry = cities.filter { it.countryName == userCountryName }
                 .sortedBy { it.cityName }
-            insertCitiesFromUserCountryUseCase(filteredCitiesByCountry)
+            insertCitiesFromUserCountryUseCase(filteredCitiesByCountry).bind()
             filteredCitiesByCountry
         } else {
             citiesInUserCountry

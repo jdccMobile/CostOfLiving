@@ -23,7 +23,6 @@ class SearchViewModel(
     private val getUserCountryPrefsUseCase: GetUserCountryPrefsUseCase,
     private val getCitiesUseCase: GetCitiesUseCase,
     private val resourceProvider: ResourceProvider,
-    private val insertCitiesFromUserCountryUseCase: InsertCitiesFromUserCountryUseCase,
     private val getCitiesFromUserCountryUseCase: GetCitiesFromUserCountryUseCase,
     private val insertCityUseCase: InsertCityUseCase,
 ) : ViewModel() {

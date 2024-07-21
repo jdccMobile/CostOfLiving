@@ -11,8 +11,8 @@ class CityLocalDataSource(private val cityDao: CityDao) {
     suspend fun insertCity(city: City): Either<Throwable, Unit> =
         catch { cityDao.insertCity(city.toDb()) }
 
-    suspend fun insertCitiesFromUserCountry(cities: List<City>): Unit =
-        cityDao.insertCitiesFromUserCountry(cities.toDb())
+    suspend fun insertCitiesFromUserCountry(cities: List<City>): Either<Throwable, Unit> =
+        catch { cityDao.insertCitiesFromUserCountry(cities.toDb()) }
 
     suspend fun getCitiesFromUserCountry(countryName: String): Either<Throwable, List<City>> =
         catch { cityDao.getCitiesFromUserCountry(countryName).toDomain() }

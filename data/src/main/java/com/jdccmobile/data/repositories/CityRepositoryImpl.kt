@@ -18,9 +18,8 @@ class CityRepositoryImpl(
     override suspend fun insertCity(city: City): Either<Throwable, Unit> =
         cityLocalDataSource.insertCity(city)
 
-    override suspend fun insertCitiesFromUserCountry(cities: List<City>) {
+    override suspend fun insertCitiesFromUserCountry(cities: List<City>): Either<Throwable, Unit> =
         cityLocalDataSource.insertCitiesFromUserCountry(cities)
-    }
 
     override suspend fun getCitiesFromUserCountry(countryName: String): Either<Throwable, List<City>> =
         cityLocalDataSource.getCitiesFromUserCountry(countryName)
