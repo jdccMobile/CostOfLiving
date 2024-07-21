@@ -14,8 +14,9 @@ fun getCountryCode(countryName: String) =
         Locale("", it).getDisplayCountry(Locale.ENGLISH) == countryName
     }
 
-fun Throwable.toStringResource() = when (this.message.isNullOrEmpty()) {
-    message?.contains("429") -> R.string.http_429
-    message?.contains("http") -> R.string.connection_error
-    else -> R.string.no_results_found
+fun Throwable.toStringResource() = when {
+    message?.contains("429") == true -> R.string.http_429
+    this is retrofit2.HttpException && this.code() in 400..499 -> R.string.http_4xx_error
+    this is androidx.datastore.core.IOException -> R.string.datastore_error
+    else -> R.string.generic_error
 }

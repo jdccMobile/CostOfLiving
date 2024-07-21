@@ -25,4 +25,10 @@
     <string name="favorite_deleted">Favorite deleted</string>
     <string name="favorite_added">Favorite added</string>
     <string name="no_results_found">No results found</string>
+    <string name="http_429">Too many requests</string>
+    <string name="http_4xx_error">Connection error</string>
+    <string name="room_no_results_error">No results found in database</string>
+    <string name="room_insertion_error">Error inserting object into database</string>
+    <string name="datastore_error">Error with DataStore Preferences</string>
+    <string name="generic_error">Error</string>
 </resources>
