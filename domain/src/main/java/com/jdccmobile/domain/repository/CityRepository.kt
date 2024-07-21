@@ -7,7 +7,7 @@ import com.jdccmobile.domain.model.ErrorType
 
 interface CityRepository {
     // Local
-    suspend fun insertCity(city: City)
+    suspend fun insertCity(city: City): Either<Throwable, Unit>
 
     suspend fun insertCitiesFromUserCountry(cities: List<City>)
 

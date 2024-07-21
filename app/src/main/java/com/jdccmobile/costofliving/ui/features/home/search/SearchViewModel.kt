@@ -83,9 +83,18 @@ class SearchViewModel(
                             val citySearched = cities.find {
                                 it.cityName.equals(nameSearch, ignoreCase = true)
                             }
-                            if (citySearched != null) {
-                                insertCityUseCase(citySearched)
-                                _state.value = _state.value.copy(navigateTo = citySearched)
+                            if (citySearched != null) { // todo meter en el usecase??
+                                insertCityUseCase(citySearched).fold(
+                                    { error ->
+                                        _state.value = _state.value.copy(
+                                            errorMsg = resourceProvider.getString(error.toStringResource()),
+                                        )
+                                    },
+                                    {
+                                        _state.value = _state.value.copy(navigateTo = citySearched)
+                                    },
+                                )
+
                             }
                         } else {
                             _state.value =
