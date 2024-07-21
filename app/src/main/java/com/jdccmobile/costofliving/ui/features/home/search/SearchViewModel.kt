@@ -49,9 +49,13 @@ class SearchViewModel(
 
     private fun refresh() {
         viewModelScope.launch {
-            val countryName = getUserCountryPrefsUseCase()
-            _state.value = UiState(countryName = countryName)
-            getCitiesInUserCountry(countryName)
+            getUserCountryPrefsUseCase().fold(
+                {},
+                { countryName ->
+                    _state.value = UiState(countryName = countryName)
+                    getCitiesInUserCountry(countryName)
+                },
+            )
         }
     }
 

@@ -1,7 +1,9 @@
 package com.jdccmobile.domain.repository
 
-interface PrefsRepository {
-    suspend fun setUserCountry(countryName: String): Unit
+import arrow.core.Either
 
-    suspend fun getUserCountry(): String
+interface PrefsRepository {
+    suspend fun setUserCountry(countryName: String): Either<Throwable, Unit>
+
+    suspend fun getUserCountry(): Either<Throwable, String>
 }

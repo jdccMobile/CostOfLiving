@@ -5,6 +5,7 @@ import androidx.lifecycle.viewModelScope
 import com.jdccmobile.data.repositories.PrefsRepositoryImpl
 import com.jdccmobile.data.repositories.RegionRepository
 import com.jdccmobile.domain.model.IntroSlide
+import com.jdccmobile.domain.usecase.InsertUserCountryPrefsUseCase
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
@@ -13,9 +14,9 @@ import java.util.Locale
 
 class IntroViewModel(
     private val regionRepository: RegionRepository,
-    private val prefsRepository: PrefsRepositoryImpl,
     private val introSlidesProvider: IntroSlidesProvider,
-) : ViewModel() {
+    private val insertUserCountryPrefsUseCase: InsertUserCountryPrefsUseCase,
+    ) : ViewModel() {
     data class UiState(
         val introSlidesInfo: List<IntroSlide> = emptyList(),
     )
@@ -38,6 +39,6 @@ class IntroViewModel(
     suspend fun getCountryName() {
         val countryCode = regionRepository.findLastRegion()
         val countryName = Locale("", countryCode).getDisplayCountry(Locale("EN"))
-        prefsRepository.setUserCountry(countryName)
+        insertUserCountryPrefsUseCase(countryName)
     }
 }

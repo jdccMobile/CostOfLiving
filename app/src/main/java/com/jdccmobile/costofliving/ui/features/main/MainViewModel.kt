@@ -24,8 +24,13 @@ class MainViewModel(
 
     private fun refresh() {
         viewModelScope.launch {
-            _state.value = UiState(
-                getUserCountryPrefsUseCase(),
+            getUserCountryPrefsUseCase().fold(
+                {},
+                { countryName ->
+                    _state.value = UiState(
+                        countryName = countryName,
+                    )
+                },
             )
         }
     }
