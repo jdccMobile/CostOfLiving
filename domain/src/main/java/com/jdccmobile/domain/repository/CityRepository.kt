@@ -21,7 +21,7 @@ interface CityRepository {
 
     suspend fun getCityCostLocal(cityId: Int): Either<Throwable, CityCost?>
 
-    suspend fun insertCityCostLocal(cityCost: CityCost)
+    suspend fun insertCityCostLocal(cityCost: CityCost): Either<Throwable, Unit>
 
     // Remote
     suspend fun getCitiesListRemote(): Either<Throwable, List<City>>

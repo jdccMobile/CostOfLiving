@@ -39,9 +39,8 @@ class CityRepositoryImpl(
     override suspend fun getCityCostLocal(cityId: Int): Either<Throwable, CityCost?> =
         costLifeLocalDataSource.getCityCostLocal(cityId)
 
-    override suspend fun insertCityCostLocal(cityCost: CityCost) {
+    override suspend fun insertCityCostLocal(cityCost: CityCost): Either<Throwable, Unit> =
         costLifeLocalDataSource.insertCityCost(cityCost)
-    }
 
     // Remote
     override suspend fun getCitiesListRemote(): Either<Throwable, List<City>> =

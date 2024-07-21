@@ -8,15 +8,18 @@ import com.jdccmobile.domain.repository.CityRepository
 
 class GetCityCostUseCase(
     private val cityRepository: CityRepository,
+    private val insertCityCostUseCase: InsertCityCostUseCase,
 ) {
     suspend operator fun invoke(
         cityId: Int,
         cityName: String,
         countryName: String,
     ): Either<Throwable, CityCost> = either {
-        cityRepository.getCityCostLocal(cityId).bind() ?: cityRepository.getCityCostRemote(
+        val cityCost = cityRepository.getCityCostLocal(cityId).bind() ?: cityRepository.getCityCostRemote(
             cityName,
             countryName,
         ).bind()
+        insertCityCostUseCase(cityCost).bind()
+        cityCost
     }
 }

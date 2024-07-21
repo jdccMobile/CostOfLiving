@@ -10,10 +10,8 @@ import com.jdccmobile.costofliving.common.toStringResource
 import com.jdccmobile.costofliving.ui.models.ItemPriceUi
 import com.jdccmobile.domain.model.City
 import com.jdccmobile.domain.model.CityCost
-import com.jdccmobile.domain.model.ErrorType
 import com.jdccmobile.domain.usecase.GetCityCostUseCase
 import com.jdccmobile.domain.usecase.GetCityUseCase
-import com.jdccmobile.domain.usecase.InsertCityCostUseCase
 import com.jdccmobile.domain.usecase.UpdateCityUseCase
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
@@ -22,14 +20,10 @@ import kotlinx.coroutines.launch
 
 class DetailsViewModel(
     private val cityId: Int,
-//    private val getCityCostRemoteUseCase: GetCityCostRemoteUseCase,
-//    private val getCountryCostUseCase: GetCountryCostUseCase,
     private val resourceProvider: ResourceProvider,
-//    private val insertCityUseCase: InsertCityUseCase,
     private val updateCityUseCase: UpdateCityUseCase,
     private val getCityUseCase: GetCityUseCase,
-    private val getCiyCostLocalUseCase: GetCityCostUseCase,
-    private val insertCityCostUseCase: InsertCityCostUseCase,
+    private val getCiyCostUseCase: GetCityCostUseCase,
 ) : ViewModel() {
     data class UiState(
         val cityId: Int,
@@ -78,7 +72,7 @@ class DetailsViewModel(
     // TODO renombrar usecase y eliminar el usacese remote
     @Suppress("TooGenericExceptionCaught")
     private suspend fun getCityCosts() {
-        getCiyCostLocalUseCase(
+        getCiyCostUseCase(
             cityId = _state.value.cityId,
             cityName = _state.value.cityName,
             countryName = _state.value.countryName,
