@@ -30,7 +30,7 @@ class CityRepositoryImpl(
         return cityLocalDataSource.getCity(cityId)
     }
 
-    override suspend fun getFavoriteCities(): List<City> =
+    override suspend fun getFavoriteCities(): Either<Throwable, List<City>> =
         cityLocalDataSource.getFavoriteCities()
 
     override suspend fun updateCity(city: City) {

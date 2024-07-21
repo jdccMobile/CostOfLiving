@@ -20,8 +20,8 @@ class CityLocalDataSource(private val cityDao: CityDao) {
     suspend fun getCity(cityId: Int): Either<Throwable, City> =
         catch { cityDao.getCity(cityId).toDomain() }
 
-    suspend fun getFavoriteCities(): List<City> =
-        cityDao.getFavoriteCities().toDomain()
+    suspend fun getFavoriteCities(): Either<Throwable, List<City>> =
+        catch { cityDao.getFavoriteCities().toDomain() }
 
     suspend fun updateCity(city: City): Unit =
         cityDao.updateCity(city.toDb())

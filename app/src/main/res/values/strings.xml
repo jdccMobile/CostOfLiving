@@ -24,4 +24,5 @@
     <string name="error_obtaining_user_country_cities">Error when obtaining the cities of the user\'s country</string>
     <string name="favorite_deleted">Favorite deleted</string>
     <string name="favorite_added">Favorite added</string>
+    <string name="no_results_found">No results found</string>
 </resources>

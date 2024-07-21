@@ -2,8 +2,11 @@ package com.jdccmobile.costofliving.ui.features.home.favorites
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.jdccmobile.costofliving.R
+import com.jdccmobile.costofliving.common.ResourceProvider
 import com.jdccmobile.costofliving.ui.models.CityUi
 import com.jdccmobile.domain.model.City
+import com.jdccmobile.domain.model.ErrorType
 import com.jdccmobile.domain.usecase.GetFavoriteCitiesUseCase
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
@@ -12,10 +15,13 @@ import kotlinx.coroutines.launch
 
 class FavoritesViewModel(
     private val getFavoriteCitiesUseCase: GetFavoriteCitiesUseCase,
+    private val resourceProvider: ResourceProvider,
 ) : ViewModel() {
     data class UiState(
         val favoriteCities: List<CityUi> = emptyList(),
         val navigateTo: Int? = null,
+        val apiCallCompleted: Boolean = false,
+        val apiErrorMsg: String? = null,
     )
 
     private val _state = MutableStateFlow(UiState())
@@ -32,7 +38,24 @@ class FavoritesViewModel(
     }
 
     private suspend fun getFavoriteCities() {
-        _state.value = _state.value.copy(favoriteCities = getFavoriteCitiesUseCase().toCityUi())
+        getFavoriteCitiesUseCase().fold(
+            { errorType ->
+                val errorMessage = when (errorType) {
+                    ErrorType.HTTP_429 -> resourceProvider.getString(R.string.http_429)
+                    ErrorType.CONNECTION -> resourceProvider.getString(R.string.connection_error)
+                    ErrorType.NO_COINCIDENCES -> resourceProvider.getString(R.string.no_results_found)
+                }
+                _state.value = _state.value.copy(
+                    apiCallCompleted = true,
+                    apiErrorMsg = errorMessage,
+                    favoriteCities = emptyList(),
+                )
+            },
+            { cities ->
+                _state.value = _state.value.copy(favoriteCities = cities.toUi())
+            },
+        )
+
     }
 
     fun onCityClicked(city: City) {
@@ -44,7 +67,7 @@ class FavoritesViewModel(
     }
 }
 
-fun List<City>.toCityUi() = map { city ->
+fun List<City>.toUi() = map { city ->
     CityUi(
         cityId = city.cityId,
         cityName = city.cityName,
