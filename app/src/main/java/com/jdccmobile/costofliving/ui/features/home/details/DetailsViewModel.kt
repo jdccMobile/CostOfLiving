@@ -11,7 +11,7 @@ import com.jdccmobile.domain.model.City
 import com.jdccmobile.domain.model.CityCost
 import com.jdccmobile.domain.model.ErrorType
 import com.jdccmobile.domain.usecase.GetCityCostUseCase
-import com.jdccmobile.domain.usecase.GetCityLocalUseCase
+import com.jdccmobile.domain.usecase.GetCityUseCase
 import com.jdccmobile.domain.usecase.InsertCityCostUseCase
 import com.jdccmobile.domain.usecase.UpdateCityUseCase
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -26,7 +26,7 @@ class DetailsViewModel(
     private val resourceProvider: ResourceProvider,
 //    private val insertCityUseCase: InsertCityUseCase,
     private val updateCityUseCase: UpdateCityUseCase,
-    private val getCityLocalUseCase: GetCityLocalUseCase,
+    private val getCityUseCase: GetCityUseCase,
     private val getCiyCostLocalUseCase: GetCityCostUseCase,
     private val insertCityCostUseCase: InsertCityCostUseCase,
 ) : ViewModel() {
@@ -55,21 +55,37 @@ class DetailsViewModel(
     }
 
     private suspend fun getCityInfo() {
-        val city = getCityLocalUseCase(cityId)
-        _state.value = _state.value.copy(
-            cityId = city.cityId,
-            cityName = city.cityName.replaceFirstChar { it.uppercase() },
-            countryName = city.countryName.replaceFirstChar { it.uppercase() },
-            isFavorite = city.isFavorite,
+        getCityUseCase(cityId).fold(
+            { errorType ->
+                val errorMessage = when (errorType) {
+                    ErrorType.HTTP_429 -> resourceProvider.getString(R.string.http_429)
+                    ErrorType.CONNECTION -> resourceProvider.getString(R.string.connection_error)
+                    ErrorType.NO_COINCIDENCES -> "" // TODO sacar a funcion comun
+                }
+                _state.value = _state.value.copy(
+                    // todo sacar a una funcion y llamar en el when
+                    apiCallCompleted = true,
+                    apiErrorMsg = errorMessage,
+                )
+            },
+            { city ->
+                _state.value = _state.value.copy(
+                    cityId = city.cityId,
+                    cityName = city.cityName.replaceFirstChar { it.uppercase() },
+                    countryName = city.countryName.replaceFirstChar { it.uppercase() },
+                    isFavorite = city.isFavorite,
+                )
+            },
         )
     }
+
     // TODO renombrar usecase y eliminar el usacese remote
     @Suppress("TooGenericExceptionCaught")
     private suspend fun getCityCosts() {
         getCiyCostLocalUseCase(
             cityId = _state.value.cityId,
             cityName = _state.value.cityName,
-            countryName = _state.value.countryName
+            countryName = _state.value.countryName,
         ).fold(
             { errorType ->
                 val errorMessage = when (errorType) {
@@ -94,10 +110,18 @@ class DetailsViewModel(
     fun onFavoriteClick(activity: FragmentActivity?) {
         if (_state.value.isFavorite) {
             onFavoriteClicked()
-            Toast.makeText(activity, "Favorito borrado", Toast.LENGTH_SHORT).show()
+            Toast.makeText(
+                activity,
+                resourceProvider.getString(R.string.favorite_deleted),
+                Toast.LENGTH_SHORT,
+            ).show()
         } else {
             onFavoriteClicked()
-            Toast.makeText(activity, "Favorito añadido", Toast.LENGTH_SHORT).show()
+            Toast.makeText(
+                activity,
+                resourceProvider.getString(R.string.favorite_added),
+                Toast.LENGTH_SHORT,
+            ).show()
         }
     }
 

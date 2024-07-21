@@ -17,8 +17,8 @@ class CityLocalDataSource(private val cityDao: CityDao) {
     suspend fun getCitiesFromUserCountry(countryName: String): Either<Throwable, List<City>> =
         catch { cityDao.getCitiesFromUserCountry(countryName).toDomain() }
 
-    suspend fun getCity(cityId: Int): City =
-        cityDao.getCity(cityId).toDomain()
+    suspend fun getCity(cityId: Int): Either<Throwable, City> =
+        catch { cityDao.getCity(cityId).toDomain() }
 
     suspend fun getFavoriteCities(): List<City> =
         cityDao.getFavoriteCities().toDomain()

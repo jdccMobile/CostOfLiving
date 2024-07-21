@@ -55,7 +55,6 @@ class SearchViewModel(
         }
     }
 
-
     fun onCityClicked(city: City) {
         _state.value = _state.value.copy(navigateTo = city)
     }
@@ -91,9 +90,9 @@ class SearchViewModel(
                             _state.value =
                                 _state.value.copy(
                                     errorMsg =
-                                    "$nameSearch ${
-                                        resourceProvider.getString(R.string.does_not_exist)
-                                    }",
+                                        "$nameSearch ${
+                                            resourceProvider.getString(R.string.does_not_exist)
+                                        }",
                                 )
                         }
                     }
@@ -112,7 +111,6 @@ class SearchViewModel(
                                     }",
                                 )
                         }
-
                     }
                 }
             }
@@ -137,7 +135,9 @@ class SearchViewModel(
                 { errorType ->
                     val errorMessage = when (errorType) {
                         ErrorType.HTTP_429 -> resourceProvider.getString(R.string.http_429)
-                        ErrorType.CONNECTION -> resourceProvider.getString(R.string.connection_error)
+                        ErrorType.CONNECTION -> resourceProvider.getString(
+                            R.string.connection_error,
+                        )
                         ErrorType.NO_COINCIDENCES -> "" // TODO
                     }
                     _state.value = _state.value.copy(

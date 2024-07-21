@@ -2,7 +2,6 @@ package com.jdccmobile.domain.usecase
 
 import arrow.core.Either
 import arrow.core.continuations.either
-import arrow.core.merge
 import com.jdccmobile.domain.model.City
 import com.jdccmobile.domain.model.ErrorType
 import com.jdccmobile.domain.repository.CityRepository
@@ -31,5 +30,3 @@ class GetCitiesFromUserCountryUseCase(
         }
     }
 }
-
-

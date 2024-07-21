@@ -22,4 +22,6 @@
     <string name="http_429">HTTP 429: Too Many Requests</string>
     <string name="empty_string" />
     <string name="error_obtaining_user_country_cities">Error when obtaining the cities of the user\'s country</string>
+    <string name="favorite_deleted">Favorite deleted</string>
+    <string name="favorite_added">Favorite added</string>
 </resources>

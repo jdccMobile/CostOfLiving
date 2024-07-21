@@ -26,7 +26,7 @@ class CityRepositoryImpl(
     override suspend fun getCitiesFromUserCountry(countryName: String): Either<Throwable, List<City>> =
         cityLocalDataSource.getCitiesFromUserCountry(countryName)
 
-    override suspend fun getCity(cityId: Int): City {
+    override suspend fun getCity(cityId: Int): Either<Throwable, City> {
         return cityLocalDataSource.getCity(cityId)
     }
 

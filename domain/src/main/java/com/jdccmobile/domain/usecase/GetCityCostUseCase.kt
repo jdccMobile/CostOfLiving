@@ -9,7 +9,6 @@ import com.jdccmobile.domain.repository.CityRepository
 class GetCityCostUseCase(
     private val cityRepository: CityRepository,
 ) {
-
     suspend operator fun invoke(
         cityId: Int,
         cityName: String,
@@ -17,10 +16,9 @@ class GetCityCostUseCase(
     ): Either<ErrorType, CityCost> = either {
         cityRepository.getCityCostLocal(cityId).bind() ?: cityRepository.getCityCostRemote(
             cityName,
-            countryName
+            countryName,
         ).bind()
     }.mapLeft {
         ErrorType.NO_COINCIDENCES
     }
-
 }

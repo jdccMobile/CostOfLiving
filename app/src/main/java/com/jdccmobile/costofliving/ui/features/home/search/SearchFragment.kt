@@ -2,13 +2,11 @@ package com.jdccmobile.costofliving.ui.features.home.search
 
 import android.content.Context
 import android.os.Bundle
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.view.inputmethod.InputMethodManager
 import android.widget.Toast
-import androidx.datastore.preferences.protobuf.Empty
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.lifecycleScope
@@ -61,7 +59,7 @@ class SearchFragment : Fragment() {
             } else {
                 handleErrorConnection(
                     msg = uiState.apiErrorMsg,
-                    isCityInUserCountryEmpty = uiState.citiesAutoComplete.isEmpty()
+                    isCityInUserCountryEmpty = uiState.citiesAutoComplete.isEmpty(),
                 )
             }
         }
@@ -105,7 +103,7 @@ class SearchFragment : Fragment() {
     }
 
     private fun handleErrorConnection(msg: String, isCityInUserCountryEmpty: Boolean) {
-        if(isCityInUserCountryEmpty) binding.ivErrorImage.visibility = View.VISIBLE
+        if (isCityInUserCountryEmpty) binding.ivErrorImage.visibility = View.VISIBLE
         binding.pbSearchCities.visibility = View.GONE
         binding.ivErrorImage.setImageResource(R.drawable.im_error_connection)
         Toast.makeText(requireActivity(), msg, Toast.LENGTH_SHORT).show()

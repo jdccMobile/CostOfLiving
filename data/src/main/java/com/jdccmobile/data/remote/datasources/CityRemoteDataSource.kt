@@ -2,7 +2,6 @@ package com.jdccmobile.data.remote.datasources
 
 import arrow.core.Either
 import arrow.core.Either.Companion.catch
-import arrow.core.handleError
 import com.jdccmobile.data.remote.RetrofitService
 import com.jdccmobile.data.remote.models.city.CitiesListResponseResult
 import com.jdccmobile.data.remote.models.cost.CityCostResponseResult

@@ -10,4 +10,3 @@ data class CityUi(
     val isFavorite: Boolean = false,
     val cityId: Int,
 ) : Parcelable
-
