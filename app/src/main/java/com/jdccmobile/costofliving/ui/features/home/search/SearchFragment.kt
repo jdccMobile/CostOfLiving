@@ -59,7 +59,7 @@ class SearchFragment : Fragment() {
             } else {
                 handleErrorConnection(
                     msg = uiState.apiErrorMsg,
-                    isCityInUserCountryEmpty = uiState.citiesAutoComplete.isEmpty(),
+                    isCityInUserCountryEmpty = uiState.citiesInUserCountry.isEmpty(),
                 )
             }
         }

@@ -31,10 +31,6 @@ class SearchViewModel(
         val countryName: String? = null,
         val isSearchByCity: Boolean = true,
         val citiesInUserCountry: List<City> = emptyList(),
-        val citiesAutoComplete: List<AutoCompleteSearchUi> =
-            emptyList(),
-        val countriesAutoComplete: List<AutoCompleteSearchUi> =
-            emptyList(),
         val navigateTo: City? = null,
         val errorMsg: String? = null,
         val apiErrorMsg: String? = null,
@@ -64,7 +60,7 @@ class SearchViewModel(
     }
 
     fun validateSearch(nameSearch: String) {
-        if (_state.value.citiesInUserCountry.any { // todo cambiar por un get de toda la base de datos
+        if (_state.value.citiesInUserCountry.any {
                 it.cityName.equals(nameSearch, ignoreCase = true)
             }
         ) {
@@ -86,7 +82,7 @@ class SearchViewModel(
                             val citySearched = cities.find {
                                 it.cityName.equals(nameSearch, ignoreCase = true)
                             }
-                            if (citySearched != null) { // todo meter en el usecase??
+                            if (citySearched != null) {
                                 insertCityUseCase(citySearched).fold(
                                     { error ->
                                         _state.value = _state.value.copy(
