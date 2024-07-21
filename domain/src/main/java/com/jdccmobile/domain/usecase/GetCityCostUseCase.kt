@@ -13,12 +13,10 @@ class GetCityCostUseCase(
         cityId: Int,
         cityName: String,
         countryName: String,
-    ): Either<ErrorType, CityCost> = either {
+    ): Either<Throwable, CityCost> = either {
         cityRepository.getCityCostLocal(cityId).bind() ?: cityRepository.getCityCostRemote(
             cityName,
             countryName,
         ).bind()
-    }.mapLeft {
-        ErrorType.NO_COINCIDENCES
     }
 }

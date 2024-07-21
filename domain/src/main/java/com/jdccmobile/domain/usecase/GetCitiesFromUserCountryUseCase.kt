@@ -1,6 +1,7 @@
 package com.jdccmobile.domain.usecase
 
 import arrow.core.Either
+import arrow.core.computations.ResultEffect.bind
 import arrow.core.continuations.either
 import com.jdccmobile.domain.model.City
 import com.jdccmobile.domain.model.ErrorType
@@ -11,7 +12,7 @@ class GetCitiesFromUserCountryUseCase(
     private val getCitiesUseCase: GetCitiesUseCase,
     private val insertCitiesFromUserCountryUseCase: InsertCitiesFromUserCountryUseCase,
 ) {
-    suspend operator fun invoke(userCountryName: String): Either<ErrorType, List<City>> = either {
+    suspend operator fun invoke(userCountryName: String): Either<Throwable, List<City>> = either {
         val citiesInUserCountry = cityRepository.getCitiesFromUserCountry(userCountryName).bind()
 
         if (citiesInUserCountry.isEmpty() || citiesInUserCountry.size != citiesInUserCountry[0].citiesInCountry) {
@@ -22,11 +23,6 @@ class GetCitiesFromUserCountryUseCase(
             filteredCitiesByCountry
         } else {
             citiesInUserCountry
-        }
-    }.mapLeft { error ->
-        when {
-            error.message?.contains("429") == true -> ErrorType.HTTP_429
-            else -> ErrorType.CONNECTION
         }
     }
 }

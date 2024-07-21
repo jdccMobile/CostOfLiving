@@ -72,38 +72,21 @@ class SearchViewModel(
             )
         } else {
             viewModelScope.launch {
-                when (val citiesRemoteResult = getCitiesUseCase()) {
-                    is Either.Right -> {
-                        if (citiesRemoteResult.value.any {
-                                it.cityName.equals(nameSearch, ignoreCase = true)
-                            }
-                        ) {
-                            val citySearched = citiesRemoteResult.value.find {
+                getCitiesUseCase().fold(
+                    { error ->
+                        _state.value = _state.value.copy(
+                            errorMsg = resourceProvider.getString(error.toStringResource()),
+                        )
+                    },
+                    { cities ->
+                        if (cities.any { it.cityName.equals(nameSearch, ignoreCase = true) }) {
+                            val citySearched = cities.find {
                                 it.cityName.equals(nameSearch, ignoreCase = true)
                             }
                             if (citySearched != null) {
                                 insertCityUseCase(citySearched)
-                                _state.value = _state.value.copy(
-                                    navigateTo = citySearched,
-                                )
+                                _state.value = _state.value.copy(navigateTo = citySearched)
                             }
-                        } else {
-                            _state.value =
-                                _state.value.copy(
-                                    errorMsg =
-                                        "$nameSearch ${
-                                            resourceProvider.getString(R.string.does_not_exist)
-                                        }",
-                                )
-                        }
-                    }
-
-                    is Either.Left -> {
-                        if (citiesRemoteResult.value.message?.contains("429") == true) {
-                            _state.value =
-                                _state.value.copy(
-                                    apiErrorMsg = resourceProvider.getString(R.string.http_429),
-                                )
                         } else {
                             _state.value =
                                 _state.value.copy(
@@ -112,8 +95,8 @@ class SearchViewModel(
                                     }",
                                 )
                         }
-                    }
-                }
+                    },
+                )
             }
         }
     }
@@ -133,10 +116,10 @@ class SearchViewModel(
     private fun getCitiesInUserCountry(userCountryName: String) {
         viewModelScope.launch {
             getCitiesFromUserCountryUseCase(userCountryName).fold(
-                { errorType ->
+                { error ->
                     _state.value = _state.value.copy(
                         apiCallCompleted = true,
-                        apiErrorMsg = resourceProvider.getString(errorType.toStringResource()),
+                        apiErrorMsg = resourceProvider.getString(error.toStringResource()),
                         citiesInUserCountry = emptyList(),
                     )
                 },

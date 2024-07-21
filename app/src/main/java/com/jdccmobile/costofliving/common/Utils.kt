@@ -14,8 +14,8 @@ fun getCountryCode(countryName: String) =
         Locale("", it).getDisplayCountry(Locale.ENGLISH) == countryName
     }
 
-fun ErrorType.toStringResource() = when (this) {
-    ErrorType.HTTP_429 -> R.string.http_429
-    ErrorType.CONNECTION -> R.string.connection_error
-    ErrorType.NO_COINCIDENCES -> R.string.no_results_found
+fun Throwable.toStringResource() = when (this.message.isNullOrEmpty()) {
+    message?.contains("429") -> R.string.http_429
+    message?.contains("http") -> R.string.connection_error
+    else -> R.string.no_results_found
 }
