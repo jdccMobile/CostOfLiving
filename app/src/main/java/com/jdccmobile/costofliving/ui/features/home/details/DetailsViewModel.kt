@@ -6,6 +6,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.jdccmobile.costofliving.R
 import com.jdccmobile.costofliving.common.ResourceProvider
+import com.jdccmobile.costofliving.common.toStringResource
 import com.jdccmobile.costofliving.ui.models.ItemPriceUi
 import com.jdccmobile.domain.model.City
 import com.jdccmobile.domain.model.CityCost
@@ -56,16 +57,11 @@ class DetailsViewModel(
 
     private suspend fun getCityInfo() {
         getCityUseCase(cityId).fold(
-            { errorType ->
-                val errorMessage = when (errorType) {
-                    ErrorType.HTTP_429 -> resourceProvider.getString(R.string.http_429)
-                    ErrorType.CONNECTION -> resourceProvider.getString(R.string.connection_error)
-                    ErrorType.NO_COINCIDENCES -> "" // TODO sacar a funcion comun
-                }
+            { error ->
                 _state.value = _state.value.copy(
                     // todo sacar a una funcion y llamar en el when
                     apiCallCompleted = true,
-                    apiErrorMsg = errorMessage,
+                    apiErrorMsg = resourceProvider.getString(error.toStringResource()),
                 )
             },
             { city ->
@@ -87,15 +83,10 @@ class DetailsViewModel(
             cityName = _state.value.cityName,
             countryName = _state.value.countryName,
         ).fold(
-            { errorType ->
-                val errorMessage = when (errorType) {
-                    ErrorType.HTTP_429 -> resourceProvider.getString(R.string.http_429)
-                    ErrorType.CONNECTION -> resourceProvider.getString(R.string.connection_error)
-                    ErrorType.NO_COINCIDENCES -> "" // TODO sacar a funcion comun
-                }
+            { error ->
                 _state.value = _state.value.copy(
                     apiCallCompleted = true,
-                    apiErrorMsg = errorMessage,
+                    apiErrorMsg = resourceProvider.getString(error.toStringResource()),
                 )
             },
             { cityCost ->
@@ -134,8 +125,17 @@ class DetailsViewModel(
                     countryName = _state.value.countryName,
                     isFavorite = !_state.value.isFavorite,
                 ),
+            ).fold(
+                { error ->
+                    _state.value = _state.value.copy(
+                        apiErrorMsg = resourceProvider.getString(error.toStringResource()),
+                    )
+                },
+                {
+                    _state.value = _state.value.copy(isFavorite = !_state.value.isFavorite)
+                },
             )
-            _state.value = _state.value.copy(isFavorite = !_state.value.isFavorite)
+
         }
     }
 }

@@ -33,9 +33,9 @@ class CityRepositoryImpl(
     override suspend fun getFavoriteCities(): Either<Throwable, List<City>> =
         cityLocalDataSource.getFavoriteCities()
 
-    override suspend fun updateCity(city: City) {
+    override suspend fun updateCity(city: City): Either<Throwable, Unit> =
         cityLocalDataSource.updateCity(city)
-    }
+
 
     override suspend fun getCityCostLocal(cityId: Int): Either<Throwable, CityCost?> =
         costLifeLocalDataSource.getCityCostLocal(cityId)

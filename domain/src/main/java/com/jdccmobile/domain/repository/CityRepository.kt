@@ -17,7 +17,7 @@ interface CityRepository {
 
     suspend fun getFavoriteCities(): Either<Throwable, List<City>>
 
-    suspend fun updateCity(city: City)
+    suspend fun updateCity(city: City): Either<Throwable, Unit>
 
     suspend fun getCityCostLocal(cityId: Int): Either<Throwable, CityCost?>
 
