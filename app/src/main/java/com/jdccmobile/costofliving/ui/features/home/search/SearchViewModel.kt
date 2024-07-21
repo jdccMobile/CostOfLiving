@@ -5,6 +5,7 @@ import androidx.lifecycle.viewModelScope
 import arrow.core.Either
 import com.jdccmobile.costofliving.R
 import com.jdccmobile.costofliving.common.ResourceProvider
+import com.jdccmobile.costofliving.common.toStringResource
 import com.jdccmobile.costofliving.ui.models.AutoCompleteSearchUi
 import com.jdccmobile.domain.model.City
 import com.jdccmobile.domain.model.ErrorType
@@ -133,16 +134,9 @@ class SearchViewModel(
         viewModelScope.launch {
             getCitiesFromUserCountryUseCase(userCountryName).fold(
                 { errorType ->
-                    val errorMessage = when (errorType) {
-                        ErrorType.HTTP_429 -> resourceProvider.getString(R.string.http_429)
-                        ErrorType.CONNECTION -> resourceProvider.getString(
-                            R.string.connection_error,
-                        )
-                        ErrorType.NO_COINCIDENCES -> "" // TODO
-                    }
                     _state.value = _state.value.copy(
                         apiCallCompleted = true,
-                        apiErrorMsg = errorMessage,
+                        apiErrorMsg = resourceProvider.getString(errorType.toStringResource()),
                         citiesInUserCountry = emptyList(),
                     )
                 },

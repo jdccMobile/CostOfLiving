@@ -4,6 +4,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.jdccmobile.costofliving.R
 import com.jdccmobile.costofliving.common.ResourceProvider
+import com.jdccmobile.costofliving.common.toStringResource
 import com.jdccmobile.costofliving.ui.models.CityUi
 import com.jdccmobile.domain.model.City
 import com.jdccmobile.domain.model.ErrorType
@@ -40,14 +41,9 @@ class FavoritesViewModel(
     private suspend fun getFavoriteCities() {
         getFavoriteCitiesUseCase().fold(
             { errorType ->
-                val errorMessage = when (errorType) {
-                    ErrorType.HTTP_429 -> resourceProvider.getString(R.string.http_429)
-                    ErrorType.CONNECTION -> resourceProvider.getString(R.string.connection_error)
-                    ErrorType.NO_COINCIDENCES -> resourceProvider.getString(R.string.no_results_found)
-                }
                 _state.value = _state.value.copy(
                     apiCallCompleted = true,
-                    apiErrorMsg = errorMessage,
+                    apiErrorMsg = resourceProvider.getString(errorType.toStringResource()),
                     favoriteCities = emptyList(),
                 )
             },
