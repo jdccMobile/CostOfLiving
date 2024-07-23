@@ -111,4 +111,7 @@ dependencies {
 
     // Koin
     implementation("io.insert-koin:koin-android:3.4.3")
+
+    // Either
+    implementation("io.arrow-kt:arrow-core:1.1.2")
 }

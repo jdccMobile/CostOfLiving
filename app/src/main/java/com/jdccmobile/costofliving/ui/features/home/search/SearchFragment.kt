@@ -14,8 +14,7 @@ import androidx.lifecycle.repeatOnLifecycle
 import androidx.navigation.fragment.findNavController
 import com.jdccmobile.costofliving.R
 import com.jdccmobile.costofliving.databinding.FragmentSearchBinding
-import com.jdccmobile.costofliving.ui.models.AutoCompleteSearchUi
-import com.jdccmobile.costofliving.ui.models.PlaceUi
+import com.jdccmobile.domain.model.City
 import kotlinx.coroutines.launch
 import org.koin.androidx.viewmodel.ext.android.viewModel
 
@@ -27,11 +26,6 @@ class SearchFragment : Fragment() {
 
     private var isSearchByCity: Boolean = true
     private lateinit var citiesInUserCountryAdapter: CitiesUserCountryAdapter
-    private lateinit var citiesAutoComplete: List<AutoCompleteSearchUi>
-    private lateinit var citiesAutoCompleteSearchAdapter: AutoCompleteSearchAdapter
-    private lateinit var countriesAutoComplete:
-        List<AutoCompleteSearchUi>
-    private lateinit var countriesAutoCompleteSearchAdapter: AutoCompleteSearchAdapter
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -46,7 +40,6 @@ class SearchFragment : Fragment() {
             }
         }
 
-        chooseCityCountry()
         onSearchClick()
 
         return binding.root
@@ -62,53 +55,23 @@ class SearchFragment : Fragment() {
 
         if (uiState.apiCallCompleted) {
             if (uiState.apiErrorMsg == null) {
-                citiesAutoComplete = uiState.citiesAutoComplete
-                countriesAutoComplete = uiState.countriesAutoComplete
-                createAdapters(uiState.citiesInUserCountry)
-                selectAutoCompleteAdapter()
-                binding.rvSearchCities.adapter = citiesInUserCountryAdapter
-                binding.rvSearchCities.visibility = View.VISIBLE
-                binding.pbSearchCities.visibility = View.GONE
+                createCitiesInUserCountryAdapter(uiState.citiesInUserCountry)
             } else {
-                handleErrorConnection(uiState.apiErrorMsg)
+                handleErrorConnection(
+                    msg = uiState.apiErrorMsg,
+                    isCityInUserCountryEmpty = uiState.citiesInUserCountry.isEmpty(),
+                )
             }
         }
     }
 
-    private fun createAdapters(citiesInUserCountry: List<PlaceUi.City>) {
+    private fun createCitiesInUserCountryAdapter(citiesInUserCountry: List<City>) {
         citiesInUserCountryAdapter = CitiesUserCountryAdapter(citiesInUserCountry) {
             viewModel.onCityClicked(it)
         }
-        citiesAutoCompleteSearchAdapter =
-            AutoCompleteSearchAdapter(requireContext(), citiesAutoComplete) {
-                viewModel.onCityClicked(
-                    PlaceUi.City(
-                        countryName = it.country,
-                        cityName = it.searchedText,
-                    ),
-                )
-            }
-        countriesAutoCompleteSearchAdapter =
-            AutoCompleteSearchAdapter(requireContext(), countriesAutoComplete) {
-                viewModel.onCityClicked(PlaceUi.Country(countryName = it.searchedText))
-            }
-    }
-
-    private fun chooseCityCountry() {
-        binding.rgChooseCityCountry.setOnCheckedChangeListener { _, checkedId ->
-            when (checkedId) {
-                R.id.rbSearchCity -> viewModel.changeSearchByCity(true)
-                R.id.rbSearchCountry -> viewModel.changeSearchByCity(false)
-            }
-        }
-    }
-
-    private fun selectAutoCompleteAdapter() {
-        if (isSearchByCity) {
-            binding.atSearch.setAdapter(citiesAutoCompleteSearchAdapter)
-        } else {
-            binding.atSearch.setAdapter(countriesAutoCompleteSearchAdapter)
-        }
+        binding.rvCitiesInUserCountry.adapter = citiesInUserCountryAdapter
+        binding.rvCitiesInUserCountry.visibility = View.VISIBLE
+        binding.pbSearchCities.visibility = View.GONE
     }
 
     private fun onSearchClick() {
@@ -118,16 +81,16 @@ class SearchFragment : Fragment() {
         }
     }
 
-    private fun navigateToDetails(place: PlaceUi) {
-        binding.atSearch.setText("")
+    private fun navigateToDetails(place: City) {
+        binding.atSearch.setText(getString(R.string.empty_string))
         hideKeyboard()
-        val navAction = SearchFragmentDirections.actionSearchToDetails(place)
+        val navAction = SearchFragmentDirections.actionSearchToDetails(place.cityId)
         findNavController().navigate(navAction)
         viewModel.onNavigationDone()
     }
 
     private fun showErrorMsg(msg: String) {
-        binding.atSearch.setText("")
+        binding.atSearch.setText(getString(R.string.empty_string))
         Toast.makeText(requireContext(), msg, Toast.LENGTH_SHORT).show()
         viewModel.onErrorMsgShown()
     }
@@ -139,8 +102,8 @@ class SearchFragment : Fragment() {
         imm.hideSoftInputFromWindow(view.windowToken, 0)
     }
 
-    private fun handleErrorConnection(msg: String) {
-        binding.ivErrorImage.visibility = View.VISIBLE
+    private fun handleErrorConnection(msg: String, isCityInUserCountryEmpty: Boolean) {
+        if (isCityInUserCountryEmpty) binding.ivErrorImage.visibility = View.VISIBLE
         binding.pbSearchCities.visibility = View.GONE
         binding.ivErrorImage.setImageResource(R.drawable.im_error_connection)
         Toast.makeText(requireActivity(), msg, Toast.LENGTH_SHORT).show()

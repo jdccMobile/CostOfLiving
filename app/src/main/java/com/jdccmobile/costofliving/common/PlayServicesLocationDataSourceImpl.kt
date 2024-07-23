@@ -15,7 +15,7 @@ class PlayServicesLocationDataSourceImpl(
 ) : LocationDataSource {
     private val fusedLocationClient = LocationServices.getFusedLocationProviderClient(application)
 
-    override suspend fun findLastRegion(): String? = findLastLocation().toRegion()
+    override suspend fun findLastRegion(): String = findLastLocation().toRegion()
 
     @Suppress("MissingPermission")
     private suspend fun findLastLocation(): Location? =

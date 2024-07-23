@@ -2,7 +2,6 @@ package com.jdccmobile.costofliving.ui.features.home.favorites
 
 import android.annotation.SuppressLint
 import android.os.Bundle
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -10,10 +9,12 @@ import androidx.compose.foundation.Image
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -43,10 +44,12 @@ import androidx.navigation.fragment.findNavController
 import coil.compose.rememberAsyncImagePainter
 import com.jdccmobile.costofliving.R
 import com.jdccmobile.costofliving.common.getCountryCode
+import com.jdccmobile.costofliving.compose.theme.IconDimens
 import com.jdccmobile.costofliving.compose.theme.PaddingDimens
 import com.jdccmobile.costofliving.compose.theme.primary
 import com.jdccmobile.costofliving.compose.theme.white
-import com.jdccmobile.costofliving.ui.models.PlaceUi
+import com.jdccmobile.costofliving.ui.models.CityUi
+import com.jdccmobile.domain.model.City
 import org.koin.androidx.viewmodel.ext.android.viewModel
 
 class FavoritesFragment : Fragment() {
@@ -67,8 +70,8 @@ class FavoritesFragment : Fragment() {
         }
     }
 
-    private fun navigateToDetails(place: PlaceUi) {
-        val navAction = FavoritesFragmentDirections.actionFavoritesToDetails(place)
+    private fun navigateToDetails(cityId: Int) {
+        val navAction = FavoritesFragmentDirections.actionFavoritesToDetails(cityId)
         findNavController().navigate(navAction)
         viewModel.onNavigationDone()
     }
@@ -76,13 +79,12 @@ class FavoritesFragment : Fragment() {
 
 @SuppressLint("NotConstructor")
 @Composable
-private fun FavoritesFragment(viewModel: FavoritesViewModel, navigateToDetails: (PlaceUi) -> Unit) {
+private fun FavoritesFragment(viewModel: FavoritesViewModel, navigateToDetails: (Int) -> Unit) {
     val uiState by viewModel.state.collectAsState()
-
     uiState.navigateTo?.let { navigateToDetails(it) }
 
     FavoritesContent(
-        placeList = uiState.placeList,
+        placeList = uiState.favoriteCities,
         onPlaceClicked = {
             viewModel.onCityClicked(it)
         },
@@ -91,8 +93,8 @@ private fun FavoritesFragment(viewModel: FavoritesViewModel, navigateToDetails: 
 
 @Composable
 private fun FavoritesContent(
-    placeList: List<PlaceUi>,
-    onPlaceClicked: (PlaceUi) -> Unit,
+    placeList: List<CityUi>,
+    onPlaceClicked: (City) -> Unit,
 ) {
     Column {
         Text(
@@ -117,23 +119,15 @@ private fun FavoritesContent(
             items(placeList) { city ->
                 PlaceCard(
                     cityName = city.cityName,
-                    countryName = city.countryName,
                     countryCode = getCountryCode(city.countryName),
                     onClick = {
-                        Log.i("asd", "cit " + city.cityName.toString())
                         onPlaceClicked(
-                            if (city.cityName.isNotEmpty()) {
-                                PlaceUi.City(
-                                    countryName = city.countryName,
-                                    cityName = city.cityName,
-                                    isFavorite = true,
-                                )
-                            } else {
-                                PlaceUi.Country(
-                                    countryName = city.countryName,
-                                    isFavorite = true,
-                                )
-                            },
+                            City(
+                                cityId = city.cityId,
+                                countryName = city.countryName,
+                                cityName = city.cityName,
+                                isFavorite = true,
+                            ),
                         )
                     },
                 )
@@ -145,11 +139,9 @@ private fun FavoritesContent(
 @Composable
 fun PlaceCard(
     cityName: String,
-    countryName: String,
     countryCode: String?,
     onClick: () -> Unit,
 ) {
-    Log.i("jdc", "city: $cityName, country: $countryName")
     Card(
         modifier = Modifier
             .fillMaxWidth()
@@ -174,23 +166,28 @@ fun PlaceCard(
                     "https://flagsapi.com/$countryCode/flat/64.png",
                 ),
                 contentDescription = stringResource(R.string.flag),
-                modifier = Modifier.padding(horizontal = PaddingDimens.extraLarge),
+                modifier = Modifier
+                    .padding(horizontal = PaddingDimens.extraLarge)
+                    .size(IconDimens.standard),
             )
 
             Text(
-                text = cityName.ifEmpty { countryName },
+                text = cityName,
                 fontSize = 24.sp,
                 fontWeight = FontWeight.Bold,
                 color = primary,
                 maxLines = 1,
                 overflow = TextOverflow.Ellipsis,
-                modifier = Modifier.weight(1f),
             )
+
+            Spacer(modifier = Modifier.weight(1f))
 
             Icon(
                 painter = painterResource(R.drawable.ic_navigate_next),
                 contentDescription = stringResource(R.string.navigate),
-                modifier = Modifier.padding(horizontal = PaddingDimens.extraLarge),
+                modifier = Modifier
+                    .padding(horizontal = PaddingDimens.extraLarge)
+                    .size(IconDimens.standard),
                 tint = primary,
             )
         }
@@ -202,7 +199,6 @@ fun PlaceCard(
 fun CountryCardPreview() {
     PlaceCard(
         cityName = "Santander",
-        countryName = "Spain",
         countryCode = "SP",
         onClick = {},
     )

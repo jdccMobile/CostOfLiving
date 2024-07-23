@@ -37,7 +37,7 @@
         android:label="fragment_details"
         tools:layout="@layout/fragment_details" >
         <argument
-            android:name="placeUi"
-            app:argType="com.jdccmobile.costofliving.ui.models.PlaceUi" />
+            android:name="cityId"
+            app:argType="integer" />
     </fragment>
 </navigation>

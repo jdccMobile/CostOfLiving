@@ -1,9 +1,22 @@
 package com.jdccmobile.domain.usecase
 
-import com.jdccmobile.domain.model.ItemPrice
-import com.jdccmobile.domain.repository.PlaceRepository
+import arrow.core.Either
+import arrow.core.continuations.either
+import com.jdccmobile.domain.model.CityCost
+import com.jdccmobile.domain.repository.CityRepository
 
-class GetCityCostUseCase(private val placeRepository: PlaceRepository) {
-    suspend operator fun invoke(cityName: String, countryName: String): List<ItemPrice> =
-        placeRepository.getCityCostRemote(cityName, countryName)
+class GetCityCostUseCase(
+    private val cityRepository: CityRepository,
+    private val insertCityCostUseCase: InsertCityCostUseCase,
+) {
+    suspend operator fun invoke(
+        cityId: Int,
+        cityName: String,
+        countryName: String,
+    ): Either<Throwable, CityCost> = either {
+        val cityCost = cityRepository.getCityCostLocal(cityId).bind()
+            ?: cityRepository.getCityCostRemote(cityName, countryName).bind()
+        insertCityCostUseCase(cityCost).bind()
+        cityCost
+    }
 }
