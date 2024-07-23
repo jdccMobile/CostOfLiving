@@ -2,17 +2,13 @@ package com.jdccmobile.costofliving.ui.features.home.search
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import arrow.core.Either
 import com.jdccmobile.costofliving.R
 import com.jdccmobile.costofliving.common.ResourceProvider
 import com.jdccmobile.costofliving.common.toStringResource
-import com.jdccmobile.costofliving.ui.models.AutoCompleteSearchUi
 import com.jdccmobile.domain.model.City
-import com.jdccmobile.domain.model.ErrorType
 import com.jdccmobile.domain.usecase.GetCitiesFromUserCountryUseCase
 import com.jdccmobile.domain.usecase.GetCitiesUseCase
 import com.jdccmobile.domain.usecase.GetUserCountryPrefsUseCase
-import com.jdccmobile.domain.usecase.InsertCitiesFromUserCountryUseCase
 import com.jdccmobile.domain.usecase.InsertCityUseCase
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
@@ -86,14 +82,15 @@ class SearchViewModel(
                                 insertCityUseCase(citySearched).fold(
                                     { error ->
                                         _state.value = _state.value.copy(
-                                            errorMsg = resourceProvider.getString(error.toStringResource()),
+                                            errorMsg = resourceProvider.getString(
+                                                error.toStringResource(),
+                                            ),
                                         )
                                     },
                                     {
                                         _state.value = _state.value.copy(navigateTo = citySearched)
                                     },
                                 )
-
                             }
                         } else {
                             _state.value =

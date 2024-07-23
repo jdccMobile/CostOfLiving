@@ -8,7 +8,7 @@ import com.jdccmobile.data.remote.models.cost.CityCostResponseResult
 import com.jdccmobile.domain.model.City
 import com.jdccmobile.domain.model.CityCost
 
-class PlaceRemoteDataSource(private val apiKey: String, private val service: RetrofitService) {
+class CityRemoteDataSource(private val apiKey: String, private val service: RetrofitService) {
     suspend fun getCitiesList(): Either<Throwable, List<City>> =
         catch { service.getCities(apiKey).toDomain() }
 

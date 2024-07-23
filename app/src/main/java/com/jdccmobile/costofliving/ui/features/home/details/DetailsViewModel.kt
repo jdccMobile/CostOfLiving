@@ -129,7 +129,6 @@ class DetailsViewModel(
                     _state.value = _state.value.copy(isFavorite = !_state.value.isFavorite)
                 },
             )
-
         }
     }
 }

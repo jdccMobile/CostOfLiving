@@ -2,7 +2,6 @@ package com.jdccmobile.costofliving.ui.features.intro
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.jdccmobile.data.repositories.PrefsRepositoryImpl
 import com.jdccmobile.data.repositories.RegionRepository
 import com.jdccmobile.domain.model.IntroSlide
 import com.jdccmobile.domain.usecase.InsertUserCountryPrefsUseCase
@@ -16,7 +15,7 @@ class IntroViewModel(
     private val regionRepository: RegionRepository,
     private val introSlidesProvider: IntroSlidesProvider,
     private val insertUserCountryPrefsUseCase: InsertUserCountryPrefsUseCase,
-    ) : ViewModel() {
+) : ViewModel() {
     data class UiState(
         val introSlidesInfo: List<IntroSlide> = emptyList(),
     )

@@ -24,7 +24,7 @@ import com.jdccmobile.data.location.PermissionChecker
 import com.jdccmobile.data.preferences.PreferencesDataSource
 import com.jdccmobile.data.remote.RetrofitService
 import com.jdccmobile.data.remote.RetrofitServiceFactory
-import com.jdccmobile.data.remote.datasources.PlaceRemoteDataSource
+import com.jdccmobile.data.remote.datasources.CityRemoteDataSource
 import com.jdccmobile.data.repositories.CityRepositoryImpl
 import com.jdccmobile.data.repositories.PrefsRepositoryImpl
 import com.jdccmobile.data.repositories.RegionRepository
@@ -89,7 +89,7 @@ private val dataModule = module {
     factoryOf(::CityLocalDataSource)
     factoryOf(::CostLifeLocalDataSource)
     single<RetrofitService> { RetrofitServiceFactory.makeRetrofitService() }
-    factory<PlaceRemoteDataSource> { PlaceRemoteDataSource(get(named("apiKey")), get()) }
+    factory<CityRemoteDataSource> { CityRemoteDataSource(get(named("apiKey")), get()) }
     factoryOf(::CityRepositoryImpl) bind CityRepository::class
 
     single {

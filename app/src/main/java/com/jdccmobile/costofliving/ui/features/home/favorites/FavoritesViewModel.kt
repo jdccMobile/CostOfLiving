@@ -2,12 +2,10 @@ package com.jdccmobile.costofliving.ui.features.home.favorites
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.jdccmobile.costofliving.R
 import com.jdccmobile.costofliving.common.ResourceProvider
 import com.jdccmobile.costofliving.common.toStringResource
 import com.jdccmobile.costofliving.ui.models.CityUi
 import com.jdccmobile.domain.model.City
-import com.jdccmobile.domain.model.ErrorType
 import com.jdccmobile.domain.usecase.GetFavoriteCitiesUseCase
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
@@ -51,7 +49,6 @@ class FavoritesViewModel(
                 _state.value = _state.value.copy(favoriteCities = cities.toUi())
             },
         )
-
     }
 
     fun onCityClicked(city: City) {

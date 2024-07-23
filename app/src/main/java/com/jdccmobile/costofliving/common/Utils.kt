@@ -3,7 +3,6 @@ package com.jdccmobile.costofliving.common
 import android.content.Context
 import com.jdccmobile.costofliving.App
 import com.jdccmobile.costofliving.R
-import com.jdccmobile.domain.model.ErrorType
 import java.util.Locale
 
 val Context.app: App
@@ -14,6 +13,7 @@ fun getCountryCode(countryName: String) =
         Locale("", it).getDisplayCountry(Locale.ENGLISH) == countryName
     }
 
+@Suppress("MagicNumber")
 fun Throwable.toStringResource() = when {
     message?.contains("429") == true -> R.string.http_429
     this is retrofit2.HttpException && this.code() in 400..499 -> R.string.http_4xx_error
