@@ -11,10 +11,12 @@ import com.jdccmobile.domain.usecase.GetCitiesFromUserCountryUseCase
 import com.jdccmobile.domain.usecase.GetCitiesUseCase
 import com.jdccmobile.domain.usecase.GetUserCountryPrefsUseCase
 import com.jdccmobile.domain.usecase.InsertCityUseCase
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 
 class SearchViewModel(
     private val getUserCountryPrefsUseCase: GetUserCountryPrefsUseCase,
@@ -58,9 +60,11 @@ class SearchViewModel(
         when (_state.value.searchType) {
             SearchType.Fast -> _state.value = _state.value.copy(navigateTo = city)
             SearchType.Complete -> {
-                _state.value = _state.value.copy(navigateTo = city)
                 viewModelScope.launch {
                     insertNewCityToDb(city)
+                    withContext(Dispatchers.Main) {
+                        _state.value = _state.value.copy(navigateTo = city)
+                    }
                 }
             }
         }
