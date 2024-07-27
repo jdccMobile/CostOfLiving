@@ -10,7 +10,7 @@
     <string name="location_des">We need your current location to be able to show the cities in your country</string>
     <string name="get_location">Get Location</string>
     <string name="search">Search</string>
-    <string name="search_by">Search by</string>
+    <string name="search_type">Search type</string>
     <string name="cities_in">Cities in</string>
     <string name="flag">Flag</string>
     <string name="navigate">Navigate</string>
@@ -29,4 +29,7 @@
     <string name="room_error">Error in database</string>
     <string name="datastore_error">Error with DataStore Preferences</string>
     <string name="generic_error">Error</string>
+    <string name="fast">Fast</string>
+    <string name="complete">Complete</string>
+    <string name="cities_around_world">Cities around the world</string>
 </resources>

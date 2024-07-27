@@ -1,5 +1,6 @@
 package com.jdccmobile.costofliving.ui.features.home.search
 
+import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.jdccmobile.costofliving.R
@@ -25,8 +26,8 @@ class SearchViewModel(
     data class UiState(
         val apiCallCompleted: Boolean = false,
         val countryName: String? = null,
-        val isSearchByCity: Boolean = true,
-        val citiesInUserCountry: List<City> = emptyList(),
+        val searchType: SearchType = SearchType.Fast,
+        val fastAccessibleCities: List<City> = emptyList(),
         val navigateTo: City? = null,
         val errorMsg: String? = null,
         val apiErrorMsg: String? = null,
@@ -34,6 +35,8 @@ class SearchViewModel(
 
     private val _state = MutableStateFlow(UiState())
     val state: StateFlow<UiState> = _state.asStateFlow()
+
+    private var citiesFromUserCountry = emptyList<City>()
 
     init {
         refresh()
@@ -52,56 +55,62 @@ class SearchViewModel(
     }
 
     fun onCityClicked(city: City) {
-        _state.value = _state.value.copy(navigateTo = city)
+        Log.i("asd", "city " + city.toString())
+        when (_state.value.searchType) {
+            SearchType.Fast -> _state.value = _state.value.copy(navigateTo = city)
+            SearchType.Complete -> {
+                _state.value = _state.value.copy(navigateTo = city)
+                viewModelScope.launch {
+                    insertNewCityToDb(city)
+                }
+            }
+        }
+    }
+
+    fun changeSearchType(searchType: SearchType) {
+        _state.value = _state.value.copy(searchType = searchType)
+        when (_state.value.searchType) {
+            SearchType.Fast ->
+                _state.value =
+                    _state.value.copy(fastAccessibleCities = citiesFromUserCountry)
+
+            SearchType.Complete ->
+                _state.value =
+                    _state.value.copy(fastAccessibleCities = emptyList())
+        }
     }
 
     fun validateSearch(nameSearch: String) {
-        if (_state.value.citiesInUserCountry.any {
-                it.cityName.equals(nameSearch, ignoreCase = true)
-            }
-        ) {
-            _state.value = _state.value.copy(
-                navigateTo = _state.value.citiesInUserCountry.find {
+        when (_state.value.searchType) {
+            SearchType.Fast -> {
+                // todo revisar si la ciudad ya esta guardada en la base de datos
+                _state.value.fastAccessibleCities.find {
                     it.cityName.equals(nameSearch, ignoreCase = true)
-                },
-            )
-        } else {
-            viewModelScope.launch {
-                getCitiesUseCase().fold(
-                    { error ->
-                        _state.value = _state.value.copy(
-                            errorMsg = resourceProvider.getString(error.toStringResource()),
-                        )
-                    },
-                    { cities ->
-                        if (cities.any { it.cityName.equals(nameSearch, ignoreCase = true) }) {
-                            val citySearched = cities.find {
-                                it.cityName.equals(nameSearch, ignoreCase = true)
+                }?.let { _state.value = _state.value.copy(navigateTo = it) }
+                    ?: run {
+                        searchCityInApi(nameSearch)
+                    }
+            }
+
+            SearchType.Complete -> {
+                viewModelScope.launch {
+                    getCitiesUseCase().fold(
+                        { error ->
+                            _state.value = _state.value.copy(
+                                errorMsg = resourceProvider.getString(error.toStringResource()),
+                            )
+                        },
+                        { cities ->
+                            if (cities.any { it.cityName.equals(nameSearch, ignoreCase = true) }) {
+                                val allCoincidencesCities = cities.filter {
+                                    it.cityName.equals(nameSearch, ignoreCase = true)
+                                }
+                                _state.value =
+                                    _state.value.copy(fastAccessibleCities = allCoincidencesCities)
                             }
-                            if (citySearched != null) {
-                                insertCityUseCase(citySearched).fold(
-                                    { error ->
-                                        _state.value = _state.value.copy(
-                                            errorMsg = resourceProvider.getString(
-                                                error.toStringResource(),
-                                            ),
-                                        )
-                                    },
-                                    {
-                                        _state.value = _state.value.copy(navigateTo = citySearched)
-                                    },
-                                )
-                            }
-                        } else {
-                            _state.value =
-                                _state.value.copy(
-                                    errorMsg = "$nameSearch ${
-                                        resourceProvider.getString(R.string.does_not_exist)
-                                    }",
-                                )
-                        }
-                    },
-                )
+                        },
+                    )
+                }
             }
         }
     }
@@ -118,6 +127,46 @@ class SearchViewModel(
         _state.value = _state.value.copy(apiErrorMsg = null)
     }
 
+    private suspend fun insertNewCityToDb(city: City) {
+        insertCityUseCase(city).fold(
+            { error ->
+                _state.value = _state.value.copy(
+                    errorMsg = resourceProvider.getString(
+                        error.toStringResource(),
+                    ),
+                )
+            },
+            {
+                _state.value =
+                    _state.value.copy(navigateTo = city)
+            },
+        )
+    }
+
+    private fun searchCityInApi(nameSearch: String) = viewModelScope.launch {
+        getCitiesUseCase().fold(
+            { error ->
+                _state.value = _state.value.copy(
+                    errorMsg = resourceProvider.getString(error.toStringResource()),
+                )
+            },
+            { cities ->
+                cities.find { it.cityName.equals(nameSearch, ignoreCase = true) }
+                    ?.let { insertNewCityToDb(it) }
+                    ?: run {
+                        _state.value =
+                            _state.value.copy(
+                                errorMsg = "$nameSearch ${
+                                    resourceProvider.getString(
+                                        R.string.does_not_exist,
+                                    )
+                                }",
+                            )
+                    }
+            },
+        )
+    }
+
     private fun getCitiesInUserCountry(userCountryName: String) {
         viewModelScope.launch {
             getCitiesFromUserCountryUseCase(userCountryName).fold(
@@ -125,16 +174,22 @@ class SearchViewModel(
                     _state.value = _state.value.copy(
                         apiCallCompleted = true,
                         apiErrorMsg = resourceProvider.getString(error.toStringResource()),
-                        citiesInUserCountry = emptyList(),
+                        fastAccessibleCities = emptyList(),
                     )
                 },
-                { citiesInUserCountry ->
+                { cities ->
+                    citiesFromUserCountry = cities
                     _state.value = _state.value.copy(
                         apiCallCompleted = true,
-                        citiesInUserCountry = citiesInUserCountry,
+                        fastAccessibleCities = cities,
                     )
                 },
             )
         }
     }
+}
+
+enum class SearchType {
+    Fast,
+    Complete,
 }

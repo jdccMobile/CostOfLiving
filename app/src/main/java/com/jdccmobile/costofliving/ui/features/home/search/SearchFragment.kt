@@ -24,7 +24,6 @@ class SearchFragment : Fragment() {
 
     private val viewModel: SearchViewModel by viewModel()
 
-    private var isSearchByCity: Boolean = true
     private lateinit var citiesInUserCountryAdapter: CitiesUserCountryAdapter
 
     override fun onCreateView(
@@ -40,6 +39,7 @@ class SearchFragment : Fragment() {
             }
         }
 
+        chooseSearchType()
         onSearchClick()
 
         return binding.root
@@ -48,18 +48,17 @@ class SearchFragment : Fragment() {
     private fun updateUI(uiState: SearchViewModel.UiState) {
         val searchByCountry = getString(R.string.cities_in) + " " + uiState.countryName
         binding.tvSubtitle.text = searchByCountry
-        isSearchByCity = uiState.isSearchByCity
 
         uiState.navigateTo?.let { navigateToDetails(it) }
         uiState.errorMsg?.let { showErrorMsg(it) }
 
         if (uiState.apiCallCompleted) {
             if (uiState.apiErrorMsg == null) {
-                createCitiesInUserCountryAdapter(uiState.citiesInUserCountry)
+                createCitiesInUserCountryAdapter(uiState.fastAccessibleCities)
             } else {
                 handleErrorConnection(
                     msg = uiState.apiErrorMsg,
-                    isCityInUserCountryEmpty = uiState.citiesInUserCountry.isEmpty(),
+                    isCityInUserCountryEmpty = uiState.fastAccessibleCities.isEmpty(),
                 )
             }
         }
@@ -72,6 +71,21 @@ class SearchFragment : Fragment() {
         binding.rvCitiesInUserCountry.adapter = citiesInUserCountryAdapter
         binding.rvCitiesInUserCountry.visibility = View.VISIBLE
         binding.pbSearchCities.visibility = View.GONE
+    }
+
+    private fun chooseSearchType() {
+        binding.rgChooseCityCountry.setOnCheckedChangeListener { _, checkedId ->
+            when (checkedId) {
+                R.id.rbSearchFast -> {
+                    viewModel.changeSearchType(SearchType.Fast)
+                    binding.tvSubtitle.text = getString(R.string.cities_in)
+                }
+                R.id.rbSearchComplete -> {
+                    viewModel.changeSearchType(SearchType.Complete)
+                    binding.tvSubtitle.text = getString(R.string.cities_around_world)
+                }
+            }
+        }
     }
 
     private fun onSearchClick() {

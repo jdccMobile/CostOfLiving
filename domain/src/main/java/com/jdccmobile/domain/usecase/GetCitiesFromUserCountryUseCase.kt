@@ -1,7 +1,6 @@
 package com.jdccmobile.domain.usecase
 
 import arrow.core.Either
-import arrow.core.computations.ResultEffect.bind
 import arrow.core.continuations.either
 import com.jdccmobile.domain.model.City
 import com.jdccmobile.domain.repository.CityRepository
@@ -16,7 +15,8 @@ class GetCitiesFromUserCountryUseCase(
 
         if (
             citiesInUserCountry.isEmpty() ||
-            citiesInUserCountry.size != citiesInUserCountry[0].citiesInCountry
+            citiesInUserCountry.size != citiesInUserCountry.first().citiesInCountry ||
+            citiesInUserCountry.size != citiesInUserCountry.last().citiesInCountry
         ) {
             val cities = getCitiesUseCase().bind()
             val filteredCitiesByCountry = cities.filter { it.countryName == userCountryName }

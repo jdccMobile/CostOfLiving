@@ -53,7 +53,6 @@ class DetailsViewModel(
         getCityUseCase(cityId).fold(
             { error ->
                 _state.value = _state.value.copy(
-                    // todo sacar a una funcion y llamar en el when
                     apiCallCompleted = true,
                     apiErrorMsg = resourceProvider.getString(error.toStringResource()),
                 )
@@ -69,7 +68,6 @@ class DetailsViewModel(
         )
     }
 
-    // TODO renombrar usecase y eliminar el usacese remote
     @Suppress("TooGenericExceptionCaught")
     private suspend fun getCityCosts() {
         getCiyCostUseCase(
