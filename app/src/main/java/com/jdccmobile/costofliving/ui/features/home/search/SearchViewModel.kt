@@ -55,7 +55,6 @@ class SearchViewModel(
     }
 
     fun onCityClicked(city: City) {
-        Log.i("asd", "city " + city.toString())
         when (_state.value.searchType) {
             SearchType.Fast -> _state.value = _state.value.copy(navigateTo = city)
             SearchType.Complete -> {
@@ -83,23 +82,25 @@ class SearchViewModel(
     fun validateSearch(nameSearch: String) {
         when (_state.value.searchType) {
             SearchType.Fast -> {
-                // todo revisar si la ciudad ya esta guardada en la base de datos
-                _state.value.fastAccessibleCities.find {
-                    it.cityName.equals(nameSearch, ignoreCase = true)
-                }?.let { _state.value = _state.value.copy(navigateTo = it) }
-                    ?: run {
-                        searchCityInApi(nameSearch)
-                    }
+                viewModelScope.launch {
+                    getCitiesUseCase().fold(
+                        { error -> setErrorMessage(error) },
+                        { cities ->
+                            cities.find {
+                                it.cityName.equals(nameSearch, ignoreCase = true)
+                            }?.let { _state.value = _state.value.copy(navigateTo = it) }
+                                ?: run {
+                                    searchCityInApi(nameSearch)
+                                }
+                        },
+                    )
+                }
             }
 
             SearchType.Complete -> {
                 viewModelScope.launch {
-                    getCitiesUseCase().fold(
-                        { error ->
-                            _state.value = _state.value.copy(
-                                errorMsg = resourceProvider.getString(error.toStringResource()),
-                            )
-                        },
+                    getCitiesUseCase(false).fold(
+                        { error -> setErrorMessage(error) },
                         { cities ->
                             if (cities.any { it.cityName.equals(nameSearch, ignoreCase = true) }) {
                                 val allCoincidencesCities = cities.filter {
@@ -129,13 +130,7 @@ class SearchViewModel(
 
     private suspend fun insertNewCityToDb(city: City) {
         insertCityUseCase(city).fold(
-            { error ->
-                _state.value = _state.value.copy(
-                    errorMsg = resourceProvider.getString(
-                        error.toStringResource(),
-                    ),
-                )
-            },
+            { error -> setErrorMessage(error) },
             {
                 _state.value =
                     _state.value.copy(navigateTo = city)
@@ -144,12 +139,8 @@ class SearchViewModel(
     }
 
     private fun searchCityInApi(nameSearch: String) = viewModelScope.launch {
-        getCitiesUseCase().fold(
-            { error ->
-                _state.value = _state.value.copy(
-                    errorMsg = resourceProvider.getString(error.toStringResource()),
-                )
-            },
+        getCitiesUseCase(false).fold(
+            { error -> setErrorMessage(error) },
             { cities ->
                 cities.find { it.cityName.equals(nameSearch, ignoreCase = true) }
                     ?.let { insertNewCityToDb(it) }
@@ -186,6 +177,12 @@ class SearchViewModel(
                 },
             )
         }
+    }
+
+    private fun setErrorMessage(error: Throwable) {
+        _state.value = _state.value.copy(
+            errorMsg = resourceProvider.getString(error.toStringResource()),
+        )
     }
 }
 

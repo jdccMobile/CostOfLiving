@@ -36,7 +36,7 @@ class CitiesUserCountryAdapter(
         private val binding = ViewCityItemBinding.bind(view)
 
         fun bind(city: City) {
-            binding.tvCountryNameItem.text = city.cityName // todo jdc rename text view
+            binding.tvCityNameItem.text = city.cityName
             val countryCode = getCountryCode(city.countryName)
             Picasso.get()
                 .load("https://flagsapi.com/$countryCode/flat/64.png")

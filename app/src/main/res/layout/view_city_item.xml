@@ -24,7 +24,7 @@
             android:contentDescription="@string/flag" />
 
         <TextView
-            android:id="@+id/tvCountryNameItem"
+            android:id="@+id/tv_city_name_item"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_marginHorizontal="24dp"
