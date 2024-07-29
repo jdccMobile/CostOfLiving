@@ -8,6 +8,7 @@ import com.jdccmobile.domain.model.City
 import com.jdccmobile.domain.model.CityCost
 import com.jdccmobile.domain.repository.CityRepository
 
+@Suppress("TooManyFunctions")
 class CityRepositoryImpl(
     private val cityLocalDataSource: CityLocalDataSource,
     private val costLifeLocalDataSource: CostLifeLocalDataSource,

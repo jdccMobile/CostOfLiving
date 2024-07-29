@@ -4,6 +4,7 @@ import arrow.core.Either
 import com.jdccmobile.domain.model.City
 import com.jdccmobile.domain.model.CityCost
 
+@Suppress("TooManyFunctions")
 interface CityRepository {
     // Local
     suspend fun insertCity(city: City): Either<Throwable, Unit>

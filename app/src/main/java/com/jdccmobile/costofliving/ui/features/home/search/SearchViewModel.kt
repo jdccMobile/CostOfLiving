@@ -1,6 +1,5 @@
 package com.jdccmobile.costofliving.ui.features.home.search
 
-import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.jdccmobile.costofliving.R
@@ -18,6 +17,7 @@ import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 
+@Suppress("TooManyFunctions")
 class SearchViewModel(
     private val getUserCountryPrefsUseCase: GetUserCountryPrefsUseCase,
     private val getCitiesUseCase: GetCitiesUseCase,
