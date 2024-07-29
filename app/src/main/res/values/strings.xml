@@ -1,3 +1,35 @@
 <resources>
-    <string name="app_name">CostOfLiving</string>
+    <string name="app_name">Cost of living</string>
+
+    <string name="cost_of_living_des">Discover the cost of living in any country in the world</string>
+    <string name="cities">Cities</string>
+    <string name="cities_des">Check the cost of living in a specific city</string>
+    <string name="favorites">Favorites</string>
+    <string name="favorites_des">Save your favorite countries and cities for quick viewing later</string>
+    <string name="location">Location</string>
+    <string name="location_des">We need your current location to be able to show the cities in your country</string>
+    <string name="get_location">Get Location</string>
+    <string name="search">Search</string>
+    <string name="search_type">Search type</string>
+    <string name="cities_in">Cities in</string>
+    <string name="flag">Flag</string>
+    <string name="navigate">Navigate</string>
+    <string name="city">City</string>
+    <string name="country">Country</string>
+    <string name="image">image</string>
+    <string name="connection_error">Connection error</string>
+    <string name="does_not_exist">does not exist</string>
+    <string name="empty_string" />
+    <string name="error_obtaining_user_country_cities">Error when obtaining the cities of the user\'s country</string>
+    <string name="favorite_deleted">Favorite deleted</string>
+    <string name="favorite_added">Favorite added</string>
+    <string name="no_results_found">No results found</string>
+    <string name="http_429_error">Error: Too many requests</string>
+    <string name="http_4xx_error">Connection error</string>
+    <string name="room_error">Error in database</string>
+    <string name="datastore_error">Error with DataStore Preferences</string>
+    <string name="generic_error">Error</string>
+    <string name="fast">Fast</string>
+    <string name="complete">Complete</string>
+    <string name="cities_around_world">Cities around the world</string>
 </resources>
